@@ -110,6 +110,7 @@
     var textEl = document.getElementById("demoText");
     var pillsEl = document.getElementById("demoPills");
     var keysEl = document.getElementById("demoKeys");
+    var toggleEl = document.getElementById("demoToggle");
     if (!textEl || !pillsEl || !keysEl) return;
 
     // Build the key row once.
@@ -150,7 +151,8 @@
     }
 
     // No animation for anyone who has asked not to have one. The panel still
-    // shows the outcome, which is the part that carries the argument.
+    // shows the outcome, which is the part that carries the argument, and the
+    // pause button stays hidden because there is nothing to pause.
     if (reduceMotion) {
       showFinished();
       return;
@@ -158,6 +160,11 @@
 
     var timers = [];
     var running = false;
+    // Two independent reasons the loop can be stopped, and they must not
+    // overwrite each other: the panel being off screen, and the user having
+    // asked it to stop. A pause that scrolling silently undoes is not a pause.
+    var onScreen = false;
+    var userPaused = false;
 
     function at(ms, fn) {
       timers.push(window.setTimeout(fn, ms));
@@ -211,33 +218,49 @@
 
     showFinished();
 
+    // The single place that decides whether the loop should be turning. Both
+    // the observer and the button call this rather than starting and stopping
+    // the loop themselves.
+    function sync() {
+      if (onScreen && !userPaused && !document.hidden) {
+        run();
+      } else {
+        stop();
+        showFinished();
+      }
+    }
+
+    // WCAG 2.2.2: the animation starts on its own, loops, and runs well past
+    // five seconds beside other content, so there has to be a way to stop it
+    // that does not depend on having set an OS-level motion preference.
+    if (toggleEl) {
+      toggleEl.hidden = false;
+      toggleEl.addEventListener("click", function () {
+        userPaused = !userPaused;
+        toggleEl.textContent = userPaused ? "Play animation" : "Pause animation";
+        sync();
+      });
+    }
+
     // Only animate while the panel is actually on screen. A loop running in a
     // background tab or three screens down the page is wasted battery.
     if ("IntersectionObserver" in window) {
       var observer = new IntersectionObserver(
         function (entries) {
           entries.forEach(function (entry) {
-            if (entry.isIntersecting) {
-              run();
-            } else {
-              stop();
-              showFinished();
-            }
+            onScreen = entry.isIntersecting;
+            sync();
           });
         },
         { threshold: 0.35 }
       );
       observer.observe(pillsEl.closest(".demo__stage") || pillsEl);
     } else {
-      run();
+      onScreen = true;
+      sync();
     }
 
-    document.addEventListener("visibilitychange", function () {
-      if (document.hidden) {
-        stop();
-        showFinished();
-      }
-    });
+    document.addEventListener("visibilitychange", sync);
   }
 
   /* ---------- Footer year ---------- */

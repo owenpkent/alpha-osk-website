@@ -532,7 +532,14 @@ code {
 .hero__note {
   margin-top: 1.15rem;
   font-size: 0.9rem;
-  color: var(--ink-faint);
+  /* NOT --ink-faint. This paragraph sits on the hero's accent bloom, and
+     compositing that wash over the page background lifts the effective
+     background enough that --ink-faint measures 4.45:1 in dark and 3.98:1 in
+     light, both under the 4.5:1 AA needs at this size. --ink-muted is 7.6:1 and
+     6.2:1 on the same background. axe cannot catch this: it returns
+     "incomplete" rather than a violation whenever the background it would have
+     to sample is a gradient. */
+  color: var(--ink-muted);
   max-width: 40rem;
 }
 
@@ -735,6 +742,33 @@ code {
 .demo__key[data-lit="true"] {
   background: #5a5a5a;
   color: #fff;
+}
+
+/* WCAG 2.2.2 (Pause, Stop, Hide) applies to anything that moves automatically,
+   runs longer than five seconds and sits beside other content. Honouring
+   prefers-reduced-motion covers people who have set that preference; it does
+   not discharge 2.2.2 for everyone else, which is what this button is for. */
+.demo__toggle {
+  display: block;
+  width: 100%;
+  min-height: 2.75rem;
+  margin-top: 0.9rem;
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: 1.5px solid #505050;
+  border-radius: var(--radius-sm);
+  color: #cfd6e0;
+  font: inherit;
+  font-family: var(--font);
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.demo__toggle:hover {
+  background: #2a2a2a;
+  color: #fff;
+  border-color: #6a6a6a;
 }
 
 .demo__caption {
@@ -1160,6 +1194,52 @@ code {
   line-height: 1;
   color: var(--accent);
   margin-bottom: 0.5rem;
+}
+
+/* ---------- Forced colours (Windows High Contrast) ---------- */
+
+/* The OS replaces every colour here with its own palette, and in doing so drops
+   background images, gradients and box-shadows entirely. Anything on this page
+   that carries meaning through one of those three has to say it a second way,
+   or the page arrives as undifferentiated text on a flat ground. This matters
+   more than usual for this site: high contrast mode is exactly what a good part
+   of the audience for an on-screen keyboard is running. */
+@media (forced-colors: active) {
+  /* Cards are separated by a background change, which is gone. Give them edges. */
+  .badge,
+  .stat,
+  .step,
+  .feature,
+  .shot,
+  .privacy__item,
+  .dl,
+  .faq,
+  .cta-band,
+  .callout,
+  .demo__stage,
+  .btn {
+    border: 1px solid;
+  }
+
+  /* The recommended download is marked only by a box-shadow ring, which forced
+     colours discard, so the card would lose its emphasis completely. */
+  .dl--primary {
+    outline: 3px solid;
+    outline-offset: 2px;
+  }
+
+  /* Decorative gradients paint nothing useful here and can leave a stray block
+     of system colour behind the text. */
+  .hero::before {
+    display: none;
+  }
+
+  /* Let the system decide the focus colour rather than forcing our accent,
+     which forced-colors would override to an arbitrary member of the palette. */
+  :focus-visible {
+    outline: 3px solid;
+    outline-offset: 3px;
+  }
 }
 
 /* ---------- Motion ---------- */

@@ -107,7 +107,7 @@
     </div>
   </header>
 
-  <main id="main">
+  <main id="main" tabindex="-1">
 
     <!-- ================= Hero ================= -->
     <section class="hero">
@@ -248,13 +248,20 @@
           <!-- Decorative reconstruction of the app's suggestion bar. The prose
                beside it carries the same information, so it is hidden from
                assistive technology rather than announced as changing text. -->
-          <div class="demo__stage" aria-hidden="true">
-            <div class="demo__field">
-              <span id="demoText"></span><span class="demo__caret"></span>
+          <div class="demo__stage">
+            <div class="demo__visual" aria-hidden="true">
+              <div class="demo__field">
+                <span id="demoText"></span><span class="demo__caret"></span>
+              </div>
+              <div class="demo__pills" id="demoPills"></div>
+              <div class="demo__keys" id="demoKeys"></div>
+              <p class="demo__caption">A mis-clicked key, corrected and completed.</p>
             </div>
-            <div class="demo__pills" id="demoPills"></div>
-            <div class="demo__keys" id="demoKeys"></div>
-            <p class="demo__caption">A mis-clicked key, corrected and completed.</p>
+            <!-- Revealed by script only when the animation is actually running,
+                 so it is never a control with nothing to control. -->
+            <button class="demo__toggle" type="button" id="demoToggle" hidden>
+              Pause animation
+            </button>
           </div>
         </div>
       </div>
