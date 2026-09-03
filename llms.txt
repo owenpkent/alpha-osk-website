@@ -1,0 +1,35 @@
+# Alpha-OSK
+
+> A free, open-source on-screen keyboard for Windows and Linux, with word
+> prediction that learns on the user's own machine. Built for people who cannot
+> comfortably use a physical keyboard but can move a cursor.
+
+Alpha-OSK is a desktop application. The user clicks keys in a floating keyboard
+window and the keystrokes are delivered to whichever application currently has
+operating-system focus. The keyboard never takes focus itself.
+
+Prediction merges an n-gram model of the user's own vocabulary with a spatial
+model of the keys surrounding the one actually clicked, so a mis-clicked key is
+still completed to the intended word. There is no large language model and no
+GPU requirement, and the model never leaves the machine.
+
+Key facts:
+
+- Licence: MIT. Free for personal and commercial use. No account, no subscription.
+- Platforms: Windows 10/11 (EV-signed installer, auto-updating) and Linux
+  (AppImage, requires xdotool on X11 or ydotool on Wayland). macOS is in
+  progress and not released.
+- Privacy: learning is entirely on-device. Password fields pause learning
+  automatically. The one feature that transmits anything is optional voice
+  dictation, which is off by default and requires the user's own Deepgram API
+  key; audio is sent only while the microphone is open.
+- Author: Owen Kent, a wheelchair user with muscular dystrophy who uses the
+  keyboard daily to develop it.
+
+## Links
+
+- Site: https://alphaosk.com/
+- Source code: https://github.com/owenpkent/alpha-osk
+- Releases and downloads: https://github.com/owenpkent/alpha-osk-releases/releases
+- Privacy document: https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md
+- Technical white paper: https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md

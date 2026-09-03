@@ -1,0 +1,5 @@
+# alphaosk.com
+User-agent: *
+Allow: /
+
+Sitemap: https://alphaosk.com/sitemap.xml

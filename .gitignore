@@ -1,0 +1,13 @@
+# Editors
+.vscode/
+.idea/
+*.swp
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Netlify
+.netlify/
+
+# Nothing here is built, so there is no dist/ or node_modules/ to ignore.

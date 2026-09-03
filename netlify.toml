@@ -1,0 +1,81 @@
+# Netlify configuration for alphaosk.com
+# https://docs.netlify.com/configure-builds/file-based-configuration/
+#
+# Static site, no build step: the repo root is what gets served. Modelled on
+# reflex-website/netlify.toml, minus the pieces that site has and this one does
+# not (serverless functions, a docs/ tree to keep private, GA4).
+
+[build]
+  publish = "."
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    # HSTS with preload: safe here because there are no subdomains that will
+    # ever need to serve plain HTTP.
+    Strict-Transport-Security = "max-age=63072000; includeSubDomains; preload"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=(), interest-cohort=()"
+    Cross-Origin-Opener-Policy = "same-origin"
+    # Enforced rather than report-only, because every source is accounted for
+    # and there is no third-party script on this site at all:
+    #   - 'unsafe-inline' in script-src is for the no-flash theme script in the
+    #     <head>, which has to run before first paint and so cannot be deferred
+    #     to an external file.
+    #   - 'unsafe-inline' in style-src is for the handful of style attributes in
+    #     the markup.
+    #   - api.github.com in connect-src is the release-version lookup in
+    #     scripts/alphaosk.js. Remove that and the version labels fall back to
+    #     their static text; nothing else breaks.
+    # If a third-party script is ever added, add its origin here in the same
+    # commit as the tag, not afterwards.
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'"
+
+# Images keep stable filenames and get their contents replaced in place, so a
+# long immutable entry would pin returning visitors to superseded screenshots.
+# A day, then revalidate.
+[[headers]]
+  for = "/images/*"
+  [headers.values]
+    Cache-Control = "public, max-age=86400, must-revalidate"
+
+# Nothing here is content-hashed: styles/alphaosk.css and scripts/alphaosk.js
+# keep their names across every edit, so an immutable entry would pair new HTML
+# with an old stylesheet and no ordinary reload could fix it. Revalidate and let
+# ETags return 304s. The ?v= stamps on the tags are belt and braces for a
+# cutover you want instant; routine edits do not need them.
+#
+# Extension patterns rather than /styles/* and /scripts/*, so CSS or JS added
+# outside those two directories is covered too.
+[[headers]]
+  for = "*.css"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "*.js"
+  [headers.values]
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+# Repo bookkeeping must not be served. Netlify publishes the repo root, so
+# without this README.md is fetchable on the live domain.
+#
+# force = true is load-bearing: Netlify serves an existing file in preference to
+# a matching redirect, so an unforced rule over a real file does nothing at all.
+# Every rule here targets a real file, so every one has to be forced.
+[[redirects]]
+  from = "/README.md"
+  to = "/404.html"
+  status = 404
+  force = true
+
+# Canonicalisation: force the apex so ranking signals do not split across hosts.
+# Belt and braces alongside setting alphaosk.com as the Primary domain in
+# Netlify's Domain management with automatic redirect to primary turned on.
+[[redirects]]
+  from = "https://www.alphaosk.com/*"
+  to = "https://alphaosk.com/:splat"
+  status = 301
+  force = true

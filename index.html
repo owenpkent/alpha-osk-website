@@ -1,0 +1,848 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alpha-OSK | On-screen keyboard with on-device prediction for Windows and Linux</title>
+  <meta name="description" content="A free, open-source on-screen keyboard for Windows and Linux. Click keys to type into any app, with word prediction that learns your vocabulary on your own machine. No LLM, no GPU, nothing uploaded." />
+  <meta name="theme-color" content="#0e0e10" id="themeColor" />
+  <link rel="canonical" href="https://alphaosk.com/" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Alpha-OSK" />
+  <meta property="og:title" content="Alpha-OSK | The smartest keyboard you'll never touch" />
+  <meta property="og:description" content="A free, open-source on-screen keyboard for Windows and Linux. Click keys to type into any app, with word prediction that learns your vocabulary on your own machine." />
+  <meta property="og:url" content="https://alphaosk.com/" />
+  <meta property="og:image" content="https://alphaosk.com/images/og-alphaosk.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The Alpha-OSK on-screen keyboard in its dark theme, with a row of word-prediction pills above the keys." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Alpha-OSK | The smartest keyboard you'll never touch" />
+  <meta name="twitter:description" content="A free, open-source on-screen keyboard for Windows and Linux, with word prediction that learns on your own machine." />
+  <meta name="twitter:image" content="https://alphaosk.com/images/og-alphaosk.png" />
+
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png?v=20260903" />
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=20260903" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260903" />
+
+  <!-- Theme before first paint, so a light-theme visitor never sees a dark
+       flash. Dark is the default because the app is dark by default. -->
+  <script>
+    (function () {
+      try {
+        var stored = localStorage.getItem("alphaosk-theme");
+        var prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+        var theme = stored || (prefersLight ? "light" : "dark");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    "name": "Alpha-OSK",
+    "url": "https://alphaosk.com/",
+    "applicationCategory": "UtilitiesApplication",
+    "applicationSubCategory": "Assistive Technology",
+    "operatingSystem": "Windows, Linux",
+    "description": "An on-screen keyboard for Windows and Linux with on-device word prediction, built for people who cannot comfortably use a physical keyboard.",
+    "license": "https://opensource.org/licenses/MIT",
+    "isAccessibleForFree": true,
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "author": {
+      "@type": "Person",
+      "name": "Owen Kent"
+    },
+    "downloadUrl": "https://github.com/owenpkent/alpha-osk-releases/releases",
+    "softwareHelp": "https://github.com/owenpkent/alpha-osk#readme"
+  }
+  </script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="brand" href="/">
+        <img src="/images/logo-1024.png" alt="" width="32" height="32" />
+        Alpha-OSK
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <a href="#how">How it works</a>
+        <a href="#features">Features</a>
+        <a href="#privacy">Privacy</a>
+        <a href="#faq">FAQ</a>
+        <a href="https://github.com/owenpkent/alpha-osk">Source</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" id="themeToggle" aria-label="Switch to light theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z" />
+          </svg>
+        </button>
+        <a class="btn btn--primary" href="#download">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ================= Hero ================= -->
+    <section class="hero">
+      <div class="wrap hero__inner">
+        <div class="badge-row">
+          <span class="badge"><span class="badge__dot"></span>Free and open source</span>
+          <span class="badge">Windows &amp; Linux</span>
+          <span class="badge">Nothing leaves your machine</span>
+        </div>
+
+        <h1>The smartest keyboard you&rsquo;ll never touch.</h1>
+
+        <p class="hero__lede">
+          Alpha-OSK is an on-screen keyboard that types into whatever app you are already using.
+          Click the keys with a mouse, a trackball, a head pointer, or anything else that moves a
+          cursor. As you go, it learns your words and offers the rest of them back, so a long
+          word costs three clicks instead of thirteen.
+        </p>
+
+        <div class="hero__cta">
+          <a class="btn btn--primary btn--lg" href="#download">
+            <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path d="M12 3v11.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4L10 14.2V3h2Zm-8 15h16v3H4v-3Z" />
+            </svg>
+            <span class="btn__stack">
+              <span>Download for Windows</span>
+              <span class="btn__sub" data-version-label>Free &middot; MIT licensed</span>
+            </span>
+          </a>
+          <a class="btn btn--lg" href="#how">See how it works</a>
+        </div>
+
+        <p class="hero__note">
+          Built by a wheelchair user with muscular dystrophy, because the keyboards that ship with
+          Windows and Linux were not good enough to get through a working day.
+        </p>
+
+        <div class="hero__shot">
+          <img
+            src="/images/screenshots/dark-theme-keyboard.png"
+            alt="The Alpha-OSK window: a function row, a full QWERTY block, a navigation cluster and a numpad, with a row of word-prediction pills above the keys."
+            width="1200" height="420" fetchpriority="high" />
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Stats ================= -->
+    <section class="section" aria-label="Project at a glance" style="padding-top: 0;">
+      <div class="wrap">
+        <div class="stats">
+          <div class="stat">
+            <span class="stat__value">0</span>
+            <span class="stat__label">bytes of your typing sent anywhere</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">9</span>
+            <span class="stat__label">themes, including high contrast</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">3</span>
+            <span class="stat__label">layouts: QWERTY, Dvorak, Colemak</span>
+          </div>
+          <div class="stat">
+            <span class="stat__value">1,900+</span>
+            <span class="stat__label">automated tests on every commit</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= How it works ================= -->
+    <section class="section section--alt" id="how">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">How it works</span>
+          <h2>Three clicks to your first sentence</h2>
+          <p>
+            There is no setup, no account, and no training period you have to sit through.
+            Install it, click into the app you want to type into, and start.
+          </p>
+        </div>
+
+        <div class="steps">
+          <div class="step">
+            <h3>Click into any app</h3>
+            <p>
+              The keyboard floats above your other windows but never takes focus away from them.
+              Whatever you clicked last is where your keystrokes land: a browser, an editor, a
+              terminal, a chat window, a game, even a remote desktop session.
+            </p>
+          </div>
+          <div class="step">
+            <h3>Click letters, get keystrokes</h3>
+            <p>
+              Each key is delivered to the operating system exactly as a physical keypress would
+              be. Modifiers are sticky, so Ctrl+Alt+Del is three separate clicks rather than a
+              chord you have to hold. Right-click a modifier to lock it down.
+            </p>
+          </div>
+          <div class="step">
+            <h3>Take the words it offers</h3>
+            <p>
+              Prediction pills appear above the keys after a few characters. Click one and the rest
+              of the word is typed for you, plus a space. Right-click a pill to teach the keyboard
+              that you want more of that word, less of it, or none of it ever again.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Prediction demo ================= -->
+    <section class="section" id="prediction">
+      <div class="wrap">
+        <div class="demo">
+          <div class="demo__copy">
+            <span class="eyebrow">Prediction</span>
+            <h2>It finishes your words, and it forgives your aim</h2>
+            <p>
+              Every click on this keyboard costs real effort, so the engine is built to remove
+              them. It merges a word-frequency model of your own vocabulary with a spatial model
+              of the keys around the one you actually hit.
+            </p>
+            <p>
+              That second half is what matters if your pointer is not precise. Type
+              <code>hwllo</code> and <code>hello</code> is still the first suggestion, because the
+              engine searches the dictionary allowing for a slipped click, a missed one, a doubled
+              one, or two in the wrong order. It also notices where inside each key you tend to
+              land and quietly corrects for it.
+            </p>
+            <p>
+              It learns numbers too: your phone number, your zip, your house number, your email
+              domain. Long digit runs are refused outright, so a card number or a Social Security
+              number can never be stored.
+            </p>
+          </div>
+
+          <!-- Decorative reconstruction of the app's suggestion bar. The prose
+               beside it carries the same information, so it is hidden from
+               assistive technology rather than announced as changing text. -->
+          <div class="demo__stage" aria-hidden="true">
+            <div class="demo__field">
+              <span id="demoText"></span><span class="demo__caret"></span>
+            </div>
+            <div class="demo__pills" id="demoPills"></div>
+            <div class="demo__keys" id="demoKeys"></div>
+            <p class="demo__caption">A mis-clicked key, corrected and completed.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Features ================= -->
+    <section class="section section--alt" id="features">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Features</span>
+          <h2>Everything a working day needs</h2>
+          <p>
+            This is not a demo or a proof of concept. It is the keyboard its author uses to write
+            every line of it.
+          </p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="2" y="5" width="20" height="14" rx="2.5" />
+                <path d="M6 9h.01M10 9h.01M14 9h.01M18 9h.01M6 13h.01M10 13h.01M14 13h.01M18 13h.01M8 16.5h8" />
+              </svg>
+            </div>
+            <h3>Layouts that fit your screen</h3>
+            <p>
+              QWERTY, Dvorak and Colemak, plus a Compact View that folds the whole board into a
+              dense 13&times;4 grid with symbols one tap away. Turn the function row, navigation
+              cluster and numpad on or off independently.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3a4 4 0 0 1 4 4v4a4 4 0 0 1-8 0V7a4 4 0 0 1 4-4Z" />
+                <path d="M5 11a7 7 0 0 0 14 0M12 18v3M8.5 21h7" />
+              </svg>
+            </div>
+            <h3>Voice dictation, on a toggle</h3>
+            <p>
+              Click the microphone, speak, click again. There is nothing to hold down, which
+              matters if a sustained press is exactly the gesture you cannot make. It stops itself
+              after a few seconds of silence. Off by default; bring your own Deepgram key.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 17V9M9 17V5M14 17v-6M19 17V7" />
+                <path d="M3 21h18" />
+              </svg>
+            </div>
+            <h3>A model you can see</h3>
+            <p>
+              A dashboard shows what the keyboard has learned: a word cloud of your vocabulary, a
+              graph of which words follow which, and lifetime counts of the keystrokes and hours
+              prediction has saved you. Click any word to drill into its context.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 6h11a3 3 0 0 1 0 6H4M4 12h13a3 3 0 0 1 0 6H4" />
+                <path d="M8 3v3M8 18v3" />
+              </svg>
+            </div>
+            <h3>Snippets for what you retype</h3>
+            <p>
+              Your address, your email, a canned reply: one tap puts it on the clipboard. The
+              keyboard can spot an email, phone number or address as you type it and offer to save
+              it, on your machine only, and never while learning is paused.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3 4 6.2v5.2c0 4.7 3.4 9 8 10.1 4.6-1.1 8-5.4 8-10.1V6.2L12 3Z" />
+                <path d="m9 12 2.2 2.2L15.5 10" />
+              </svg>
+            </div>
+            <h3>Passwords pause it automatically</h3>
+            <p>
+              When focus lands on a password field, learning stops, predictions stop, and nothing
+              you type is recorded. Detected through Windows UI Automation and Linux AT-SPI, with a
+              manual switch in the title bar you can flip at any time.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3v12M8 11l4 4 4-4" />
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+              </svg>
+            </div>
+            <h3>Take your model with you</h3>
+            <p>
+              Everything the keyboard has learned exports to a single zip file you control: your
+              vocabulary, your stats, your snippets, your imported dictionaries. Import it on
+              another machine and carry on mid-sentence. No restart needed.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M12 7v5l3.2 2" />
+              </svg>
+            </div>
+            <h3>Tuned for slow, imprecise input</h3>
+            <p>
+              Repeat delay and repeat interval are yours to set. Targets are large. A click held a
+              beat too long is never reinterpreted as a different gesture. Nothing in the interface
+              requires a drag, a hold, or a double-click.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3a9 9 0 1 0 9 9" />
+                <path d="M21 3v6h-6" />
+                <path d="M12 8v4l3 2" />
+              </svg>
+            </div>
+            <h3>Updates that install themselves</h3>
+            <p>
+              The Windows build checks for releases, verifies the signature and the version of what
+              it downloads before running it, and installs in place. You can turn the check off
+              entirely in settings.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Screenshots ================= -->
+    <section class="section" id="screenshots">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">A look around</span>
+          <h2>Nine themes and a settings menu that fits on one screen</h2>
+          <p>
+            Every screenshot here is generated from the real application against a demo
+            vocabulary. None of it is anybody&rsquo;s actual typing.
+          </p>
+        </div>
+
+        <div class="shots">
+          <figure class="shot shot--wide">
+            <img src="/images/screenshots/amethyst-theme-keyboard.png"
+                 alt="The keyboard in the Amethyst theme: purple keys with a lighter purple accent on the active modifier."
+                 loading="lazy" width="1200" height="420" />
+            <figcaption>
+              <strong>Nine themes</strong>
+              Dark, Light, Ocean, Forest, Amethyst, Vaporwave, Blackboard, Typewriter and
+              Spaceship. The theme carries through the prediction pills, the navigation panel and
+              the numpad, so the whole surface stays coherent.
+            </figcaption>
+          </figure>
+
+          <figure class="shot shot--wide">
+            <img src="/images/screenshots/compact-view-keyboard.png"
+                 alt="Compact View: a dense thirteen by four grid with a separate number row above it and a navigation column on the right."
+                 loading="lazy" width="1080" height="380" />
+            <figcaption>
+              <strong>Compact View</strong>
+              A denser grid for small screens, with digits on their own panel and two pages of
+              symbols behind the <code>?123</code> key. The editing keys are accent-tinted, because
+              a uniform grid gives you no size cue to find them by.
+            </figcaption>
+          </figure>
+
+          <figure class="shot">
+            <img src="/images/screenshots/language-model-word-cloud.png"
+                 alt="The Your Language Model window showing a word cloud, with each learned word drawn as a circle sized by how often it has been typed."
+                 loading="lazy" width="800" height="600" />
+            <figcaption>
+              <strong>Your language model</strong>
+              A bubble chart of your learned vocabulary, sized by frequency. Click any bubble to
+              see what usually comes before and after that word.
+            </figcaption>
+          </figure>
+
+          <figure class="shot">
+            <img src="/images/screenshots/analytics-dashboard.png"
+                 alt="The analytics dashboard showing tiles for keystrokes saved, time saved, effort saved and suggestion acceptance rate."
+                 loading="lazy" width="800" height="600" />
+            <figcaption>
+              <strong>What it has saved you</strong>
+              Lifetime keystrokes saved, hours saved, the share of your total effort that
+              prediction covered, and how often the suggestions were worth taking.
+            </figcaption>
+          </figure>
+
+          <figure class="shot">
+            <img src="/images/screenshots/settings-appearance.png"
+                 alt="The Appearance settings page with panel toggles, a layout picker, a theme picker and an opacity slider."
+                 loading="lazy" width="800" height="600" />
+            <figcaption>
+              <strong>Settings that drill down</strong>
+              Five categories rather than one long scroll, so nothing is more than two taps away.
+              Panels, layout, theme, sound and opacity all live under Appearance.
+            </figcaption>
+          </figure>
+
+          <figure class="shot shot--narrow">
+            <img src="/images/screenshots/snippets-window.png"
+                 alt="The Snippets window: six colour-tagged tiles in two columns, labelled Name, Email, Phone, Address, Work email and Sign-off."
+                 loading="lazy" width="340" height="480" />
+            <figcaption>
+              <strong>Snippets</strong>
+              Text you type constantly, one tap from the clipboard. It floats as its own window, so
+              you can drag it clear of whatever you are filling in.
+            </figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Privacy ================= -->
+    <section class="section section--alt" id="privacy">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Privacy</span>
+          <h2>A keyboard sees everything. This one keeps it.</h2>
+          <p>
+            Prediction runs on your machine. There is no model upload, no cloud round-trip, and no
+            large language model anywhere in the product. The claims below are the ones the code
+            actually makes, including the one exception.
+          </p>
+        </div>
+
+        <div class="privacy">
+          <div class="privacy__item">
+            <h3>Learning is local</h3>
+            <p>
+              Your vocabulary, your word pairs, your saved numbers and your snippets are files in
+              your own config directory. Nothing about them is transmitted.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>No LLM, no GPU</h3>
+            <p>
+              The engine is an n-gram model merged with a spatial error model. It is a few
+              megabytes of JSON and some arithmetic, which is why it runs in milliseconds on any
+              machine.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>Password fields stop it</h3>
+            <p>
+              Learning pauses automatically when focus reaches a password field, and there is a
+              manual switch in the title bar that overrides the detection either way.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>Sensitive numbers are refused</h3>
+            <p>
+              The number learner rejects long digit runs outright, so card numbers and Social
+              Security numbers are never stored. Everything it did learn is listed in the
+              dashboard, and removable one at a time.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>The log never holds your typing</h3>
+            <p>
+              The diagnostic log records errors and crashes so you have something to attach to a
+              bug report. It records lengths and outcomes, never characters.
+            </p>
+          </div>
+          <div class="privacy__item privacy__item--caveat">
+            <h3>Dictation is the exception</h3>
+            <p>
+              If you switch on dictation and supply your own Deepgram key, audio goes to Deepgram
+              while the microphone is open, and at no other time. It is off by default, inert
+              without a key, never written to disk, and a password field cancels a run outright.
+            </p>
+          </div>
+        </div>
+
+        <p style="margin-top: 2rem;">
+          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md">Read the full privacy document &rarr;</a>
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= Download ================= -->
+    <section class="section" id="download">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Download</span>
+          <h2>Free, MIT licensed, no account</h2>
+          <p>
+            Releases are published on GitHub. The Windows installer is signed by OK Studio Inc. and
+            updates itself; the Linux build is an AppImage you can run from anywhere.
+          </p>
+        </div>
+
+        <div class="downloads">
+          <div class="dl dl--primary">
+            <div class="dl__os">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M3 5.4 10.2 4.4v7.1H3V5.4Zm0 13.2 7.2 1v-7H3v6Zm8.4 1.2L21 21V12.5h-9.6v7.3Zm0-15.5v7.2H21V3l-9.6 1.3Z" />
+              </svg>
+              Windows
+            </div>
+            <p class="dl__meta">
+              Windows 10 and 11, 64-bit. EV-signed installer with automatic updates built in.
+            </p>
+            <a class="btn btn--primary" href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
+              <span class="btn__stack">
+                <span>Download installer</span>
+                <span class="btn__sub" data-version-label>Latest release</span>
+              </span>
+            </a>
+          </div>
+
+          <div class="dl">
+            <div class="dl__os">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 2c2.3 0 3.4 1.9 3.3 4.3-.1 1.7.3 2.6 1.2 4 1.2 1.9 2.4 3.6 2.4 5.6 0 2.6-2 4.1-4 4.1-1.2 0-2-.4-2.9-.4s-1.7.4-2.9.4c-2 0-4-1.5-4-4.1 0-2 1.2-3.7 2.4-5.6.9-1.4 1.3-2.3 1.2-4C8.6 3.9 9.7 2 12 2Z" />
+              </svg>
+              Linux
+            </div>
+            <p class="dl__meta">
+              AppImage, x86-64. Unsigned by design: <code>chmod +x</code> and run. Needs
+              <code>xdotool</code> on X11 or <code>ydotool</code> on Wayland.
+            </p>
+            <a class="btn" href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
+              <span class="btn__stack">
+                <span>Download AppImage</span>
+                <span class="btn__sub" data-version-label>Latest release</span>
+              </span>
+            </a>
+          </div>
+
+          <div class="dl">
+            <div class="dl__os">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M16.4 12.6c0-2.3 1.9-3.4 2-3.5-1.1-1.6-2.8-1.8-3.4-1.8-1.4-.2-2.8.9-3.5.9-.7 0-1.8-.8-3-.8-1.5 0-2.9.9-3.7 2.3-1.6 2.8-.4 6.8 1.1 9 .8 1.1 1.7 2.3 2.8 2.2 1.1 0 1.5-.7 2.9-.7s1.7.7 2.9.7c1.2 0 2-1.1 2.7-2.2.9-1.2 1.2-2.4 1.2-2.5-.1 0-2.3-.9-2.3-3.5ZM14.2 5.6c.6-.7 1-1.7.9-2.7-.9 0-2 .6-2.6 1.4-.6.6-1.1 1.7-.9 2.6 1 .1 2-.5 2.6-1.3Z" />
+              </svg>
+              macOS
+            </div>
+            <p class="dl__meta">
+              In progress. The key synthesiser, window behaviour and password detection are
+              written; code signing and notarisation are not done yet.
+            </p>
+            <span class="dl__status">Not released yet</span>
+          </div>
+        </div>
+
+        <div class="callout">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8h.01M11 12h1v4h1" />
+          </svg>
+          <p>
+            <strong>Windows may show a blue &ldquo;Windows protected your PC&rdquo; screen on first
+            install.</strong> That is normal for newer applications and does not mean anything is
+            wrong. Click <strong>More info</strong>, check that the publisher reads
+            <strong>OK Studio Inc.</strong>, then click <strong>Run anyway</strong>. The prompt stops
+            appearing on its own as more people install.
+          </p>
+        </div>
+
+        <p style="margin-top: 2rem;">
+          Prefer to build it yourself? Clone
+          <a href="https://github.com/owenpkent/alpha-osk">the repository</a> and run
+          <code>python run.py</code>. It creates a virtual environment, installs the dependencies,
+          and launches the keyboard.
+        </p>
+      </div>
+    </section>
+
+    <!-- ================= FAQ ================= -->
+    <section class="section section--alt" id="faq">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Questions</span>
+          <h2>Frequently asked</h2>
+        </div>
+
+        <div class="faq">
+          <details>
+            <summary>Who is this for?</summary>
+            <div class="faq__body">
+              <p>
+                Anyone who cannot comfortably use a physical keyboard but can move a cursor. That
+                includes people with muscular dystrophy, ALS, spinal cord injury, cerebral palsy,
+                arthritis and repetitive strain injury, and people using a head pointer, an eye
+                tracker, a trackball, a joystick or a switch-access setup. It is also useful on a
+                touchscreen or a kiosk where no keyboard is attached.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Does it work with my screen reader or my other assistive software?</summary>
+            <div class="faq__body">
+              <p>
+                It types into whatever application has focus, so anything that accepts keyboard
+                input accepts Alpha-OSK. It deliberately never takes focus itself, which is what
+                keeps it out of the way of the tools you already run. It reads the pointer state
+                without capturing it, so dwell-click and switch-access utilities keep working
+                alongside it.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>My keystrokes are not appearing in VS Code, a game, or a remote desktop.</summary>
+            <div class="faq__body">
+              <p>
+                Open Settings &rarr; Smart Typing &rarr; Input and set Compatibility Mode to
+                &ldquo;Always On&rdquo;. Auto-detect is on by default and covers VS Code, the
+                JetBrains IDEs, TeamViewer, RDP, VNC and AnyDesk, but anything else may need the
+                manual override. Games are handled separately: they read the keyboard by polling,
+                so the keyboard holds each key down briefly rather than tapping it instantly.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>The predictions are wrong, or capitalised oddly.</summary>
+            <div class="faq__body">
+              <p>
+                Right-click any pill. &ldquo;Show less&rdquo; downweights it, &ldquo;Remove&rdquo;
+                suppresses it entirely, and &ldquo;Edit&rdquo; lets you fix the capitalisation, for
+                example <code>iphone</code> to <code>iPhone</code>. A suppressed word comes back on
+                its own after you type it manually three times, so a regrettable suppression is
+                never permanent.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Where does my data live, and how do I move it?</summary>
+            <div class="faq__body">
+              <p>
+                On Windows, <code>%APPDATA%\alpha-osk\</code>. On Linux,
+                <code>~/.config/alpha-osk/</code>. Settings &rarr; Data &amp; Privacy &rarr; Data
+                Backup writes all of it to a single zip file: your model, your lifetime stats, your
+                snippets and any imported dictionaries. Importing on a new machine restores
+                everything without a restart, and writes a rescue copy of what was there before, so
+                a mistaken import is one click to undo.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Does any of this send my typing to a server?</summary>
+            <div class="faq__body">
+              <p>
+                Your typing, no. Your voice, only if you switch on dictation and supply your own
+                Deepgram API key, and only while the microphone is open.
+              </p>
+              <p>
+                There is an opt-in anonymous statistics client in the build, but its endpoint is not
+                deployed, so it does nothing at all today. If it is ever turned on, opting in would
+                send nine integer counters per week, such as how many keystrokes you have typed.
+                Never content, never word frequencies, never your IP or hostname.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>Can I add my own vocabulary?</summary>
+            <div class="faq__body">
+              <p>
+                Yes. Settings &rarr; Your Language Model &rarr; Vocabulary Packs &rarr; Import
+                Custom Pack. A pack is a folder containing <code>dictionary.txt</code>, one word per
+                line, and optionally files of word pairs and triples. No packs ship built in,
+                because a three-hundred-word list is beaten by your own typing within a week.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>What does it cost?</summary>
+            <div class="faq__body">
+              <p>
+                Nothing. It is MIT licensed, free for personal and commercial use, with no account,
+                no subscription and no upsell. If you use dictation you pay Deepgram directly for
+                your own API usage; that is the only money involved anywhere, and it is optional.
+              </p>
+            </div>
+          </details>
+
+          <details>
+            <summary>How do I report a bug?</summary>
+            <div class="faq__body">
+              <p>
+                Open an issue on
+                <a href="https://github.com/owenpkent/alpha-osk/issues">the GitHub repository</a>.
+                Attach the diagnostic log: Settings &rarr; Data &amp; Privacy &rarr; Diagnostics has
+                an <strong>Open Log Folder</strong> button. The log records errors and crashes and
+                never records what you type. For security issues, follow the disclosure process in
+                <code>SECURITY.md</code> rather than opening a public issue.
+              </p>
+            </div>
+          </details>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= CTA ================= -->
+    <section class="section">
+      <div class="wrap">
+        <div class="cta-band">
+          <h2>Get your keyboard back.</h2>
+          <p>
+            Free, open source, and built by somebody who depends on it every day. If it does not
+            work for you, the issue tracker is open and the author reads it.
+          </p>
+          <div class="hero__cta">
+            <a class="btn btn--primary btn--lg" href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
+              <span class="btn__stack">
+                <span>Download Alpha-OSK</span>
+                <span class="btn__sub" data-version-label>Windows and Linux</span>
+              </span>
+            </a>
+            <a class="btn btn--lg" href="https://github.com/owenpkent/alpha-osk">View the source</a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="/">
+            <img src="/images/logo-1024.png" alt="" width="32" height="32" />
+            Alpha-OSK
+          </a>
+          <p>
+            An on-screen keyboard for people who cannot comfortably use a physical one. Built and
+            maintained by Owen Kent, who uses it to write it.
+          </p>
+        </div>
+
+        <nav class="footer-col" aria-labelledby="foot-product">
+          <h2 id="foot-product">Product</h2>
+          <ul>
+            <li><a href="#how">How it works</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#screenshots">Screenshots</a></li>
+            <li><a href="#download">Download</a></li>
+          </ul>
+        </nav>
+
+        <nav class="footer-col" aria-labelledby="foot-project">
+          <h2 id="foot-project">Project</h2>
+          <ul>
+            <li><a href="https://github.com/owenpkent/alpha-osk">Source code</a></li>
+            <li><a href="https://github.com/owenpkent/alpha-osk-releases/releases">Releases</a></li>
+            <li><a href="https://github.com/owenpkent/alpha-osk/issues">Report a bug</a></li>
+            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">Contributing</a></li>
+          </ul>
+        </nav>
+
+        <nav class="footer-col" aria-labelledby="foot-docs">
+          <h2 id="foot-docs">Documents</h2>
+          <ul>
+            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md">Privacy</a></li>
+            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md">White paper</a></li>
+            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/LICENSE">MIT licence</a></li>
+            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/SECURITY.md">Security</a></li>
+          </ul>
+        </nav>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="year">2026</span> Owen Kent. Released under the MIT licence.</p>
+        <p>Alpha-OSK is part of a four-tool adaptive input platform alongside MacroVox, Octavium and Nimbus.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/scripts/alphaosk.js?v=20260903" defer></script>
+</body>
+</html>
