@@ -65,10 +65,39 @@ The favicons and the Open Graph card are generated from the app's own logo by
 
 ## Deployment
 
-Netlify, publishing the repo root on every push to `main`. The domain `alphaosk.com` should be
-set as the Primary domain in Netlify's Domain management with automatic redirect to primary
-turned on; the `www` redirect in `netlify.toml` is a second layer under that, not a replacement
-for it.
+Netlify, publishing the repo root on every push to `main`.
+
+First-time setup, in order:
+
+1. Netlify, **Add new site, Import an existing project**, and pick this repository. Leave the
+   build command empty and set the publish directory to `.`; `netlify.toml` already declares
+   both, so the UI should prefill them.
+2. **Domain management, Add a custom domain**, `alphaosk.com`, and point the domain's DNS at
+   Netlify as it instructs.
+3. Set `alphaosk.com` as the **Primary domain** with *Redirect automatically to primary domain*
+   turned on. The `www` redirect in `netlify.toml` is a second layer under that, not a
+   replacement for it: the Netlify setting is what covers hosts the redirect rule does not name.
+4. Open the first deploy preview with the browser console showing and confirm nothing is blocked.
+
+That last step is not optional. `netlify.toml` ships an **enforced** Content-Security-Policy
+rather than a report-only one, and a local server applies none of Netlify's headers, so a CSP
+mistake cannot show up until the site is deployed. The three things the policy has to keep
+allowing are the Google Fonts stylesheet and its font files, the inline no-flash theme script in
+the `<head>`, and `https://api.github.com` for the release-version lookup. Adding any external
+resource means adding its origin in the same commit as the tag that pulls it in.
+
+## Repository visibility
+
+Private at the moment. Nothing here is secret, so making it public is reasonable and is a single
+command:
+
+```bash
+gh repo edit owenpkent/alpha-osk-website --visibility public --accept-visibility-change-consequences
+```
+
+It starts private only because that is the reversible direction: a repository can always be
+published later, whereas un-publishing one that has already been cloned or indexed does not
+really undo anything.
 
 ## Conventions
 
