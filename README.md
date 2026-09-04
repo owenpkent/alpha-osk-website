@@ -162,8 +162,12 @@ resource means adding its origin in the same commit as the tag that pulls it in.
 Establish what is being served before touching anything:
 
 ```bash
-curl -sSI https://alphaosk.com | rg -i '^server'
+curl.exe -sSI https://alphaosk.com | rg -i '^server'
 ```
+
+`curl.exe`, not `curl`: PowerShell aliases `curl` to `Invoke-WebRequest`, which does not take
+any of these flags and fails with "a parameter cannot be found that matches parameter name
+'sSI'". Windows ships the real binary, and the `.exe` is what reaches it.
 
 `Server: Netlify` means the deploy is fine and the question is which version, not whether. Check
 the published commit in the Netlify UI, and remember the deploys list can lag a minute behind a
@@ -187,7 +191,7 @@ with a still-counting-down TTL is coming from upstream. Either wait it out, poin
 `1.1.1.1`, or restart the router. To confirm the live site meanwhile, bypass DNS entirely:
 
 ```bash
-curl -sSI --resolve alphaosk.com:443:52.52.192.191 https://alphaosk.com
+curl.exe -sSI --resolve alphaosk.com:443:52.52.192.191 https://alphaosk.com
 ```
 
 ## Repository visibility
