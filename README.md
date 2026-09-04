@@ -20,6 +20,9 @@ netlify.toml          Publish config, security headers, cache rules, redirects.
 site.webmanifest      Icons and colours for browsers that ask for them.
 robots.txt            Allows everything, points at the sitemap.
 sitemap.xml           One URL. Update `lastmod` when the copy changes materially.
+tools/                Generators for the demo data and the images. Publicly served.
+.gitattributes        Line-ending normalisation. See Conventions.
+.git-blame-ignore-revs  Formatting-only commits for blame to skip.
 ```
 
 ## Local preview
@@ -116,9 +119,26 @@ keystroke including the pill rebuild.
 
 ## Deployment
 
-Netlify, publishing the repo root on every push to `main`.
+Netlify, publishing the repo root on every push to `main`. There is no build step:
+`netlify.toml` sets `publish = "."` and no build command, so a push *is* the deploy.
 
-First-time setup, in order:
+Publishing the repo root means everything in it is fetchable. Verified against the live site:
+`/tools/gen_demo_data.py` and `/LICENSE` return 200, `/README.md` returns 404 through the
+redirect in `netlify.toml`, and dotfiles like `/.gitattributes` are refused by Netlify. Nothing
+in here is secret, so that is fine as it stands, but anything added to the repo that should not
+be public needs its own redirect in the same commit that adds it.
+
+**How it is wired now.** The Netlify project is `whimsical-clafoutis-433ae0`, connected to
+`github.com/owenpkent/alpha-osk-website` with auto-publishing on, serving `alphaosk.com` as the
+primary domain and redirecting `www.alphaosk.com` to it, both on Netlify DNS.
+
+That project does **not** live under the ATDev team, which is worth writing down because it is
+invisible from the CLI signed in that way: `netlify sites:list` will not list the project and
+`netlify api getDnsZones` will not list the zone. Finding nothing there is not evidence that the
+site is unconfigured, and creating a second project because it looked missing only produces a
+duplicate serving the same content on a second hostname.
+
+Rebuilding it from nothing, in order:
 
 1. Netlify, **Add new site, Import an existing project**, and pick this repository. Leave the
    build command empty and set the publish directory to `.`; `netlify.toml` already declares
@@ -137,6 +157,39 @@ allowing are the Google Fonts stylesheet and its font files, the inline no-flash
 the `<head>`, and `https://api.github.com` for the release-version lookup. Adding any external
 resource means adding its origin in the same commit as the tag that pulls it in.
 
+### When the site looks like it is not deploying
+
+Establish what is being served before touching anything:
+
+```bash
+curl -sSI https://alphaosk.com | rg -i '^server'
+```
+
+`Server: Netlify` means the deploy is fine and the question is which version, not whether. Check
+the published commit in the Netlify UI, and remember the deploys list can lag a minute behind a
+merge.
+
+`Server: Squarespace` means the request never reached Netlify at all. The domain is registered
+through Squarespace, and any resolver still holding the pre-delegation records keeps sending
+traffic to their parking page long after the nameservers have changed. This is a local
+resolution problem, it does not reproduce for anyone else, and nothing about the deploy will fix
+it. Compare the authoritative answer with your own:
+
+```bash
+nslookup alphaosk.com dns1.p09.nsone.net   # authoritative: expect 52.52.192.191
+nslookup alphaosk.com                      # yours: if these differ, that is the whole answer
+```
+
+The apex is a `NETLIFY` record pointing at the project's `.netlify.app` host, the same shape the
+other sites on this account use. Windows caches separately from the router, so
+`Clear-DnsClientCache` clears only half of it, and a `Get-DnsClientCache` entry that reappears
+with a still-counting-down TTL is coming from upstream. Either wait it out, point the machine at
+`1.1.1.1`, or restart the router. To confirm the live site meanwhile, bypass DNS entirely:
+
+```bash
+curl -sSI --resolve alphaosk.com:443:52.52.192.191 https://alphaosk.com
+```
+
 ## Repository visibility
 
 Private at the moment. Nothing here is secret, so making it public is reasonable and is a single
@@ -154,3 +207,14 @@ really undo anything.
 
 Same as the main repo: conventional commits, no em dashes anywhere, and comments that explain
 the non-obvious *why* rather than restating the markup.
+
+Line endings are normalised to LF in the repository by `.gitattributes` (`* text=auto`). This is
+not cosmetic. `core.autocrlf` is unset, so before that file existed git converted nothing and
+whatever an editor happened to write was what got committed, which once turned a thirty-line
+change into 279 deletions and 279 insertions and moved blame for an entire file onto a single
+commit. The commit that did the normalising is listed in `.git-blame-ignore-revs`; GitHub reads
+that file automatically, and locally it needs enabling once:
+
+```bash
+git config blame.ignoreRevsFile .git-blame-ignore-revs
+```
