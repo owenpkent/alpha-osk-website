@@ -53,6 +53,15 @@
   // pass does not run at all. Same guard the application applies.
   var MIN_FUZZY_PREFIX = 3;
 
+  // How many keystrokes more than the target word the fuzzy pass will still
+  // consider. The prune below is there to stop short words being aligned
+  // against everything, but at zero it excluded the target of the commonest
+  // error this panel exists to show: "helllo" is six characters, so "hello"
+  // was dropped before alignScore ever saw it, even though it aligns at -3.4,
+  // well inside the cutoff. A doubled tap is a leading error mode for the
+  // people this product is for, so it has to survive the prune.
+  var MAX_EXTRA_KEYS = 2;
+
   var MAX_PILLS = 5;
 
   // The one number here that is NOT taken from the application, and it is worth
@@ -191,9 +200,21 @@
     return best === NEG ? null : best;
   }
 
-  function bigramBonus(prevWord, word) {
-    if (!prevWord) return 0;
+  // BIGRAMS is a plain object, so a previous word that collides with a member
+  // of Object.prototype returns an inherited function rather than a bucket or
+  // undefined. space() commits whatever was typed, dictionary word or not, so
+  // typing "constructor" and pressing space is enough to reach it: the lookup
+  // yielded the Object constructor, which is truthy and has no indexOf, and
+  // every later keystroke threw out of predict(). Own properties only.
+  function bigramsFor(prevWord) {
+    if (!prevWord) return null;
+    if (!Object.prototype.hasOwnProperty.call(BIGRAMS, prevWord)) return null;
     var bucket = BIGRAMS[prevWord];
+    return bucket && bucket.length ? bucket : null;
+  }
+
+  function bigramBonus(prevWord, word) {
+    var bucket = bigramsFor(prevWord);
     if (!bucket) return 0;
     var at = bucket.indexOf(word);
     if (at < 0) return 0;
@@ -204,8 +225,8 @@
   }
 
   function nextWordSuggestions(prevWord) {
-    var out = [], seen = {}, i;
-    var bucket = prevWord ? BIGRAMS[prevWord] : null;
+    var out = [], seen = Object.create(null), i;
+    var bucket = bigramsFor(prevWord);
     if (bucket) {
       for (i = 0; i < bucket.length && out.length < MAX_PILLS; i++) {
         if (!seen[bucket[i]]) { seen[bucket[i]] = 1; out.push(bucket[i]); }
@@ -250,7 +271,7 @@
         if (!list) return;
         for (var k = 0; k < list.length; k++) {
           var j = list[k], cand = WORDS[j];
-          if (cand.length <= typed.length - 1) continue;
+          if (cand.length < typed.length - MAX_EXTRA_KEYS) continue;
           if (cand.lastIndexOf(typed, 0) === 0) continue; // already an exact hit
           var path = alignScore(typed, cand);
           if (path === null) continue;
@@ -275,7 +296,7 @@
     merged.sort(function (a, b) { return b.score - a.score; });
     merged = merged.concat(dear);
 
-    var out = [], seen = {};
+    var out = [], seen = Object.create(null);
     for (i = 0; i < merged.length && out.length < MAX_PILLS; i++) {
       if (seen[merged[i].word]) continue;
       seen[merged[i].word] = 1;
@@ -346,17 +367,36 @@
 
     function renderPills() {
       var words = predict(current, prevWord());
-      pillsEl.textContent = "";
-      words.forEach(function (word) {
-        var b = document.createElement("button");
-        b.type = "button";
-        b.className = "kbdemo__pill";
-        b.textContent = word;
-        // The visible word is the accessible name, and the surrounding group is
-        // labelled "Word suggestions", so the button does not need to repeat it.
-        b.addEventListener("click", function () { takePill(word); });
-        pillsEl.appendChild(b);
-      });
+      var kids = pillsEl.children;
+
+      // Update the buttons in place instead of clearing and rebuilding. Every
+      // keystroke re-renders, so a rebuild destroyed the button the user was
+      // standing on: taking a suggestion from the keyboard dropped focus to
+      // <body> and the next Tab restarted from the top of the document.
+      if (words.length && document.activeElement &&
+          document.activeElement.parentNode === pillsEl) {
+        var at = Array.prototype.indexOf.call(kids, document.activeElement);
+        // Focus is on a pill that is about to go. Keep it in the group.
+        if (at >= words.length) kids[words.length - 1].focus();
+      }
+
+      while (kids.length > words.length) pillsEl.removeChild(pillsEl.lastChild);
+
+      for (var i = 0; i < words.length; i++) {
+        var b = kids[i];
+        if (!b) {
+          b = document.createElement("button");
+          b.type = "button";
+          b.className = "kbdemo__pill";
+          // The visible word is the accessible name, and the surrounding group
+          // is labelled "Word suggestions", so the button does not repeat it.
+          // The handler reads the label at click time rather than closing over
+          // it, because the button now outlives any one suggestion.
+          b.addEventListener("click", function () { takePill(this.textContent); });
+          pillsEl.appendChild(b);
+        }
+        b.textContent = words[i];
+      }
     }
 
     function render() {
@@ -387,7 +427,11 @@
       } else if (committed.length) {
         // Step back into the previous word so backspacing behaves the way it
         // does in a real field rather than deleting a whole word at a time.
-        current = committed.pop().slice(0, -1);
+        // No slice: sentence() renders a trailing space after a committed
+        // word, so that space is the one character on screen this press is
+        // removing. Slicing here spent a single click on two deletions, which
+        // is the exact cost this panel is arguing against.
+        current = committed.pop();
       }
       render();
     }
