@@ -252,13 +252,32 @@
           <div class="kbdemo" id="kbdemo">
             <p class="kbdemo__status" data-demo-status hidden></p>
 
+            <!-- Every key here is built in script, so with nothing running this
+                 panel is an empty black box with a dead Clear button in it. The
+                 stylesheet shows this paragraph and hides the panel's chrome
+                 until demo.js sets data-demo-ready, which covers scripts being
+                 off, the file being blocked, and the file never arriving. -->
+            <p class="kbdemo__fallback">
+              This demo runs a real prediction pass in your browser on every keypress,
+              so it needs JavaScript to do anything. The screenshots above show the same
+              keyboard, and the download below is unaffected.
+            </p>
+
             <div class="kbdemo__screen" data-demo-screen tabindex="0" role="group"
                  aria-label="Demo text. Click the keys below, or type here with your own keyboard.">
-              <output class="kbdemo__text" data-demo-text></output><span class="kbdemo__caret" aria-hidden="true"></span>
+              <!-- aria-live="off" against the implicit role="status" an <output>
+                   carries. Left on, it re-announced the whole sentence on every
+                   keystroke: typing "hwllo" queued "h", "hw", "hwl", "hwll",
+                   "hwllo". The typist already knows what they just pressed. -->
+              <output class="kbdemo__text" data-demo-text aria-live="off"></output><span class="kbdemo__caret" aria-hidden="true"></span>
               <span class="kbdemo__placeholder" data-demo-placeholder>Click the keys, or type here</span>
             </div>
 
-            <div class="kbdemo__pills" data-demo-pills role="group" aria-label="Word suggestions"></div>
+            <!-- The suggestions are the whole argument of this panel, and they
+                 were the one part of it that changed silently. This is the
+                 channel worth announcing, not the echo of your own typing. -->
+            <div class="kbdemo__pills" data-demo-pills role="group" aria-live="polite"
+                 aria-label="Word suggestions"></div>
 
             <div class="kbdemo__keys" data-demo-keys></div>
 

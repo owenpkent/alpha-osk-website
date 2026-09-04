@@ -473,8 +473,10 @@ code {
   overflow: hidden;
 }
 
-/* Accent bloom behind the hero. Purely decorative, and it never sits under
-   text at a strength that could move contrast. */
+/* Accent bloom behind the hero. Decorative, but NOT contrast-neutral: it lifts
+   the effective background enough to drag --ink-faint under AA, which is why
+   .hero__note below picks a stronger ink by hand. Any muted text placed inside
+   the hero has to be measured against the bloom, not against --bg. */
 .hero::before {
   content: "";
   position: absolute;
@@ -722,11 +724,39 @@ code {
   outline-offset: 2px;
 }
 
+/* No text-overflow here on purpose. This is a text field, and a field keeps
+   the insertion point in view: renderText scrolls it to the end instead. An
+   ellipsis truncated the newest characters, so once the sentence outgrew the
+   panel the display froze on the oldest words and typing changed nothing. */
 .kbdemo__text {
   white-space: pre;
   overflow: hidden;
-  text-overflow: ellipsis;
   direction: ltr;
+}
+
+/* Shown until demo.js reports ready, hidden once it does or once it has said
+   what went wrong. 11.8:1 on the panel ground. */
+.kbdemo__fallback {
+  margin: 0;
+  max-width: none;
+  color: #cfd6e0;
+  font-size: 0.95rem;
+  line-height: 1.55;
+}
+
+.kbdemo[data-demo-ready] .kbdemo__fallback,
+.kbdemo[data-demo-broken] .kbdemo__fallback {
+  display: none;
+}
+
+/* Keys, pills and the screen are all built in script. Until that has happened
+   they are empty boxes and a Clear button that does nothing, so they stay out
+   of the document rather than presenting a dead control surface. */
+.kbdemo:not([data-demo-ready]) .kbdemo__screen,
+.kbdemo:not([data-demo-ready]) .kbdemo__pills,
+.kbdemo:not([data-demo-ready]) .kbdemo__keys,
+.kbdemo:not([data-demo-ready]) .kbdemo__foot {
+  display: none;
 }
 
 .kbdemo__caret {
@@ -1325,27 +1355,46 @@ code {
    more than usual for this site: high contrast mode is exactly what a good part
    of the audience for an on-screen keyboard is running. */
 @media (forced-colors: active) {
-  /* Cards are separated by a background change, which is gone. Give them edges. */
-  .badge,
+  /* Cards are separated by a background change, which is gone. Give them
+     edges. Only these two: forced colours recolour borders but do not remove
+     them, so every other card in this stylesheet already declares one and
+     already keeps a visible edge here. Naming them anyway was worse than
+     doing nothing, because the border shorthand resets all four sides: it
+     flattened .callout's 4px accent rail to 1px and thinned .btn from 1.5px,
+     in the one mode where the user has asked for maximum contrast. */
   .stat,
-  .step,
-  .feature,
-  .shot,
-  .privacy__item,
-  .dl,
-  .faq,
-  .cta-band,
-  .callout,
-  .kbdemo,
-  .btn {
+  .privacy__item {
     border: 1px solid;
   }
 
   /* The recommended download is marked only by a box-shadow ring, which forced
-     colours discard, so the card would lose its emphasis completely. */
+     colours discard, so the card would lose its emphasis completely. Doubled
+     rather than solid: :focus-visible below draws a 3px solid ring at a 3px
+     offset, and a permanent ring in the same vocabulary as the focus ring left
+     a keyboard user unable to tell which card they were actually on. */
   .dl--primary {
-    outline: 3px solid;
+    outline: 3px double;
     outline-offset: 2px;
+  }
+
+  /* The same defect one level up, and the reason the rule above exists. A
+     primary button differs from a secondary one only by background colour,
+     which is flattened to a single system colour here, so all three Download
+     calls to action became indistinguishable from "View the source". Width is
+     preserved by forced colours where colour is not. */
+  .btn--primary {
+    border-width: 3px;
+  }
+
+  /* Key presses and pill hovers in the demo panel say what they mean through
+     background-color alone, which is exactly what this mode overrides: without
+     a second channel, pressing a key on a physical keyboard flashed nothing on
+     its on-screen twin and hovering a suggestion did nothing at all. */
+  .kbdemo__key:hover,
+  .kbdemo__key[data-pressed="true"],
+  .kbdemo__pill:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 
   /* Decorative gradients paint nothing useful here and can leave a stray block

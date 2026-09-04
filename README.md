@@ -86,12 +86,18 @@ What is genuinely shared is the data and the constants:
   `language.ENGLISH` profile. The fragment filter is not reimplemented; the
   profile's vowel, semivowel and short-word sets are imported and used, so
   changing them in the app reaches the demo the next time the generator runs.
-- Every scoring constant in `demo.js` is the value the shipped engine uses, and
-  each one names the Python attribute it came from so the two can be diffed.
-  There is exactly one exception, `FIRST_KEY_ANCHOR`, which is documented at
-  length where it is declared and exists because the real engine has the user's
-  own vocabulary and live sentence context to rank with and this page has
-  neither.
+- The scoring constants taken from the engine name the Python attribute they
+  came from, so the two can be diffed: `KEY_SIGMA`, `FREQ_WEIGHT`, `LOG_OMIT`,
+  `LOG_EXTRA`, `LOG_TRANSPOSE`, `FREQUENCY_MAY_BUY`, `MIN_FUZZY_PREFIX` and
+  `POS`. The header comment in `demo.js` carries the mapping.
+- The rest are this file's own and have no counterpart in the engine, so tuning
+  the engine should not be expected to move them: `FIRST_KEY_ANCHOR`,
+  `NEIGHBOUR_RADIUS2`, `BIGRAM_TOP`, `BIGRAM_STEP`, `PRUNE_FLOOR`,
+  `MAX_EXTRA_KEYS`, `MAX_PILLS`. They are pruning and presentation choices for
+  a panel on a marketing page. `FIRST_KEY_ANCHOR` is the interesting one and is
+  documented at length where it is declared: it exists because the real engine
+  has the user's own vocabulary and live sentence context to rank with, and
+  this page has neither.
 
 Regenerate the dictionary after the app's wordlist changes:
 
