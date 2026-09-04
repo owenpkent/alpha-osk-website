@@ -1,0 +1,9 @@
+# Revisions that changed formatting only and should be skipped when working out
+# who last touched a line. Enable once with:
+#
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+#
+# GitHub's blame view reads this file automatically.
+
+# chore: normalise line endings and pin the convention in .gitattributes
+d2cd7fb47244b84865e64740502c215628f3a79e
