@@ -245,24 +245,34 @@
             </p>
           </div>
 
-          <!-- Decorative reconstruction of the app's suggestion bar. The prose
-               beside it carries the same information, so it is hidden from
-               assistive technology rather than announced as changing text. -->
-          <div class="demo__stage">
-            <div class="demo__visual" aria-hidden="true">
-              <div class="demo__field">
-                <span id="demoText"></span><span class="demo__caret"></span>
-              </div>
-              <div class="demo__pills" id="demoPills"></div>
-              <div class="demo__keys" id="demoKeys"></div>
-              <p class="demo__caption">A mis-clicked key, corrected and completed.</p>
+          <!-- The live demo. Not a recording and not a mock: scripts/demo.js
+               runs a real prediction pass over the application's own wordlist
+               on every keypress. Nothing here is animated on its own, so there
+               is nothing for WCAG 2.2.2 to require a pause control for. -->
+          <div class="kbdemo" id="kbdemo">
+            <p class="kbdemo__status" data-demo-status hidden></p>
+
+            <div class="kbdemo__screen" data-demo-screen tabindex="0" role="group"
+                 aria-label="Demo text. Click the keys below, or type here with your own keyboard.">
+              <output class="kbdemo__text" data-demo-text></output><span class="kbdemo__caret" aria-hidden="true"></span>
+              <span class="kbdemo__placeholder" data-demo-placeholder>Click the keys, or type here</span>
             </div>
-            <!-- Revealed by script only when the animation is actually running,
-                 so it is never a control with nothing to control. -->
-            <button class="demo__toggle" type="button" id="demoToggle" hidden>
-              Pause animation
-            </button>
+
+            <div class="kbdemo__pills" data-demo-pills role="group" aria-label="Word suggestions"></div>
+
+            <div class="kbdemo__keys" data-demo-keys></div>
+
+            <div class="kbdemo__foot">
+              <p class="kbdemo__saved" data-demo-saved></p>
+              <button type="button" class="kbdemo__clear" data-demo-clear>Clear</button>
+            </div>
           </div>
+
+          <p class="kbdemo__hint">
+            Try typing <code>hwllo</code>, hitting W instead of the E you meant. The suggestions
+            still find <code>hello</code>. This runs the same approach the application does, on the
+            same wordlist, in your browser: nothing you type here is sent anywhere.
+          </p>
         </div>
       </div>
     </section>
@@ -862,5 +872,7 @@
   </footer>
 
   <script src="/scripts/alphaosk.js?v=20260903" defer></script>
+  <script src="/scripts/demo-data.js?v=20260903" defer></script>
+  <script src="/scripts/demo.js?v=20260903" defer></script>
 </body>
 </html>

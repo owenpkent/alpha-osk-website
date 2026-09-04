@@ -1,19 +1,19 @@
 /* ---------------------------------------------------------------------------
    alphaosk.com
    ---------------------------------------------------------------------------
-   Three small things, none of which the page depends on to be readable:
+   Two small things, neither of which the page depends on to be readable:
      1. the theme toggle
      2. the release version, read from the GitHub API so it is never stale
-     3. the prediction demo animation
-   Everything degrades: with JavaScript off you get the dark theme, buttons that
-   say "Latest release", and a demo panel showing its own finished state.
+   Everything degrades: with JavaScript off you get the dark theme and buttons
+   that say "Latest release".
+
+   The interactive prediction demo lives in scripts/demo.js, with its dictionary
+   in the generated scripts/demo-data.js, because it is an order of magnitude
+   bigger than everything here and most visitors never reach it.
 --------------------------------------------------------------------------- */
 
 (function () {
   "use strict";
-
-  var reduceMotion =
-    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- Theme ---------- */
 
@@ -83,186 +83,6 @@
       });
   }
 
-  /* ---------- Prediction demo ---------- */
-
-  /*
-    The scripted story, and it is the one the prose beside it tells: the user is
-    typing "report", their second click lands on W instead of the E next to it,
-    and the engine completes the word anyway.
-
-    Pills are what the real engine would plausibly return for each prefix. They
-    are illustrative, not generated: this is a marketing panel, not a simulator,
-    and pretending otherwise would be the dishonest version.
-  */
-  var TOP_ROW = "qwertyuiop".split("");
-
-  var SCRIPT = [
-    { text: "r", key: "r", pills: ["right", "really", "run"] },
-    { text: "rw", key: "w", pills: ["report", "review", "right"], slip: true },
-    { text: "rwp", key: "p", pills: ["report", "reply", "repeat"] },
-    { text: "rwpo", key: "o", pills: ["report", "reporter", "reports"] }
-  ];
-
-  var FINAL_TEXT = "report ";
-  var FINAL_PILLS = ["on", "to", "for"];
-
-  function initDemo() {
-    var textEl = document.getElementById("demoText");
-    var pillsEl = document.getElementById("demoPills");
-    var keysEl = document.getElementById("demoKeys");
-    var toggleEl = document.getElementById("demoToggle");
-    if (!textEl || !pillsEl || !keysEl) return;
-
-    // Build the key row once.
-    var keyNodes = {};
-    TOP_ROW.forEach(function (letter) {
-      var key = document.createElement("div");
-      key.className = "demo__key";
-      key.textContent = letter.toUpperCase();
-      keysEl.appendChild(key);
-      keyNodes[letter] = key;
-    });
-
-    function renderPills(words, takenIndex) {
-      pillsEl.textContent = "";
-      words.forEach(function (word, i) {
-        var pill = document.createElement("div");
-        pill.className = "demo__pill";
-        pill.textContent = word;
-        if (i === takenIndex) pill.dataset.taken = "true";
-        pillsEl.appendChild(pill);
-      });
-    }
-
-    function litKey(letter) {
-      Object.keys(keyNodes).forEach(function (k) {
-        if (letter && k === letter) {
-          keyNodes[k].dataset.lit = "true";
-        } else {
-          delete keyNodes[k].dataset.lit;
-        }
-      });
-    }
-
-    function showFinished() {
-      textEl.textContent = FINAL_TEXT;
-      renderPills(FINAL_PILLS, -1);
-      litKey(null);
-    }
-
-    // No animation for anyone who has asked not to have one. The panel still
-    // shows the outcome, which is the part that carries the argument, and the
-    // pause button stays hidden because there is nothing to pause.
-    if (reduceMotion) {
-      showFinished();
-      return;
-    }
-
-    var timers = [];
-    var running = false;
-    // Two independent reasons the loop can be stopped, and they must not
-    // overwrite each other: the panel being off screen, and the user having
-    // asked it to stop. A pause that scrolling silently undoes is not a pause.
-    var onScreen = false;
-    var userPaused = false;
-
-    function at(ms, fn) {
-      timers.push(window.setTimeout(fn, ms));
-    }
-
-    function stop() {
-      timers.forEach(window.clearTimeout);
-      timers = [];
-      running = false;
-    }
-
-    function run() {
-      if (running) return;
-      running = true;
-
-      var t = 0;
-      textEl.textContent = "";
-      renderPills([], -1);
-      litKey(null);
-
-      SCRIPT.forEach(function (frame) {
-        t += 560;
-        at(t, function () {
-          textEl.textContent = frame.text;
-          litKey(frame.key);
-          renderPills(frame.pills, -1);
-        });
-        at(t + 240, function () {
-          litKey(null);
-        });
-      });
-
-      // A beat, then the first pill is taken and the word is completed.
-      t += 900;
-      at(t, function () {
-        renderPills(SCRIPT[SCRIPT.length - 1].pills, 0);
-      });
-
-      t += 620;
-      at(t, function () {
-        showFinished();
-      });
-
-      // Hold the result, then loop.
-      t += 3200;
-      at(t, function () {
-        running = false;
-        run();
-      });
-    }
-
-    showFinished();
-
-    // The single place that decides whether the loop should be turning. Both
-    // the observer and the button call this rather than starting and stopping
-    // the loop themselves.
-    function sync() {
-      if (onScreen && !userPaused && !document.hidden) {
-        run();
-      } else {
-        stop();
-        showFinished();
-      }
-    }
-
-    // WCAG 2.2.2: the animation starts on its own, loops, and runs well past
-    // five seconds beside other content, so there has to be a way to stop it
-    // that does not depend on having set an OS-level motion preference.
-    if (toggleEl) {
-      toggleEl.hidden = false;
-      toggleEl.addEventListener("click", function () {
-        userPaused = !userPaused;
-        toggleEl.textContent = userPaused ? "Play animation" : "Pause animation";
-        sync();
-      });
-    }
-
-    // Only animate while the panel is actually on screen. A loop running in a
-    // background tab or three screens down the page is wasted battery.
-    if ("IntersectionObserver" in window) {
-      var observer = new IntersectionObserver(
-        function (entries) {
-          entries.forEach(function (entry) {
-            onScreen = entry.isIntersecting;
-            sync();
-          });
-        },
-        { threshold: 0.35 }
-      );
-      observer.observe(pillsEl.closest(".demo__stage") || pillsEl);
-    } else {
-      onScreen = true;
-      sync();
-    }
-
-    document.addEventListener("visibilitychange", sync);
-  }
-
   /* ---------- Footer year ---------- */
 
   function initYear() {
@@ -275,5 +95,4 @@
   initTheme();
   initVersion();
   initYear();
-  initDemo();
 })();
