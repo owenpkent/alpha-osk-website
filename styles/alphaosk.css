@@ -679,6 +679,15 @@ code {
   box-shadow: var(--shadow-lg);
 }
 
+/* The panel holds its dark surfaces in both site themes, so the page's accent
+   is the wrong focus colour inside it. In light theme --accent is #0b62d0,
+   which is about 2:1 against the #3a3a3a keys and pills and fails 1.4.11 on
+   the 34 buttons here. Use the panel's own accent, the blue the pills already
+   take on hover: 4.05:1 on a key, 6.3:1 on the panel ground. */
+.kbdemo :focus-visible {
+  outline-color: #4a9eff;
+}
+
 .kbdemo__status {
   margin: 0 0 0.9rem;
   padding: 0.75rem 0.9rem;
