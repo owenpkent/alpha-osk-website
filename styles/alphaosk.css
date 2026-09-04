@@ -181,6 +181,17 @@ code {
   border-radius: 4px;
 }
 
+/* The one exception, and only because #main is not a control. The skip link
+   moves focus here so the next Tab continues into the content; the element is
+   the full height of the page, so the shared ring would draw a rectangle down
+   both viewport edges and read as a rendering fault. The scroll and the
+   changed tab position are the affordance. Do not extend this to anything the
+   user can actually operate. */
+#main:focus,
+#main:focus-visible {
+  outline: none;
+}
+
 ::selection {
   background: var(--accent);
   color: var(--accent-ink);
