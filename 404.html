@@ -11,9 +11,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260903" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260905" />
   <script>
     (function () {
+      // Set for the same reason as on the front page: the stylesheet gates
+      // its script-only behaviour on this class, and the gate has to close
+      // before first paint rather than after it.
+      document.documentElement.className += " js";
       try {
         var stored = localStorage.getItem("alphaosk-theme");
         var prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
@@ -30,7 +34,7 @@
   <header class="site-header">
     <div class="wrap site-header__inner">
       <a class="brand" href="/">
-        <img src="/images/logo-1024.png" alt="" width="32" height="32" />
+        <img src="/images/apple-touch-icon.png?v=20260903" alt="" width="32" height="32" />
         Alpha-OSK
       </a>
       <div class="header-actions">

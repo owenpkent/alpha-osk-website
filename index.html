@@ -30,12 +30,19 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260903" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260905" />
 
   <!-- Theme before first paint, so a light-theme visitor never sees a dark
        flash. Dark is the default because the app is dark by default. -->
   <script>
     (function () {
+      // Everything that only works with script running is gated on this class,
+      // and the gate has to close before first paint: without it a phone paints
+      // five navigation links across the header and then has them pulled out
+      // from under it a moment later. With script off the class never arrives
+      // and those links stay where they are, which is the point of gating on it
+      // rather than on the viewport width alone.
+      document.documentElement.className += " js";
       try {
         var stored = localStorage.getItem("alphaosk-theme");
         var prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
@@ -80,11 +87,29 @@
   <header class="site-header">
     <div class="wrap site-header__inner">
       <a class="brand" href="/">
-        <img src="/images/logo-1024.png" alt="" width="32" height="32" />
+        <img src="/images/apple-touch-icon.png?v=20260903" alt="" width="32" height="32" />
         Alpha-OSK
       </a>
 
-      <nav class="nav" aria-label="Primary">
+      <!-- Opens the navigation below 860px, where the links do not fit on the
+           header row. It sits before the panel in the source so that a Tab from
+           the button lands on the first link it just revealed. The stylesheet
+           keeps it out of the document entirely on wider screens and with
+           scripts off, since nothing else can open the panel. -->
+      <button class="nav-toggle" type="button" id="navToggle"
+              aria-expanded="false" aria-controls="primaryNav" aria-label="Menu">
+        <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 6 18 18M18 6 6 18" />
+        </svg>
+      </button>
+
+      <nav class="nav" id="primaryNav" aria-label="Primary">
+        <!-- Shown only under 600px, where the header has had to give up its own
+             Download button to fit the brand and the two controls at 320px. -->
+        <a class="btn btn--primary nav__cta" href="#download">Download</a>
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
@@ -102,7 +127,7 @@
             <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z" />
           </svg>
         </button>
-        <a class="btn btn--primary" href="#download">Download</a>
+        <a class="btn btn--primary header-cta" href="#download">Download</a>
       </div>
     </div>
   </header>
@@ -843,7 +868,7 @@
       <div class="footer-grid">
         <div class="footer-about">
           <a class="brand" href="/">
-            <img src="/images/logo-1024.png" alt="" width="32" height="32" />
+            <img src="/images/apple-touch-icon.png?v=20260903" alt="" width="32" height="32" />
             Alpha-OSK
           </a>
           <p>
@@ -852,35 +877,40 @@
           </p>
         </div>
 
-        <nav class="footer-col" aria-labelledby="foot-product">
-          <h2 id="foot-product">Product</h2>
-          <ul>
-            <li><a href="#how">How it works</a></li>
-            <li><a href="#features">Features</a></li>
-            <li><a href="#screenshots">Screenshots</a></li>
-            <li><a href="#download">Download</a></li>
-          </ul>
-        </nav>
+        <!-- The link columns are a grid of their own, so that how many columns
+             they use stays independent of whether they sit beside the about
+             block or underneath it. -->
+        <div class="footer-links">
+          <nav class="footer-col" aria-labelledby="foot-product">
+            <h2 id="foot-product">Product</h2>
+            <ul>
+              <li><a href="#how">How it works</a></li>
+              <li><a href="#features">Features</a></li>
+              <li><a href="#screenshots">Screenshots</a></li>
+              <li><a href="#download">Download</a></li>
+            </ul>
+          </nav>
 
-        <nav class="footer-col" aria-labelledby="foot-project">
-          <h2 id="foot-project">Project</h2>
-          <ul>
-            <li><a href="https://github.com/owenpkent/alpha-osk">Source code</a></li>
-            <li><a href="https://github.com/owenpkent/alpha-osk-releases/releases">Releases</a></li>
-            <li><a href="https://github.com/owenpkent/alpha-osk/issues">Report a bug</a></li>
-            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">Contributing</a></li>
-          </ul>
-        </nav>
+          <nav class="footer-col" aria-labelledby="foot-project">
+            <h2 id="foot-project">Project</h2>
+            <ul>
+              <li><a href="https://github.com/owenpkent/alpha-osk">Source code</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk-releases/releases">Releases</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/issues">Report a bug</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">Contributing</a></li>
+            </ul>
+          </nav>
 
-        <nav class="footer-col" aria-labelledby="foot-docs">
-          <h2 id="foot-docs">Documents</h2>
-          <ul>
-            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md">Privacy</a></li>
-            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md">White paper</a></li>
-            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/LICENSE">MIT licence</a></li>
-            <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/SECURITY.md">Security</a></li>
-          </ul>
-        </nav>
+          <nav class="footer-col" aria-labelledby="foot-docs">
+            <h2 id="foot-docs">Documents</h2>
+            <ul>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md">Privacy</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md">White paper</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/LICENSE">MIT licence</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/SECURITY.md">Security</a></li>
+            </ul>
+          </nav>
+        </div>
       </div>
 
       <div class="footer-bottom">
@@ -890,8 +920,11 @@
     </div>
   </footer>
 
-  <script src="/scripts/alphaosk.js?v=20260903" defer></script>
-  <script src="/scripts/demo-data.js?v=20260903" defer></script>
-  <script src="/scripts/demo.js?v=20260903" defer></script>
+  <!-- scripts/demo-data.js and scripts/demo.js are not listed here on
+       purpose. Between them they are 108 KB, all of it for the one panel in
+       #prediction, and on a phone that was the largest thing the page
+       downloaded whether or not the visitor ever scrolled to it. alphaosk.js
+       fetches both when the panel comes within a screen of the viewport. -->
+  <script src="/scripts/alphaosk.js?v=20260905" defer></script>
 </body>
 </html>

@@ -57,6 +57,24 @@
   --gutter: clamp(1.25rem, 4vw, 3rem);
   --page: 1180px;
   --section-y: clamp(4.5rem, 9vw, 8rem);
+
+  /* The gutter a phone actually has. In landscape on a notched device the
+     display cutout and the home indicator sit inside the viewport, and content
+     laid out to the raw edge lands underneath them. Every horizontal edge on
+     this page is derived from these rather than from --gutter directly, so the
+     insets survive the negative margin .kbdemo uses to escape the wrap. */
+  --gutter-left: calc(var(--gutter) + env(safe-area-inset-left, 0px));
+  --gutter-right: calc(var(--gutter) + env(safe-area-inset-right, 0px));
+
+  /* The flash a tap leaves behind on a touchscreen. */
+  --tap: rgba(74, 158, 255, 0.22);
+
+  /* The two colour fields drifting behind the hero. The blue is the accent;
+     the violet is a nod to the app's Amethyst theme and is there so the two
+     fields separate as they cross rather than reading as one brighter blue.
+     Both alphas are set by measurement, not by eye: see the note on .hero. */
+  --aura-1: rgba(74, 158, 255, 0.20);
+  --aura-2: rgba(124, 92, 255, 0.16);
 }
 
 [data-theme="light"] {
@@ -85,6 +103,15 @@
 
   --shadow: 0 1px 2px rgba(16, 24, 40, 0.06), 0 10px 28px rgba(16, 24, 40, 0.08);
   --shadow-lg: 0 2px 6px rgba(16, 24, 40, 0.08), 0 26px 64px rgba(16, 24, 40, 0.12);
+
+  --tap: rgba(11, 98, 208, 0.18);
+
+  /* Lower alphas than the dark theme for the same apparent strength. A wash
+     over white lightens toward the page background and loses contrast against
+     dark text; the same wash over near-black is mostly additive and barely
+     moves the effective background under light text. */
+  --aura-1: rgba(11, 98, 208, 0.10);
+  --aura-2: rgba(91, 63, 209, 0.07);
 }
 
 /* ---------- Reset ---------- */
@@ -161,8 +188,10 @@ a {
   text-decoration-thickness: 0.08em;
 }
 
-a:hover {
-  color: var(--accent-strong);
+@media (hover: hover) {
+  a:hover {
+    color: var(--accent-strong);
+  }
 }
 
 code {
@@ -197,13 +226,47 @@ code {
   color: var(--accent-ink);
 }
 
+/* ---------- Touch ---------- */
+
+/* touch-action: manipulation drops the ~300ms a browser spends deciding
+   whether a tap was the first half of a double-tap-to-zoom. It is named on the
+   controls one at a time rather than on the page, because the page as a whole
+   has to keep every zoom gesture it has: pinch zoom is the most used
+   accessibility feature on a phone, and nothing on this site is allowed to
+   take it away. */
+.btn,
+.nav a,
+.nav-toggle,
+.theme-toggle,
+.skip-link,
+.faq summary,
+.footer-col a,
+.kbdemo__key,
+.kbdemo__pill,
+.kbdemo__clear {
+  touch-action: manipulation;
+}
+
+/* The tap flash. Chrome's default is a grey rectangle that squares off every
+   rounded corner on the page; --tap is the accent the rest of the site already
+   uses to say "you hit this". Not transparent: taking the flash away without
+   putting something back is how a tap comes to feel like it did not register,
+   and this is a site about knowing your click landed. */
+a,
+button,
+summary,
+[role="button"] {
+  -webkit-tap-highlight-color: var(--tap);
+}
+
 /* ---------- Layout helpers ---------- */
 
 .wrap {
   width: 100%;
   max-width: var(--page);
   margin-inline: auto;
-  padding-inline: var(--gutter);
+  padding-left: var(--gutter-left);
+  padding-right: var(--gutter-right);
 }
 
 .section {
@@ -213,6 +276,16 @@ code {
 .section--alt {
   background: var(--bg-alt);
   border-block: 1px solid var(--border);
+}
+
+/* A phone shows roughly a third of what a desktop does per screen, so the
+   desktop's breathing room between sections turns into several swipes through
+   nothing at all. The floor of the clamp is the only part that a phone ever
+   reaches, so this is the only number worth changing. */
+@media (max-width: 560px) {
+  :root {
+    --section-y: 3.5rem;
+  }
 }
 
 .section__head {
@@ -300,9 +373,11 @@ code {
   transition: transform 0.14s ease, background-color 0.14s ease, border-color 0.14s ease;
 }
 
-.btn:hover {
-  transform: translateY(-2px);
-  color: var(--btn-ink);
+@media (hover: hover) {
+  .btn:hover {
+    transform: translateY(-2px);
+    color: var(--btn-ink);
+  }
 }
 
 .btn:active {
@@ -317,9 +392,11 @@ code {
   box-shadow: var(--shadow);
 }
 
-.btn--primary:hover {
-  --btn-bg: var(--accent-strong);
-  --btn-border: var(--accent-strong);
+@media (hover: hover) {
+  .btn--primary:hover {
+    --btn-bg: var(--accent-strong);
+    --btn-border: var(--accent-strong);
+  }
 }
 
 .btn--lg {
@@ -358,6 +435,7 @@ code {
   top: 0;
   z-index: 50;
   background: color-mix(in srgb, var(--bg) 86%, transparent);
+  -webkit-backdrop-filter: blur(14px);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid var(--border);
 }
@@ -381,6 +459,11 @@ code {
   margin-right: auto;
   padding: 0.35rem;
   border-radius: var(--radius-sm);
+
+  /* Without this the name breaks after the hyphen at any phone width, and a
+     sticky header that is 72px tall on a desktop becomes 145px: a sixth of an
+     iPhone viewport, held there for the length of the page. */
+  white-space: nowrap;
 }
 
 .brand img {
@@ -395,7 +478,7 @@ code {
   gap: 0.25rem;
 }
 
-.nav a {
+.nav a:not(.btn) {
   display: inline-flex;
   align-items: center;
   min-height: 2.85rem;
@@ -407,9 +490,18 @@ code {
   text-decoration: none;
 }
 
-.nav a:hover {
-  color: var(--ink);
-  background: var(--surface-2);
+@media (hover: hover) {
+  .nav a:not(.btn):hover {
+    color: var(--ink);
+    background: var(--surface-2);
+  }
+}
+
+/* The panel's own Download call to action. It exists only on the narrow
+   screens where the header itself has no room to carry one; see the 600px
+   query at the end of this section. */
+.nav__cta {
+  display: none;
 }
 
 .header-actions {
@@ -418,8 +510,8 @@ code {
   gap: 0.6rem;
 }
 
+.nav-toggle,
 .theme-toggle {
-  display: inline-flex;
   align-items: center;
   justify-content: center;
   width: 2.85rem;
@@ -432,11 +524,27 @@ code {
   cursor: pointer;
 }
 
-.theme-toggle:hover {
-  color: var(--ink);
-  border-color: var(--accent);
+.theme-toggle {
+  display: inline-flex;
 }
 
+/* The menu button is the only affordance for a panel that nothing but script
+   can open, so it stays out of the document until both of its conditions hold:
+   the script is running, and the viewport is too narrow for the inline nav.
+   Both of those live in the 860px query below. */
+.nav-toggle {
+  display: none;
+}
+
+@media (hover: hover) {
+  .nav-toggle:hover,
+  .theme-toggle:hover {
+    color: var(--ink);
+    border-color: var(--accent);
+  }
+}
+
+.nav-toggle svg,
 .theme-toggle svg {
   width: 1.15rem;
   height: 1.15rem;
@@ -445,6 +553,11 @@ code {
   stroke-width: 2;
   stroke-linecap: round;
   stroke-linejoin: round;
+}
+
+.nav-toggle svg {
+  width: 1.3rem;
+  height: 1.3rem;
 }
 
 /* Show exactly one of the two icons, whichever names the theme you would
@@ -458,9 +571,131 @@ code {
   display: block;
 }
 
+/* The menu button says the same thing a different way: bars mean open, the
+   cross means close, and aria-expanded on the button itself carries it to
+   anyone who cannot see either glyph. */
+.nav-toggle .icon-close {
+  display: none;
+}
+
+.nav-toggle[aria-expanded="true"] .icon-bars {
+  display: none;
+}
+
+.nav-toggle[aria-expanded="true"] .icon-close {
+  display: block;
+}
+
+/* ---------- Header, narrower than the inline nav needs ---------- */
+
+/* Five links plus a brand and two controls stop fitting on one line at about
+   this width. They used to be set to display: none here with nothing put in
+   their place, so every phone and most tablets got a header containing no
+   navigation at all: How it works, Features, Privacy, FAQ and Source were
+   reachable only by scrolling the whole page or by finding them again in the
+   footer. On the site whose argument is that pointing should be cheap, that
+   was the most expensive thing on it.
+
+   They now fold into a disclosure panel. Opening it needs script, so the fold
+   itself is conditional on .js, which the inline head script sets before first
+   paint. With scripts off the links stay in the header and wrap onto a second
+   row: taller, but every link is present and still 45px high. */
 @media (max-width: 860px) {
+  .site-header__inner {
+    flex-wrap: wrap;
+    row-gap: 0.35rem;
+    padding-block: 0.5rem;
+  }
+
+  /* The scripts-off case. The links are still in the flow here, and a row of
+     five of them is wider than a phone, so give them a second row of their own
+     and let them wrap inside it. Without both of these the header runs past
+     the right edge of the screen and takes the whole page with it. The .js
+     rules below take the panel back out of the flow, where none of this
+     applies. */
   .nav {
+    flex-basis: 100%;
+    flex-wrap: wrap;
+    gap: 0.15rem;
+  }
+
+  .js .nav-toggle {
+    display: inline-flex;
+  }
+
+  .js .nav {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
     display: none;
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.15rem;
+    padding-top: 0.5rem;
+    padding-left: var(--gutter-left);
+    padding-right: var(--gutter-right);
+    padding-bottom: calc(0.9rem + env(safe-area-inset-bottom, 0px));
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    box-shadow: var(--shadow);
+
+    /* A phone in landscape has less room under the header than this panel
+       wants. Scroll the panel rather than the page behind it. The percentage
+       in the calc is the header's own height: the panel's containing block is
+       .site-header, which is sticky and therefore positioned. */
+    max-height: calc(100vh - 100%);
+    max-height: calc(100dvh - 100%);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+
+  .js .nav[data-open] {
+    display: flex;
+  }
+
+  /* Full width and taller than the header row's version. This is a list meant
+     to be hit with a thumb, and nothing is gained by keeping the targets small
+     when the whole width is there to spend. */
+  .js .nav a:not(.btn) {
+    min-height: 3.2rem;
+    padding-inline: 0.9rem;
+    font-size: 1.05rem;
+    color: var(--ink);
+  }
+}
+
+/* Below this a brand, a menu button, a theme button and a Download button stop
+   fitting on one line at 320px, the narrowest viewport this site claims to
+   support. Download is the one that moves, to the top of the menu panel, since
+   it is the only one of the four already repeated three more times down the
+   page. */
+@media (max-width: 600px) {
+  .js .header-cta {
+    display: none;
+  }
+
+  .js .nav__cta {
+    display: inline-flex;
+    width: 100%;
+    margin-bottom: 0.35rem;
+  }
+}
+
+@media (max-width: 400px) {
+  .site-header__inner {
+    gap: 0.5rem;
+    min-height: 4rem;
+  }
+
+  .brand {
+    font-size: 1.02rem;
+    gap: 0.55rem;
+  }
+
+  .brand img {
+    width: 1.75rem;
+    height: 1.75rem;
   }
 }
 
@@ -471,19 +706,84 @@ code {
   padding-top: clamp(3.5rem, 7vw, 6rem);
   padding-bottom: clamp(2rem, 4vw, 3rem);
   overflow: hidden;
+
+  /* Gives the two aura layers below a stacking context of their own, so that
+     z-index: -1 puts them behind the hero's content without putting them
+     behind the page. */
+  isolation: isolate;
 }
 
-/* Accent bloom behind the hero. Decorative, but NOT contrast-neutral: it lifts
-   the effective background enough to drag --ink-faint under AA, which is why
-   .hero__note below picks a stronger ink by hand. Any muted text placed inside
-   the hero has to be measured against the bloom, not against --bg. */
-.hero::before {
+/* Two accent blooms drifting behind the hero, replacing the single static one
+   that used to live on ::before.
+
+   Decorative, but NOT contrast-neutral: they lift the effective background
+   enough to drag --ink-faint under AA, which is why .hero__note below picks a
+   stronger ink by hand. Any muted text placed inside the hero has to be
+   measured against the blooms, not against --bg, and measured at more than one
+   moment now that they move. The alphas in --aura-1 and --aura-2 are set so
+   that the worst frame, where both fields overlap directly under the lede,
+   still clears AA in both themes. Raising either one means re-measuring; the
+   check is in the commit that added this.
+
+   Only transform is animated. A drifting background-position or an animated
+   filter would repaint a viewport-sized area every frame, which on the kind of
+   hardware a lot of this site's audience is running is a real cost for a
+   decoration. A transform on a layer the compositor already holds is close to
+   free, and it is the reason these are two oversized boxes carrying a gradient
+   rather than two blurred shapes. */
+.hero::before,
+.hero::after {
   content: "";
   position: absolute;
-  inset: -30% 0 auto;
-  height: 70vh;
-  background: radial-gradient(60% 55% at 50% 40%, var(--accent-wash), transparent 70%);
+  z-index: -1;
   pointer-events: none;
+
+  /* Oversized on every side so that no edge of either box can drift into
+     view, whatever point of its travel it is at. */
+  inset: -30% -20% -10%;
+}
+
+.hero::before {
+  background: radial-gradient(42% 46% at 34% 34%, var(--aura-1), transparent 68%);
+  animation: aura-a 34s ease-in-out infinite alternate;
+}
+
+.hero::after {
+  background: radial-gradient(38% 42% at 68% 46%, var(--aura-2), transparent 66%);
+  animation: aura-b 47s ease-in-out infinite alternate;
+}
+
+/* Two durations that do not divide into each other, so the pair does not
+   return to the same arrangement for about twenty minutes. Nobody will watch
+   it for twenty minutes; the point is that a visitor who glances back at the
+   top of the page does not find the exact picture they left. */
+@keyframes aura-a {
+  from {
+    transform: translate3d(-4%, -2%, 0) scale(1);
+  }
+
+  to {
+    transform: translate3d(5%, 3%, 0) scale(1.14);
+  }
+}
+
+@keyframes aura-b {
+  from {
+    transform: translate3d(4%, 2%, 0) scale(1.1);
+  }
+
+  to {
+    transform: translate3d(-5%, -3%, 0) scale(0.94);
+  }
+}
+
+/* Scrolled past, the hero is not on screen and the compositor has no reason to
+   keep waking up for it. initAura in scripts/alphaosk.js sets the attribute.
+   Without script the animation simply runs, which is the old behaviour of any
+   CSS animation and costs a phone battery very little at this size. */
+.hero[data-aura-paused]::before,
+.hero[data-aura-paused]::after {
+  animation-play-state: paused;
 }
 
 .hero__inner {
@@ -540,6 +840,23 @@ code {
   justify-content: center;
   gap: 0.85rem;
   margin-top: 1.9rem;
+}
+
+/* Wrapped, the two buttons stack at their own natural widths, which leaves the
+   second one narrower and centred under the first. That reads as the lesser of
+   two options when it is only the second of them. One width for both. The
+   CTA band and the 404 page reuse this class and want the same thing. */
+@media (max-width: 560px) {
+  .hero__cta {
+    flex-direction: column;
+    align-items: stretch;
+    align-self: stretch;
+    width: 100%;
+  }
+
+  .hero__cta .btn {
+    width: 100%;
+  }
 }
 
 .hero__note {
@@ -803,10 +1120,32 @@ code {
   cursor: pointer;
 }
 
-.kbdemo__pill:hover {
+@media (hover: hover) {
+  .kbdemo__pill:hover {
+    background: #4a9eff;
+    border-color: #4a9eff;
+    color: #05213f;
+  }
+}
+
+/* Touch has no hover, so the press is the only feedback a tap gets in the
+   moment before the word lands on the screen. Same colours as the hover above,
+   and it cannot latch: :active ends when the finger lifts. */
+.kbdemo__pill:active {
   background: #4a9eff;
   border-color: #4a9eff;
   color: #05213f;
+}
+
+/* A finger on a key should not select the letter printed on it, and a run of
+   fast taps along a row should not start a selection that drags across the
+   whole keyboard. iOS also raises a copy callout on a long press, which on a
+   key is never what was meant. */
+.kbdemo__key,
+.kbdemo__pill {
+  -webkit-user-select: none;
+  user-select: none;
+  -webkit-touch-callout: none;
 }
 
 .kbdemo__keys {
@@ -840,10 +1179,17 @@ code {
   cursor: pointer;
 }
 
-.kbdemo__key:hover,
-.kbdemo__key[data-pressed="true"] {
+.kbdemo__key[data-pressed="true"],
+.kbdemo__key:active {
   background: #5a5a5a;
   color: #fff;
+}
+
+@media (hover: hover) {
+  .kbdemo__key:hover {
+    background: #5a5a5a;
+    color: #fff;
+  }
 }
 
 .kbdemo__key--wide {
@@ -887,10 +1233,12 @@ code {
   cursor: pointer;
 }
 
-.kbdemo__clear:hover {
-  background: #2a2a2a;
-  color: #fff;
-  border-color: #6a6a6a;
+@media (hover: hover) {
+  .kbdemo__clear:hover {
+    background: #2a2a2a;
+    color: #fff;
+    border-color: #6a6a6a;
+  }
 }
 
 /* WCAG 2.5.8 asks for 24x24 CSS px per target. Ten keys plus their gaps, inside
@@ -901,8 +1249,11 @@ code {
    approximately, so the panel lines up with the viewport edge. */
 @media (max-width: 560px) {
   .kbdemo {
-    margin-inline: calc(var(--gutter) * -1);
-    padding: 0.75rem 0.5rem;
+    margin-left: calc(var(--gutter-left) * -1);
+    margin-right: calc(var(--gutter-right) * -1);
+    padding-block: 0.75rem;
+    padding-left: max(0.5rem, env(safe-area-inset-left, 0px));
+    padding-right: max(0.5rem, env(safe-area-inset-right, 0px));
     border-radius: 0;
     border-inline: 0;
   }
@@ -946,9 +1297,11 @@ code {
   transition: border-color 0.16s ease, transform 0.16s ease;
 }
 
-.feature:hover {
-  border-color: var(--border-strong);
-  transform: translateY(-3px);
+@media (hover: hover) {
+  .feature:hover {
+    border-color: var(--border-strong);
+    transform: translateY(-3px);
+  }
 }
 
 .feature__icon {
@@ -1203,8 +1556,10 @@ code {
   display: none;
 }
 
-.faq summary:hover {
-  background: var(--surface-2);
+@media (hover: hover) {
+  .faq summary:hover {
+    background: var(--surface-2);
+  }
 }
 
 .faq summary::after {
@@ -1264,14 +1619,77 @@ code {
 .site-footer {
   border-top: 1px solid var(--border);
   background: var(--bg-alt);
-  padding-block: clamp(2.5rem, 5vw, 4rem) 2rem;
+  /* The home indicator sits over the last 34px of the viewport on a phone
+     without a home button, which is exactly where the copyright line was. */
+  padding-block: clamp(2.5rem, 5vw, 4rem) calc(2rem + env(safe-area-inset-bottom, 0px));
 }
 
+/* Two grids, not one. The outer grid decides whether the about block sits
+   beside the links or above them; the inner grid decides how many columns the
+   links use. Those are separate questions and they now have separate answers,
+   which is the shape atdev.com's footer already uses: .footer__inner holding
+   a .footer__cols of its own.
+
+   What was here was a single flat four-track row, and its template read
+   minmax(0, 1.4fr) followed by repeat(auto-fit, minmax(min(9rem, 100%), 1fr)).
+   Those two halves fight each other. auto-fit counts how many 9rem tracks to
+   make by measuring the whole row, and the leading track's minimum is 0, so
+   the link columns take what they want and the about column lives on whatever
+   is left. At 600px what was left was 24 CSS px: the paragraph set itself one
+   word per line, the brand overlapped the first heading, and the footer stood
+   897px tall, through a band of widths that covers small tablets and any large
+   phone held sideways.
+
+   Nesting removes the interaction rather than tuning it, because no row now
+   contains both an fr track and a fitted one. 1.4fr against 3fr keeps the
+   desktop proportions the flat version had to within about 20px: the inner
+   gaps now sit inside the 3fr track rather than beside it, which moves the
+   split by that much and by nothing anyone will see. */
 .footer-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.4fr) repeat(auto-fit, minmax(min(9rem, 100%), 1fr));
+  grid-template-columns: minmax(0, 1.4fr) minmax(0, 3fr);
   gap: 2rem;
   margin-bottom: 2.5rem;
+}
+
+.footer-links {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 2rem;
+}
+
+/* Under the width the two of them share comfortably, the about block takes the
+   row above. Its paragraph is still capped at 30rem by .footer-about p, so it
+   keeps a readable measure rather than running the full width of a tablet. */
+@media (max-width: 860px) {
+  .footer-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 2.25rem;
+  }
+
+  .footer-links {
+    gap: 1.75rem 1.25rem;
+  }
+}
+
+/* The widest thing in a link column is the word "Documents", at 95px with
+   Inter loaded and 91px in the fallback stack, so three columns and their two
+   gaps stop fitting at around a 365px viewport. Two columns leave the last
+   group without a neighbour, which reads as a gap; three columns of wrapped
+   link text reads as a fault.
+
+   In em rather than px, and the only query in this file that is. All the
+   others answer "how much room is there", which is a question about the
+   device. This one answers "does this text still fit", and text is not a fixed
+   number of pixels: a visitor who has raised their default font size or zoomed
+   in gets wider words in the same viewport, and a px query would hold three
+   columns while the words outgrew them. In em the threshold rises with the
+   text, which is when the extra room is needed. 23.5em is 376px at a default
+   root, so a 390px phone keeps three columns and a 375px one drops to two. */
+@media (max-width: 23.5em) {
+  .footer-links {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
 }
 
 .footer-about p {
@@ -1296,18 +1714,33 @@ code {
   padding: 0;
 }
 
+/* 2.75rem, not 2.5rem. The comment at the top of this file says every
+   interactive target on the site clears 44x44 CSS px, and these twelve were
+   40px tall: the one place on a phone where a thumb is most likely to be
+   reaching, and the only place the claim was not true. */
 .footer-col a {
   display: inline-flex;
   align-items: center;
-  min-height: 2.5rem;
+  min-height: 2.75rem;
   color: var(--ink-muted);
   font-size: 0.95rem;
   text-decoration: none;
 }
 
-.footer-col a:hover {
-  color: var(--accent);
-  text-decoration: underline;
+/* On a touch screen the target is worth the whole column rather than the width
+   of the word. inline-flex sizes to the text, which on "FAQ" or "Privacy" is
+   about 50px of hittable width in a 160px column. */
+@media (max-width: 860px) {
+  .footer-col a {
+    display: flex;
+  }
+}
+
+@media (hover: hover) {
+  .footer-col a:hover {
+    color: var(--accent);
+    text-decoration: underline;
+  }
 }
 
 .footer-bottom {
@@ -1326,10 +1759,22 @@ code {
   margin: 0;
 }
 
+/* The 404 page's "Report a problem" is the only link down here, and as plain
+   inline text it was a 17px-tall target sitting on its own line rather than
+   inside a sentence. Nothing in index.html matches this. */
+.footer-bottom a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
+}
+
 /* ---------- 404 ---------- */
 
 .error-page {
+  /* dvh rather than vh so the page is not measured against a viewport that
+     includes the browser toolbars a phone hides as soon as you scroll. */
   min-height: 70vh;
+  min-height: 70dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -1390,16 +1835,17 @@ code {
      background-color alone, which is exactly what this mode overrides: without
      a second channel, pressing a key on a physical keyboard flashed nothing on
      its on-screen twin and hovering a suggestion did nothing at all. */
-  .kbdemo__key:hover,
   .kbdemo__key[data-pressed="true"],
-  .kbdemo__pill:hover {
+  .kbdemo__key:active,
+  .kbdemo__pill:active {
     text-decoration: underline;
     text-underline-offset: 3px;
   }
 
   /* Decorative gradients paint nothing useful here and can leave a stray block
      of system colour behind the text. */
-  .hero::before {
+  .hero::before,
+  .hero::after {
     display: none;
   }
 
@@ -1408,6 +1854,16 @@ code {
   :focus-visible {
     outline: 3px solid;
     outline-offset: 3px;
+  }
+}
+
+/* The hover half of the rule above, kept out of the block so that a phone in
+   forced colours does not leave the last key it touched underlined. */
+@media (forced-colors: active) and (hover: hover) {
+  .kbdemo__key:hover,
+  .kbdemo__pill:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
   }
 }
 
@@ -1425,6 +1881,16 @@ code {
     animation-iteration-count: 1 !important;
     transition-duration: 0.001ms !important;
   }
+
+  /* The rule above stops an animation by running it to its end in a millisecond,
+     which for the hero auras would leave them parked on their "to" keyframe:
+     a composition chosen for the far end of a drift rather than for standing
+     still. none leaves them where the CSS put them, which is the arrangement
+     everything else here was measured against. */
+  .hero::before,
+  .hero::after {
+    animation: none !important;
+  }
 }
 
 /* ---------- Print ---------- */
@@ -1434,6 +1900,12 @@ code {
   .hero__cta,
   .cta-band,
   .theme-toggle {
+    display: none;
+  }
+
+  /* Large flat areas of pale colour, at the top of the first page, in ink. */
+  .hero::before,
+  .hero::after {
     display: none;
   }
 

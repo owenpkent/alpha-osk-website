@@ -9,11 +9,20 @@
 
    The interactive prediction demo lives in scripts/demo.js, with its dictionary
    in the generated scripts/demo-data.js, because it is an order of magnitude
-   bigger than everything here and most visitors never reach it.
+   bigger than everything here and most visitors never reach it. Those two are
+   not in the markup: initDemo below fetches them when the panel gets close to
+   the viewport.
 --------------------------------------------------------------------------- */
 
 (function () {
   "use strict";
+
+  // The cache-busting query this file was itself requested with, so the two
+  // scripts it goes on to fetch stay on the same version as the rest of the
+  // page and there is one string to change rather than three. Read here rather
+  // than inside initDemo because document.currentScript is only meaningful
+  // while the script is executing.
+  var VERSION = (document.currentScript && document.currentScript.src.replace(/^[^?]*/, "")) || "";
 
   /* ---------- Theme ---------- */
 
@@ -83,6 +92,165 @@
       });
   }
 
+  /* ---------- Navigation ---------- */
+
+  /* Below 860px the header links collapse behind a menu button. Everything
+     here is about the ways a disclosure panel gets left open by mistake: it
+     covers the top of the page while it is, and on a phone that is most of
+     what you can see. */
+
+  function initNav() {
+    var toggle = document.getElementById("navToggle");
+    var nav = document.getElementById("primaryNav");
+    if (!toggle || !nav) return;
+
+    // The same 860px the stylesheet folds the links at. The two have to agree:
+    // above it the panel's CSS stops applying and the links return to the
+    // header row on their own.
+    var narrow = window.matchMedia("(max-width: 860px)");
+
+    function isOpen() {
+      return toggle.getAttribute("aria-expanded") === "true";
+    }
+
+    function setOpen(open) {
+      toggle.setAttribute("aria-expanded", open ? "true" : "false");
+      if (open) nav.setAttribute("data-open", "");
+      else nav.removeAttribute("data-open");
+    }
+
+    toggle.addEventListener("click", function () {
+      setOpen(!isOpen());
+    });
+
+    // Every link in the panel is either an anchor on this page or a link off
+    // it. In the first case the panel would be left sitting over the heading
+    // it just scrolled to.
+    nav.addEventListener("click", function (e) {
+      var el = e.target;
+      while (el && el !== nav) {
+        if (el.tagName === "A") {
+          setOpen(false);
+          return;
+        }
+        el = el.parentNode;
+      }
+    });
+
+    document.addEventListener("keydown", function (e) {
+      if (!isOpen()) return;
+      if (e.key !== "Escape" && e.key !== "Esc" && e.keyCode !== 27) return;
+      setOpen(false);
+      // Escape moves focus back to what opened the panel, or it is left on an
+      // element that is no longer displayed and the next Tab starts from the
+      // top of the document.
+      toggle.focus();
+    });
+
+    // A tap anywhere else is the other way people close one of these.
+    // pointerdown rather than click, because iOS does not bubble a tap on an
+    // element that is not itself clickable up to the document, and the whole
+    // point of this listener is the taps that land on nothing in particular.
+    // The panel and the button are excluded: the toggle has its own handler,
+    // and a link in the panel is handled above.
+    document.addEventListener("PointerEvent" in window ? "pointerdown" : "click", function (e) {
+      if (!isOpen()) return;
+      if (nav.contains(e.target) || toggle.contains(e.target)) return;
+      setOpen(false);
+    });
+
+    // Turning a phone to landscape can cross the breakpoint with the panel
+    // open. Above it the links are back in the header, so leaving the state
+    // set would strand aria-expanded="true" on a button nobody can see and
+    // leave data-open on a nav that is no longer a panel.
+    function syncToWidth() {
+      if (!narrow.matches) setOpen(false);
+    }
+
+    if (narrow.addEventListener) narrow.addEventListener("change", syncToWidth);
+    else if (narrow.addListener) narrow.addListener(syncToWidth);
+    syncToWidth();
+  }
+
+  /* ---------- Prediction demo ---------- */
+
+  /* scripts/demo-data.js and scripts/demo.js are 108 KB between them, all of
+     it for one panel about two thirds of the way down the page. Loading them
+     with the document made them the largest thing this site downloaded, on a
+     connection where that costs the most and for a panel most visitors never
+     scroll to.
+
+     They are fetched a screen ahead of the panel instead, so by the time it is
+     on screen it is already live. The panel says what it is waiting for until
+     then: the stylesheet shows .kbdemo__fallback until demo.js sets
+     data-demo-ready, which is the same state as scripts being switched off. */
+
+  function initDemo() {
+    var panel = document.getElementById("kbdemo");
+    if (!panel) return;
+
+    var loaded = false;
+
+    function load() {
+      if (loaded) return;
+      loaded = true;
+
+      // async = false on a script the document did not contain is what keeps
+      // the pair in order. Without it demo.js can arrive first and find no
+      // window.ALPHA_OSK_DEMO_DATA, which it reports as a broken demo.
+      ["/scripts/demo-data.js", "/scripts/demo.js"].forEach(function (src) {
+        var el = document.createElement("script");
+        el.src = src + VERSION;
+        el.async = false;
+        document.body.appendChild(el);
+      });
+    }
+
+    // No IntersectionObserver means an older browser, and guessing at scroll
+    // positions to save it a download is a worse trade than the download.
+    if (!("IntersectionObserver" in window)) {
+      load();
+      return;
+    }
+
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        io.disconnect();
+        load();
+        return;
+      }
+    }, { rootMargin: "600px 0px" });
+
+    io.observe(panel);
+  }
+
+  /* ---------- Hero aura ---------- */
+
+  /* The two drifting colour fields behind the hero are pure CSS and need no
+     help to run. This only stops them once the hero has scrolled away, because
+     a compositor that keeps waking up for something nobody can see is a
+     battery cost with no picture attached, and a fair number of the people
+     this site is for are reading it on a tablet propped somewhere all day.
+
+     Nothing here is the accessibility control for the animation. That is
+     prefers-reduced-motion, which the stylesheet honours whether or not any of
+     this runs. */
+
+  function initAura() {
+    var hero = document.querySelector(".hero");
+    if (!hero || !("IntersectionObserver" in window)) return;
+
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (entries[i].isIntersecting) hero.removeAttribute("data-aura-paused");
+        else hero.setAttribute("data-aura-paused", "");
+      }
+    });
+
+    io.observe(hero);
+  }
+
   /* ---------- Footer year ---------- */
 
   function initYear() {
@@ -93,6 +261,9 @@
   /* ---------- Boot ---------- */
 
   initTheme();
+  initNav();
+  initAura();
+  initDemo();
   initVersion();
   initYear();
 })();

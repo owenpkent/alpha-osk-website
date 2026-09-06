@@ -12,7 +12,8 @@ what deploys.
 index.html            The whole site. Everything is on one page.
 404.html              Not-found page, styled from the same stylesheet.
 styles/alphaosk.css   All styling. Palette tokens at the top.
-scripts/alphaosk.js   Theme toggle and release-version lookup.
+scripts/alphaosk.js   Theme toggle, mobile menu, release-version lookup,
+                      and the on-demand loader for the two files below.
 scripts/demo.js       The live prediction demo's engine and keyboard.
 scripts/demo-data.js  GENERATED. The demo's dictionary. Do not edit by hand.
 images/               Logo, favicons, OG card, and the app screenshots.
@@ -24,6 +25,77 @@ tools/                Generators for the demo data and the images. Publicly serv
 .gitattributes        Line-ending normalisation. See Conventions.
 .git-blame-ignore-revs  Formatting-only commits for blame to skip.
 ```
+
+## Breakpoints
+
+The stylesheet is one file and mobile-first only in the sense that nothing in it
+assumes a wide screen. Five widths change the layout, and they are all in
+`styles/alphaosk.css` beside the component they affect rather than collected at
+the bottom:
+
+| Width     | What changes |
+| --------- | ------------ |
+| `860px`   | The header links fold into a menu panel behind the button in the header. Matched by `narrow` in `initNav`; change one and change the other. The footer's about block also takes a row of its own here, and its three link columns divide the row below it. |
+| `600px`   | The header gives up its own Download button, which moves to the top of the menu panel, so that the brand and the two controls still fit at 320px. |
+| `560px`   | Section padding tightens, the hero's two calls to action stack to a single width, and the demo panel breaks out of the page gutter to buy its keys back to about 26px. |
+| `400px`   | The brand and its logo shrink a step. |
+| `23.5em`  | The footer drops from three link columns to two. The only query here in `em`, and the reason is in the comment above it: it is asking whether the words still fit rather than how wide the device is. |
+
+The footer is two nested grids, the same shape atdev.com uses: `.footer-grid`
+decides whether the about block sits beside the links or above them, and
+`.footer-links` inside it decides how many columns the links use. Keep them
+separate. What was here before was one flat four-track row whose template mixed
+`repeat(auto-fit, ...)` with a leading `minmax(0, 1.4fr)`, and those two fight:
+auto-fit counts tracks by measuring the whole row, the `fr` track's minimum is
+0, so the fitted tracks take what they want and the `fr` track lives on the
+remainder. At 600px that remainder was 24 CSS px of about-paragraph, one word
+per line, in a band of widths covering small tablets and any large phone held
+sideways. Replacing auto-fit with `repeat(3, ...)` in a flat grid also works,
+but it makes the two decisions share a template again and the next person has
+to rediscover why the numbers are what they are.
+
+`@media (hover: hover)` guards every `:hover` rule in the file. A touchscreen has
+no hover, so the browser fakes one and leaves the last thing tapped looking
+hovered until something else is tapped: buttons stayed lifted, cards stayed
+raised, and keys in the demo panel stayed lit. If you add a `:hover` rule, put it
+in one of those blocks and give touch the equivalent `:active`.
+
+The narrowest viewport the site claims to support is 320px. `tools/` has no
+harness for this; the check is a browser at that width with no horizontal
+scrollbar on the page.
+
+## The hero aura
+
+Two soft colour fields drift behind the hero, on `.hero::before` and
+`.hero::after`. They are the only animation on the site that runs on its own,
+so they carry three rules rather than one:
+
+- **Only `transform` animates.** A drifting `background-position`, an animated
+  `filter`, or anything that changes geometry would repaint a viewport-sized
+  area sixty times a second. Measured over three seconds of animation with the
+  DevTools performance metrics: zero layouts, and 0.1ms of style recalculation
+  in total. That is the whole budget a decoration gets.
+- **`prefers-reduced-motion` sets `animation: none`, not a fast-forward.** The
+  blanket rule in the Motion block stops an animation by running it to its end
+  in a millisecond, which would park the two fields on their `to` keyframe: an
+  arrangement picked for the far end of a drift, not for standing still. The
+  aura overrides that with `none`, so it sits where the CSS put it, and the
+  gradients still paint. Someone who has asked for less motion gets the same
+  decoration, still.
+- **The alphas in `--aura-1` and `--aura-2` are set by measurement.** The
+  fields sit under the hero's muted text, and the file already warned that the
+  single static bloom they replaced lifted the effective background enough to
+  drag `--ink-faint` under AA. Both were swept across 25 combinations of the
+  two animation phases, in both themes, at 1280px and 390px, sampling the
+  composited pixels behind each block of hero text rather than the token
+  colour: the worst frame anywhere is `.hero__lede` at 6.11:1 against a 4.5
+  requirement. Raise either alpha and that has to be re-measured, because axe
+  will not do it for you: it returns "incomplete" rather than a verdict
+  whenever the background it would sample is a gradient.
+
+`initAura` in `scripts/alphaosk.js` pauses the pair once the hero scrolls out
+of view, which is a battery question rather than a correctness one. Nothing
+depends on it: with scripts off the animation simply runs.
 
 ## Local preview
 
@@ -75,6 +147,16 @@ prediction pass on every keypress, over the application's own wordlist, in the
 visitor's browser. Nothing typed into it is sent anywhere and nothing is
 persisted, so there is no privacy claim on the rest of the page that it
 undermines.
+
+**Neither of the demo's two files is in `index.html`, on purpose.** They are 108
+KB between them, all of it for one panel two thirds of the way down the page, and
+in the markup they were the largest thing a phone downloaded whether or not the
+visitor ever scrolled that far. `initDemo` in `scripts/alphaosk.js` fetches them
+when the panel comes within a screen of the viewport, in order and with the same
+`?v=` query `alphaosk.js` was itself requested with. Adding script tags back to
+the markup would load both twice, and `demo.js` runs a full keyboard build on
+each pass. If the panel ever shows its fallback paragraph and nothing else, check
+that loader before anything in `demo.js`.
 
 **It is a reimplementation, not the Python engine compiled to the web,** and the
 page says so in as many words. Pyodide or a WASM build would be tens of
