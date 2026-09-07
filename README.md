@@ -169,6 +169,16 @@ Nothing in them is anybody's real typing. To refresh them, regenerate there and 
 cp ../alpha-osk/assets/screenshots/*.png images/screenshots/
 ```
 
+**Then check each `<img>`'s `width` / `height` against the file it points at.**
+The CSS gives these images `width: 100%` and no height, so those attributes are
+not a size: they are the aspect ratio the browser reserves space with before the
+file arrives, and the whole point of having them is that the page does not jump
+when it does. A screenshot that comes back a different shape silently undoes
+that, and it undoes it worst where nobody would look, since the picture still
+renders correctly once loaded. They were all six wrong at once this way: the
+Compact View shot was declared 1080x380 against a real 808x452, and the Snippets
+shot 340x480 against 360x307, which reserved 190 px of empty column for it.
+
 The favicons and the Open Graph card are generated from the app's own logo by
 `tools/gen_assets.py`, so the site's icon and the app's icon cannot drift apart.
 
