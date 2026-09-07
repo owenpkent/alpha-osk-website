@@ -269,6 +269,21 @@ arriving, silently and without an error anywhere the reader can see:
   newer Netlify projects. Submissions land there and are emailed if a
   notification is configured.
 
+Detection happens **at deploy time**, and that ordering has already cost an hour
+once. Turning the setting on does not reach back into the build that is already
+live: a site deployed while it was off has no registered form, and switching it
+on afterwards changes nothing until the next deploy. The symptom is a form that
+looks completely correct in the served HTML and still 404s every POST. If that
+is what you are seeing, the fix is a fresh deploy, not a change to the markup:
+
+```
+curl -s -o /dev/null -w '%{http_code}
+' -X POST https://alphaosk.com/study   --data-urlencode 'form-name=study-interest' --data-urlencode 'email=test@example.com'
+```
+
+404 means the form is not registered with Netlify. A 3xx to the action URL means
+it is, and has just recorded a submission you should delete.
+
 `bot-field` is a honeypot, declared by `data-netlify-honeypot`. It is hidden in
 CSS rather than with the `hidden` attribute, because a bot that skips hidden
 inputs would step around the trap; `.form__hp` moves it out of view while leaving
