@@ -30,7 +30,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260905" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260907" />
 
   <!-- Theme before first paint, so a light-theme visitor never sees a dark
        flash. Dark is the default because the app is dark by default. -->
@@ -229,7 +229,8 @@
             <p>
               Each key is delivered to the operating system exactly as a physical keypress would
               be. Modifiers are sticky, so Ctrl+Alt+Del is three separate clicks rather than a
-              chord you have to hold. Right-click a modifier to lock it down.
+              chord you have to hold. Right-click a modifier to lock it down, which is
+              <a href="#pointer">one of several things the second button does</a>.
             </p>
           </div>
           <div class="step">
@@ -244,8 +245,141 @@
       </div>
     </section>
 
+    <!-- ================= Right-click ================= -->
+    <!-- The differentiator section, and the one that goes stale first: every
+         card is a shipped behaviour in the app repo, not a roadmap item. The
+         callout at the end is not decoration. A section selling a gesture has
+         to say, in the same breath, what happens to the people who cannot make
+         it, or it is selling an exclusion. -->
+    <section class="section" id="pointer">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Right-click</span>
+          <h2>Your mouse has two buttons. Most on-screen keyboards use one.</h2>
+          <p>
+            Every other on-screen keyboard treats your pointer as a single blunt finger. This one
+            puts a second full set of actions on the right button, so the things that normally
+            cost a trip through a settings dialog cost one click, right where you already are.
+          </p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3.5 6.5 9.5h3v5.5h5V9.5h3L12 3.5Z" />
+                <path d="M6 20h12" />
+              </svg>
+            </div>
+            <h3>Right-click a letter for its shifted twin</h3>
+            <p>
+              The exclamation mark on the <code>1</code> key, a capital <code>A</code> on the
+              <code>a</code> key, with no trip to Shift and no disturbing the Shift you already had
+              waiting. On by default, and a setting if you would rather it were not.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="4.5" y="10.5" width="15" height="9.5" rx="2" />
+                <path d="M8.5 10.5V7a3.5 3.5 0 0 1 7 0v3.5" />
+              </svg>
+            </div>
+            <h3>Right-click a modifier and it stays down</h3>
+            <p>
+              A plain click makes Ctrl sticky for exactly one keystroke. A right-click locks it
+              held, so Ctrl+C then Ctrl+V is four clicks with no chord to hold and no re-tapping
+              in between. Right-click it again to let go.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="2.5" y="7" width="19" height="10" rx="5" />
+                <path d="M8 12h8M12.5 9.5 15 12l-2.5 2.5" />
+              </svg>
+            </div>
+            <h3>Right-click a prediction to correct the model</h3>
+            <p>
+              Show more of a word, show less of it, fix its spelling, or remove it for good. The
+              keyboard stops guessing wrong the moment you say so, rather than after you have
+              typed around it fifty times.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="2.5" y="6" width="19" height="12" rx="2" />
+                <path d="M6 10v4M10 10v4M14 10v4M18 10v4" />
+              </svg>
+            </div>
+            <h3>Right-click a function key to program it</h3>
+            <p>
+              Any of the twenty-four can fire a shortcut chord, type a phrase you keep needing, or
+              simply take a name that means something to you. F13 through F24 are there as well,
+              and almost no other keyboard on your desk can send those at all.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="3" y="4.5" width="18" height="15" rx="2" />
+                <path d="M3 9.5h18M7.5 14h9" />
+              </svg>
+            </div>
+            <h3>Right-click a snippet to manage it</h3>
+            <p>
+              Left-click drops your address on the clipboard. Right-click opens that same tile:
+              edit it, colour-tag it, reorder it, delete it. Holding the click a beat too long is
+              deliberately not a gesture, because that is a normal way to click.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 2.5v19M2.5 12h19" />
+                <path d="M9 5.5 12 2.5l3 3M9 18.5l3 3 3-3M5.5 9l-3 3 3 3M18.5 9l3 3-3 3" />
+              </svg>
+            </div>
+            <h3>Right-click the title bar to move the window</h3>
+            <p>
+              Move, tuck away, or close, on a window that never steals focus from whatever you are
+              typing into. In move mode the pointer carries the window, a left-click drops it, and
+              a right-click puts it back exactly where it was.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: clamp(1.5rem, 3vw, 2.25rem);">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 16v-4.5M12 8.2h.01" />
+          </svg>
+          <p>
+            <strong>The second button is a shortcut, never the only door.</strong> If you drive the
+            cursor by dwell-clicking, with an eye tracker or through a switch, a right-click may
+            not be a gesture you have at all. So the function-key editor has its own page in
+            Settings, and the snippet tiles have a manage mode that puts every one of those
+            actions on a plain left-click. Where right-click is the fast way, it is not the
+            only way.
+          </p>
+        </div>
+
+        <p class="deep-links">
+          <span class="deep-links__label">Deep dive</span>
+          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/architecture/PLATFORM_ARCHITECTURE.md">How a click becomes a real keystroke</a>
+          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md">The whole system, in one paper</a>
+        </p>
+      </div>
+    </section>
+
     <!-- ================= Prediction demo ================= -->
-    <section class="section" id="prediction">
+    <section class="section section--alt" id="prediction">
       <div class="wrap">
         <div class="demo">
           <div class="demo__copy">
@@ -267,6 +401,11 @@
               It learns numbers too: your phone number, your zip, your house number, your email
               domain. Long digit runs are refused outright, so a card number or a Social Security
               number can never be stored.
+            </p>
+            <p>
+              None of this waits on a training period. It ships already knowing which words tend to
+              follow which, from a published open language model, so the next-word pills are useful
+              in the first sentence you ever type and only get more yours from there.
             </p>
           </div>
 
@@ -322,7 +461,7 @@
     </section>
 
     <!-- ================= Features ================= -->
-    <section class="section section--alt" id="features">
+    <section class="section" id="features">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Features</span>
@@ -346,6 +485,53 @@
               QWERTY, Dvorak and Colemak, plus a Compact View that folds the whole board into a
               dense 13&times;4 grid with symbols one tap away. Turn the function row, navigation
               cluster and numpad on or off independently.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M8.5 14.5a4.5 4.5 0 0 0 7 0M9 9.5h.01M15 9.5h.01" />
+              </svg>
+            </div>
+            <h3>Symbols and emoji, typed not pasted</h3>
+            <p>
+              372 glyphs in twelve categories, straight from the suggestion bar. The character is
+              typed into your app rather than dropped on the clipboard, so it arrives where a
+              paste would not, and the ones you actually use stay on the first page.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3a9 9 0 1 0 0 18c1.4 0 2-.9 2-1.8 0-1.7-1.6-1.9-1.6-3.1 0-.9.7-1.6 1.7-1.6H16a5 5 0 0 0 5-5c0-3.6-4-6.5-9-6.5Z" />
+                <path d="M7.5 12h.01M9.5 8.2h.01M14 7.5h.01" />
+              </svg>
+            </div>
+            <h3>Colour as a way to find a key</h3>
+            <p>
+              Six colour-by-function schemes, each derived from whichever of the nine themes you
+              are on, and each held to a 4.5:1 contrast floor. Colour here is a way to land on a
+              key faster, never a reason to lose one against its own background.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <rect x="3" y="3.5" width="7.5" height="7.5" rx="1.5" />
+                <rect x="13.5" y="3.5" width="7.5" height="7.5" rx="1.5" />
+                <rect x="3" y="13.5" width="7.5" height="7.5" rx="1.5" />
+                <rect x="13.5" y="13.5" width="7.5" height="7.5" rx="1.5" />
+              </svg>
+            </div>
+            <h3>No dead space between the keys</h3>
+            <p>
+              Every key owns half the gap around it, so a click landing in the crack between two
+              keycaps types the one you were aiming at instead of nothing at all. The space bar is
+              58% wider than it was, and all four edges of the grid are straight.
             </p>
           </article>
 
@@ -459,7 +645,7 @@
     </section>
 
     <!-- ================= Screenshots ================= -->
-    <section class="section" id="screenshots">
+    <section class="section section--alt" id="screenshots">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">A look around</span>
@@ -554,7 +740,7 @@
     </section>
 
     <!-- ================= Privacy ================= -->
-    <section class="section section--alt" id="privacy">
+    <section class="section" id="privacy">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Privacy</span>
@@ -621,7 +807,7 @@
     </section>
 
     <!-- ================= Download ================= -->
-    <section class="section" id="download">
+    <section class="section section--alt" id="download">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Download</span>
@@ -709,7 +895,7 @@
     </section>
 
     <!-- ================= FAQ ================= -->
-    <section class="section section--alt" id="faq">
+    <section class="section" id="faq">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Questions</span>
@@ -751,7 +937,8 @@
                 &ldquo;Always On&rdquo;. Auto-detect is on by default and covers VS Code, the
                 JetBrains IDEs, TeamViewer, RDP, VNC and AnyDesk, but anything else may need the
                 manual override. Games are handled separately: they read the keyboard by polling,
-                so the keyboard holds each key down briefly rather than tapping it instantly.
+                so the keyboard holds each key down briefly rather than tapping it instantly. That path
+                covers the Unreal Editor and packaged Unreal games as well.
               </p>
             </div>
           </details>
@@ -839,6 +1026,96 @@
       </div>
     </section>
 
+    <!-- ================= Community ================= -->
+    <!-- Deliberately no version number anywhere in here. The site never states
+         one (see the README): alphaosk.js reads the latest tag from the
+         releases API at load, so naming a release in the copy would be the one
+         thing on the page that a release could make wrong. "Recently shipped"
+         and a link to the changelog stay true on their own. -->
+    <section class="section section--alt" id="community">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Community</span>
+          <h2>One person&rsquo;s daily driver, open to everybody else&rsquo;s day</h2>
+          <p>
+            This keyboard is written on itself, which catches the things that make a working day
+            miserable and misses everything about days that are not this one. That is the gap you
+            can close, and none of the three ways below need you to write a line of code.
+          </p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M20.5 14a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2h12.5a2 2 0 0 1 2 2Z" />
+                <path d="M8.5 9h8M8.5 12.5h5" />
+              </svg>
+            </div>
+            <h3>Say what your day looks like</h3>
+            <p>
+              <a href="https://github.com/owenpkent/alpha-osk/discussions">Discussions</a> is for
+              layouts, workflows and half-formed ideas. No template, no triage. If some part of
+              using a computer is still harder than it should be, that is the useful thing to
+              post, even without a fix attached.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3.2 21 19H3l9-15.8Z" />
+                <path d="M12 10v3.6M12 16.4h.01" />
+              </svg>
+            </div>
+            <h3>Report what broke</h3>
+            <p>
+              <a href="https://github.com/owenpkent/alpha-osk/issues">Open an issue</a> and attach
+              the diagnostic log: Settings, then Data &amp; Privacy, then Diagnostics has an
+              <strong>Open Log Folder</strong> button. The log holds errors and crash traces and
+              never holds a word of what you typed.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M9 17.5 3.5 12 9 6.5M15 6.5 20.5 12 15 17.5" />
+              </svg>
+            </div>
+            <h3>Read it, then change it</h3>
+            <p>
+              MIT licensed, 2,250+ tests on every commit, and a
+              <a href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">contributing
+              guide</a> that gets you from clone to a passing suite. The prediction engine is
+              documented rather than hidden, so a pull request can start from how it works.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: clamp(1.5rem, 3vw, 2.25rem);">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 3a9 9 0 1 0 9 9" />
+            <path d="M21 3v6h-6" />
+          </svg>
+          <p>
+            <strong>Recently shipped:</strong> a symbols and emoji picker that types the glyph into
+            your app instead of copying it, six colour-by-function key schemes, F13 through F24,
+            programmable function keys, base word-pair tables so predictions work on a fresh
+            install, and a space bar 58% wider. The
+            <a href="https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md">changelog</a>
+            has the rest, including what it broke on the way.
+          </p>
+        </div>
+
+        <p class="deep-links">
+          <span class="deep-links__label">Deep dive</span>
+          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/README.md">Index of every design document</a>
+          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/research/PHILOSOPHY.md">Why the project is built this way</a>
+        </p>
+      </div>
+    </section>
+
     <!-- ================= CTA ================= -->
     <section class="section">
       <div class="wrap">
@@ -846,7 +1123,8 @@
           <h2>Get your keyboard back.</h2>
           <p>
             Free, open source, and built by somebody who depends on it every day. If it does not
-            work for you, the issue tracker is open and the author reads it.
+            work for you, say so: the issue tracker and the discussions are both open, and the
+            author reads both.
           </p>
           <div class="hero__cta">
             <a class="btn btn--primary btn--lg" href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
@@ -856,6 +1134,7 @@
               </span>
             </a>
             <a class="btn btn--lg" href="https://github.com/owenpkent/alpha-osk">View the source</a>
+            <a class="btn btn--lg" href="#community">Get involved</a>
           </div>
         </div>
       </div>
@@ -896,8 +1175,10 @@
             <ul>
               <li><a href="https://github.com/owenpkent/alpha-osk">Source code</a></li>
               <li><a href="https://github.com/owenpkent/alpha-osk-releases/releases">Releases</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/discussions">Discussions</a></li>
               <li><a href="https://github.com/owenpkent/alpha-osk/issues">Report a bug</a></li>
               <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">Contributing</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md">Changelog</a></li>
             </ul>
           </nav>
 

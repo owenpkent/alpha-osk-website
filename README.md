@@ -64,6 +64,20 @@ The narrowest viewport the site claims to support is 320px. `tools/` has no
 harness for this; the check is a browser at that width with no horizontal
 scrollbar on the page.
 
+## Section rhythm
+
+`main` alternates `.section` and `.section--alt` all the way down, and
+`.section--alt` carries both a background and a top and bottom border, so two
+of them in a row read as one long band with a seam through it. Inserting a
+section therefore flips the parity of every section after it.
+
+Add sections **in pairs** where you can: two insertions leave the tail of the
+page untouched and only the sections between them have to flip. The
+right-click section after `#how` and the community section before the closing
+call to action went in together for exactly this reason. If you add an odd
+number, walk the rest of the page and flip each one, and check the join at the
+footer, which expects to follow a plain `.section`.
+
 ## The hero aura
 
 Two soft colour fields drift behind the hero, on `.hero::before` and
