@@ -141,6 +141,16 @@ body {
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
+
+  /* Only bites when a word would otherwise run past its own box, which on a
+     320px viewport at a doubled font size is the h1 ("smartest" alone is
+     wider than the screen at 4.1rem of a 32px root) and the config paths in
+     the FAQ. Without it those spill out of the page rather than wrapping, and
+     the whole document picks up a horizontal scrollbar to reach text that is
+     already unreadable at the edge: 1.4.4 again, from the other direction.
+     break-word rather than anywhere, so ordinary prose is never broken mid
+     word while a break opportunity still exists. */
+  overflow-wrap: break-word;
 }
 
 img,
@@ -298,6 +308,16 @@ summary,
   color: var(--ink-muted);
   font-size: 1.1em;
   margin-bottom: 0;
+}
+
+/* The rule above drops the trailing margin so the head sits tight against
+   whatever follows it, which is right for the six section heads that are one
+   paragraph long and wrong for the one that is not: Privacy runs "where the
+   data is" straight into "what is refused" with no gap, so two arguments read
+   as one wall. Restore the space between them without giving the last one a
+   trailing margin back. */
+.section__head p + p {
+  margin-top: 1.1em;
 }
 
 .eyebrow {
@@ -461,6 +481,12 @@ summary,
   padding: 0.35rem;
   border-radius: var(--radius-sm);
 
+  /* The header's own link home, and the one control up here that was under
+     the 44px this file claims for every target: 39px on a phone, 43px on a
+     tablet, both from the icon rather than from any deliberate size. It sits
+     inside a 72px row, so the height was free. */
+  min-height: 2.75rem;
+
   /* Without this the name breaks after the hyphen at any phone width, and a
      sticky header that is 72px tall on a desktop becomes 145px: a sixth of an
      iPhone viewport, held there for the length of the page. */
@@ -600,8 +626,19 @@ summary,
    They now fold into a disclosure panel. Opening it needs script, so the fold
    itself is conditional on .js, which the inline head script sets before first
    paint. With scripts off the links stay in the header and wrap onto a second
-   row: taller, but every link is present and still 45px high. */
-@media (max-width: 860px) {
+   row: taller, but every link is present and still 45px high.
+
+   In em, for the reason the footer's 23.5em query gives at length: this asks
+   whether six links and three controls still fit on a line, which is a
+   question about the text, not about the device. In px it was answered once,
+   at a 16px root, and then held whatever the reader's own font size was. A
+   visitor browsing at a 32px default got the desktop header on a 1280px
+   screen, and the row ran 358px past the right edge of the viewport with no
+   way to reach the end of it: a 1.4.4 failure, on the setting a good part of
+   this site's audience is most likely to have changed. 53.75em is 860px at a
+   default root, so nothing moves for a reader who has not changed one, and
+   the fold arrives on its own once the text is large enough to need it. */
+@media (max-width: 53.75em) {
   .site-header__inner {
     flex-wrap: wrap;
     row-gap: 0.35rem;
@@ -670,8 +707,10 @@ summary,
    fitting on one line at 320px, the narrowest viewport this site claims to
    support. Download is the one that moves, to the top of the menu panel, since
    it is the only one of the four already repeated three more times down the
-   page. */
-@media (max-width: 600px) {
+   page. In em for the same reason as the query above: what stops fitting is
+   the word "Download" beside the word "Alpha-OSK", and both of those grow with
+   the reader's font size. 37.5em is 600px at a default root. */
+@media (max-width: 37.5em) {
   .js .header-cta {
     display: none;
   }
@@ -683,7 +722,10 @@ summary,
   }
 }
 
-@media (max-width: 400px) {
+/* The last of the three, and em for the same reason: this shrinks the brand
+   because the brand has stopped fitting beside the two controls, which is a
+   fact about the word rather than about the screen. 25em is 400px. */
+@media (max-width: 25em) {
   .site-header__inner {
     gap: 0.5rem;
     min-height: 4rem;
@@ -793,6 +835,20 @@ summary,
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+/* align-items: center leaves these sized to their own content rather than to
+   the column, and a block whose content cannot be broken is as wide as the
+   longest thing in it. At a doubled default font size on a 320px screen the h1
+   is one 75px word, "smartest", which is wider than the whole viewport: the
+   heading sized itself to 329px, sat centred in a 320px column and hung five
+   pixels off both edges, and the page grew a horizontal scrollbar to reach a
+   headline that could not be read at either end.
+
+   Capping the item is what lets overflow-wrap on body do its job, since a word
+   only breaks once the box it is in refuses to grow for it. */
+.hero__inner > * {
+  max-width: 100%;
 }
 
 .hero h1 {
@@ -966,6 +1022,13 @@ summary,
    take on hover: 4.05:1 on a key, 6.3:1 on the panel ground. */
 .kbdemo :focus-visible {
   outline-color: #4a9eff;
+}
+
+/* The markup keeps this in the document from first paint so that role="status"
+   is a live region by the time demo.js has anything to put in it. Empty, it is
+   still a bordered amber box, so hide it until it says something. */
+.kbdemo__status:empty {
+  display: none;
 }
 
 .kbdemo__status {
@@ -1182,7 +1245,12 @@ summary,
 
 .kbdemo__clear {
   flex: none;
-  min-height: 2.5rem;
+  /* 2.75rem, not 2.5rem. The keys in this panel are allowed under 44px because
+     ten of them will not fit across a phone at any larger size, and that trade
+     is argued for in the media query below. Nothing forces this button to join
+     them: it is one control on a row of its own, and it was 40px only because
+     nobody had measured it. */
+  min-height: 2.75rem;
   padding: 0.45rem 1rem;
   background: transparent;
   border: 1.5px solid #505050;
@@ -1378,6 +1446,15 @@ summary,
   font-weight: 700;
   font-size: 1.15rem;
   margin-bottom: 0.4rem;
+
+  /* The platform name is an anonymous flex item beside its logo, so it takes
+     the same treatment as the FAQ questions: without it "Windows" is floored
+     at its own 150px and carries the whole download grid three pixels off the
+     right of a 320px screen at a doubled root. anywhere only ever breaks a
+     word that has no other way to fit, which at that size beats the
+     alternative of a page that scrolls sideways. */
+  min-width: 0;
+  overflow-wrap: anywhere;
 }
 
 .dl__os svg {
@@ -1436,6 +1513,13 @@ summary,
   margin: 0;
   font-size: 0.96rem;
   color: var(--ink-muted);
+
+  /* A flex item will not shrink below its longest word unless it is told it
+     may. Beside a 1.3rem icon and a 1rem gap on a 320px screen, at a doubled
+     default font size, "Dictation" and "Windows" were each wider than the
+     column left over, so both callouts pushed themselves past the right edge
+     of the page. */
+  min-width: 0;
 }
 
 .callout strong {
@@ -1459,7 +1543,11 @@ summary,
 .faq summary {
   display: flex;
   align-items: center;
-  gap: 1rem;
+  /* No gap. The chevron is pushed to the right edge by its own margin-left:
+     auto, which absorbs whatever space is going, so a gap beside it is only
+     ever felt in the one case where there is no space to give: a long question
+     on a narrow screen at a large font size, where it was reserving 1rem that
+     the question needed and pushing the text past the panel. */
   min-height: 3.9rem;
   padding: 1rem 1.4rem;
   font-weight: 650;
@@ -1467,6 +1555,16 @@ summary,
   cursor: pointer;
   list-style: none;
   color: var(--ink);
+
+  /* anywhere, not break-word, and the difference is the whole point: only
+     anywhere is taken into account when the browser works out a min-content
+     width. The question text is an anonymous flex item beside the chevron, so
+     there is no element to hand a min-width: 0 to, and the item was floored at
+     the width of "keystrokes": 224px inside a 238px panel at a doubled root,
+     which pushed the longest question out of the box. Neither value breaks a
+     word while a normal wrap opportunity is still available, so nothing about
+     these questions changes at any ordinary size. */
+  overflow-wrap: anywhere;
 }
 
 .faq summary::-webkit-details-marker {
@@ -1586,6 +1684,24 @@ summary,
   }
 }
 
+/* And one column when two will not hold the longest word either. The step
+   above is the whole answer at any ordinary font size, but at the 200% that
+   1.4.4 asks for, "Contributing" is 5.6em wide and a half-column on a 390px
+   phone is 4.2em: the word ran out of its track, out of the footer and off the
+   page, which is a horizontal scrollbar on the one document width that is
+   supposed to be reachable without one.
+
+   15em is 240px at a default root, narrower than the 320px this site claims to
+   support, so this never fires for a reader who has not enlarged anything. At
+   a doubled root it is 480px, which is every phone. Same reasoning as the query
+   above, one step further along: the threshold is a fact about the word. */
+@media (max-width: 15em) {
+  .footer-links {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+}
+
 .footer-about p {
   color: var(--ink-muted);
   font-size: 0.93rem;
@@ -1612,22 +1728,20 @@ summary,
    interactive target on the site clears 44x44 CSS px, and these twelve were
    40px tall: the one place on a phone where a thumb is most likely to be
    reaching, and the only place the claim was not true. */
+/* The target is worth the whole column rather than the width of the word:
+   inline-flex sizes to the text, which on "FAQ" is 29px of hittable width in a
+   160px column. This was a touch-only rule under an 860px query, which left
+   that 29px target on every desktop and was the last thing on the page under
+   the 44px the top of this file claims. Nothing here changes with the width,
+   so it does not need a query: the text stays where it was, and only the box
+   around it grows. */
 .footer-col a {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   min-height: 2.75rem;
   color: var(--ink-muted);
   font-size: 0.95rem;
   text-decoration: none;
-}
-
-/* On a touch screen the target is worth the whole column rather than the width
-   of the word. inline-flex sizes to the text, which on "FAQ" or "Privacy" is
-   about 50px of hittable width in a 160px column. */
-@media (max-width: 860px) {
-  .footer-col a {
-    display: flex;
-  }
 }
 
 @media (hover: hover) {
@@ -1822,7 +1936,7 @@ summary,
 .deep-links {
   display: flex;
   flex-wrap: wrap;
-  align-items: baseline;
+  align-items: center;
   gap: 0.55rem 1.6rem;
   margin-top: clamp(1.5rem, 3vw, 2.25rem);
   margin-bottom: 0;
@@ -1836,8 +1950,32 @@ summary,
   color: var(--ink-faint);
 }
 
+/* 44px, like everything else that is not a key in the demo panel. These are
+   flex items rather than links inside a sentence, so 2.5.8 has no inline
+   exception to give them and they were 20px: the smallest targets on the page,
+   on a site whose argument is that small targets are the problem. inline-flex
+   makes the height reachable without the row growing, since the label they sit
+   beside is centred against them rather than baselined to them. */
 .deep-links a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* A "read the rest of it" link alone in its own paragraph. Same 20px problem
+   and the same fix: alone in a block, it is not a link in a sentence, so it
+   has to carry its own target height rather than inherit a line box. */
+.more-link {
+  margin-top: 2rem;
+  margin-bottom: 0;
+}
+
+.more-link a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 2.75rem;
   font-weight: 600;
 }
 

@@ -35,13 +35,20 @@
     // page sits under a black status bar on mobile.
     var CHROME = { dark: "#0e0e10", light: "#f7f7f9" };
 
-    function apply(theme) {
+    // Only a click persists. This used to write on every call including the
+    // one below, which runs at load with whatever the head script derived from
+    // prefers-color-scheme, so the first visit silently recorded a choice the
+    // visitor had not made: someone whose machine switches to dark in the
+    // evening, or who turns dark mode on next week, kept getting the light
+    // site for ever, with a toggle they had never touched as the only way out.
+    function apply(theme, persist) {
       document.documentElement.setAttribute("data-theme", theme);
       toggle.setAttribute(
         "aria-label",
         theme === "dark" ? "Switch to light theme" : "Switch to dark theme"
       );
       if (meta) meta.setAttribute("content", CHROME[theme]);
+      if (!persist) return;
       try {
         localStorage.setItem("alphaosk-theme", theme);
       } catch (e) {
@@ -49,12 +56,27 @@
       }
     }
 
-    apply(document.documentElement.getAttribute("data-theme") || "dark");
+    apply(document.documentElement.getAttribute("data-theme") || "dark", false);
 
     toggle.addEventListener("click", function () {
       var current = document.documentElement.getAttribute("data-theme");
-      apply(current === "dark" ? "light" : "dark");
+      apply(current === "dark" ? "light" : "dark", true);
     });
+
+    // And until they do touch it, follow the machine. A visitor on a schedule
+    // that flips at sunset should not have to reload to be taken with it.
+    var scheme = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)");
+    if (scheme && scheme.addEventListener) {
+      scheme.addEventListener("change", function (e) {
+        var chosen = null;
+        try {
+          chosen = localStorage.getItem("alphaosk-theme");
+        } catch (err) {
+          /* unreadable storage means no stored choice to honour */
+        }
+        if (!chosen) apply(e.matches ? "light" : "dark", false);
+      });
+    }
   }
 
   /* ---------- Release version ---------- */

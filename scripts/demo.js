@@ -365,10 +365,14 @@
       // The dictionary is a separate file; if it did not arrive, say so rather
       // than presenting a keyboard whose pills silently never fill in.
       if (statusEl) {
+        // role="status" in the markup, and the element is already in the tree
+        // and empty, so writing the text is what both shows it and announces
+        // it. It used to carry hidden as well, which meant the region entered
+        // the accessibility tree in the same tick as its own content and the
+        // announcement was lost.
         statusEl.textContent =
           "The demo dictionary could not be loaded, so suggestions are unavailable. " +
           "The keyboard itself is unaffected in the real application.";
-        statusEl.hidden = false;
       }
       root.setAttribute("data-demo-broken", "true");
       return;
@@ -385,6 +389,7 @@
     var savedEl = root.querySelector("[data-demo-saved]");
     var clearBtn = root.querySelector("[data-demo-clear]");
     var screenEl = root.querySelector("[data-demo-screen]");
+    var announceEl = root.querySelector("[data-demo-announce]");
 
     var committed = [];  // finished words
     var current = "";    // word in progress
@@ -426,11 +431,22 @@
       // keystroke re-renders, so a rebuild destroyed the button the user was
       // standing on: taking a suggestion from the keyboard dropped focus to
       // <body> and the next Tab restarted from the top of the document.
-      if (words.length && document.activeElement &&
-          document.activeElement.parentNode === pillsEl) {
+      if (document.activeElement && document.activeElement.parentNode === pillsEl) {
         var at = Array.prototype.indexOf.call(kids, document.activeElement);
-        // Focus is on a pill that is about to go. Keep it in the group.
-        if (at >= words.length) kids[words.length - 1].focus();
+        if (!words.length) {
+          // Every pill is about to go, so there is nothing in this group left
+          // to hold focus. The row emptying is not rare and does not need a
+          // dead end: three characters with no match reach it, since fuzzy
+          // matching only starts at MIN_FUZZY_PREFIX. Hand focus back to the
+          // screen, which is where the typing goes anyway; without this the
+          // group vanished from under the user and Tab restarted at the top of
+          // the document, which is the exact regression the paragraph above
+          // describes, left unhandled for the one case that reaches it.
+          screenEl.focus();
+        } else if (at >= words.length) {
+          // Focus is on a pill that is about to go. Keep it in the group.
+          kids[words.length - 1].focus();
+        }
       }
 
       while (kids.length > words.length) pillsEl.removeChild(pillsEl.lastChild);
@@ -450,11 +466,36 @@
         }
         b.textContent = words[i];
       }
+
+      return words;
+    }
+
+    // The pills update on screen the instant they change, and say so out loud
+    // only once the typing stops. A screen reader announces a live region per
+    // mutation, so the honest per-keystroke version read the whole suggestion
+    // list five times while somebody typed "hello", talking over the letters
+    // they were still entering. 700ms is long enough to sit inside the gap
+    // between two clicks on an on-screen keyboard, which is the pace this
+    // panel is demonstrating, and short enough that a reader who has stopped
+    // to listen is not left waiting on it.
+    var announceTimer = null;
+
+    function announcePills(words) {
+      if (!announceEl) return;
+      if (announceTimer) clearTimeout(announceTimer);
+      announceTimer = setTimeout(function () {
+        // Rewriting the region with the text it already holds announces
+        // nothing in most screen readers, which is the behaviour wanted here:
+        // backspacing to the same suggestions is not news.
+        announceEl.textContent = words.length
+          ? words.length + (words.length === 1 ? " suggestion: " : " suggestions: ") + words.join(", ")
+          : "";
+      }, 700);
     }
 
     function render() {
       renderText();
-      renderPills();
+      announcePills(renderPills());
       renderSaved();
     }
 

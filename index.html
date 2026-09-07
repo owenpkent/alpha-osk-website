@@ -29,7 +29,7 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/styles/alphaosk.css?v=20260907-3" />
 
   <!-- Theme before first paint, so a light-theme visitor never sees a dark
@@ -268,7 +268,14 @@
                on every keypress. Nothing here is animated on its own, so there
                is nothing for WCAG 2.2.2 to require a pause control for. -->
           <div class="kbdemo" id="kbdemo">
-            <p class="kbdemo__status" data-demo-status hidden></p>
+            <!-- Empty, not hidden. This is the only channel that reports a
+                 demo which failed to load, and a live region has to be in the
+                 accessibility tree before the text arrives or the change is
+                 announced to nobody: hidden took it out of the tree until the
+                 same moment the message was written into it. The stylesheet
+                 hides it while it is :empty, so an intact page still shows
+                 nothing. -->
+            <p class="kbdemo__status" data-demo-status role="status"></p>
 
             <!-- Every key here is built in script, so with nothing running this
                  panel is an empty black box with a dead Clear button in it. The
@@ -292,9 +299,21 @@
 
             <!-- The suggestions are the whole argument of this panel, and they
                  were the one part of it that changed silently. This is the
-                 channel worth announcing, not the echo of your own typing. -->
-            <div class="kbdemo__pills" data-demo-pills role="group" aria-live="polite"
+                 channel worth announcing, not the echo of your own typing.
+
+                 The announcing is done by the region below rather than by this
+                 group, though. Live on the group itself, every keystroke
+                 rewrote up to five buttons inside a live region, so typing
+                 "hello" queued five separate readings of a five-word list: the
+                 same flood that aria-live="off" above exists to stop for the
+                 text field, arriving one element further down. -->
+            <div class="kbdemo__pills" data-demo-pills role="group" aria-live="off"
                  aria-label="Word suggestions"></div>
+
+            <!-- Announces the suggestion list once the typing settles, so the
+                 news arrives without narrating every keystroke on the way to
+                 it. Off-screen: the pills themselves are the visible copy. -->
+            <p class="visually-hidden" data-demo-announce role="status"></p>
 
             <div class="kbdemo__keys" data-demo-keys></div>
 
@@ -537,7 +556,7 @@
           </p>
         </div>
 
-        <p style="margin-top: 2rem;">
+        <p class="more-link">
           <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md">Read the full privacy document &rarr;</a>
         </p>
       </div>
