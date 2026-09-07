@@ -151,14 +151,30 @@ lands in the same dashboard as a real one, so delete test entries either way.
 
 ## Where the content comes from
 
-The copy is derived from the app's own `README.md` and `docs/PRIVACY.md`. When a claim on this
-site and a claim in that repo disagree, **the repo is right and this site is stale**. The claims
-most likely to go stale, in rough order:
+The copy is derived from the app's own `README.md` and `docs/PRIVACY.md`, and `/study` from
+`docs/research/STUDY_PROTOCOL.md` and `STUDY_CONSENT.md`. When a claim on this site and a claim
+in that repo disagree, **the repo is right and this site is stale**. The claims most likely to
+go stale, in rough order:
 
 - the platform table in the Download section (macOS is listed as not yet released)
 - the privacy prose, in particular the FAQ's note that the telemetry endpoint is not deployed
 - the "2,250+ tests" figure in the stat strip
 - the screenshots in `#features`, whenever the UI they show changes
+
+The study page needs checking against different files from the rest of the site, and its claims
+are the ones an outside reader is most likely to hold the project to:
+
+| Claim on `/study` | Where it comes from |
+| --- | --- |
+| Prediction "avoids about half of all keystrokes" offline | `docs/research/STUDY_PROTOCOL.md`, the 49.1 / 50.4% held-out splits. If those move, the word "half" moves with them. |
+| The ten numbers the stats option sends | The table in `docs/PRIVACY.md`. Ten rows, listed in the same order. Add an eleventh there and this page is wrong, and wrong about a privacy promise. |
+| "Settings → Data & Privacy → Privacy" | `docs/PRIVACY.md`. A renamed settings panel silently makes the instructions unfollowable. |
+| Opting out discards the ID, so a later opt-in cannot be linked back | `src/telemetry.py`, `disable()`. This one is a behavioural guarantee, not prose: check the code, not the docs. |
+| "Not open for enrolment yet", and the four measures | `STUDY_PROTOCOL.md` |
+
+Enrolment status is the odd one out and the likeliest to be wrong at any given moment, because
+it is the only claim on the site that goes stale without anything in the app changing. Nothing
+prompts you to update it; opening enrolment is a decision, not a commit.
 
 `#features` is screenshots and nothing else, on purpose: a shipped feature does not
 automatically earn a paragraph there. Before adding one, check whether a screenshot already
