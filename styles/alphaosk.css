@@ -1914,3 +1914,47 @@ summary,
     color: #000;
   }
 }
+
+/* ---------------------------------------------------------------------------
+   Deep-dive links
+   ---------------------------------------------------------------------------
+   A row of outbound links to the app repo's design documents, sitting at the
+   foot of a section. The label is a span and not a heading: it names the row
+   for someone reading down the page, and in the heading outline it would be a
+   fourth level under a section that already has an h2 and a set of h3 cards.
+
+   The arrow is a ::after on the link rather than a character in the markup so
+   that it cannot be selected, copied or read out as the word "north east
+   arrow" by a screen reader. Every link in one of these rows leaves the site,
+   which is the whole reason the row is visually distinct from body copy. */
+.deep-links {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.55rem 1.6rem;
+  margin-top: clamp(1.5rem, 3vw, 2.25rem);
+  margin-bottom: 0;
+}
+
+.deep-links__label {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+.deep-links a {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.deep-links a::after {
+  content: "\2197";
+  display: inline-block;
+  margin-left: 0.3em;
+  font-weight: 400;
+  /* The arrow rides high next to a 600-weight label at this size; a hair of
+     translation seats it on the same optical line as the text. */
+  transform: translateY(0.05em);
+}
