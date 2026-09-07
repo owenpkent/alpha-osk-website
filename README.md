@@ -143,6 +143,12 @@ Netlify headers are not applied by a local server, so a Content-Security-Policy 
 show up until it is deployed. Check the browser console on the deploy preview after changing
 `netlify.toml` or adding any external resource.
 
+Nothing in `netlify.toml` applies locally either, so the study page is at `/study.html` rather
+than `/study`, and every root-relative link between pages assumes the deployed shape. The study
+form does not work locally at all: form handling is Netlify's, so a local submission goes
+nowhere. It has to be tested against a deploy, and a submission from a deploy preview still
+lands in the same dashboard as a real one, so delete test entries either way.
+
 ## Where the content comes from
 
 The copy is derived from the app's own `README.md` and `docs/PRIVACY.md`. When a claim on this
@@ -255,58 +261,81 @@ keystroke including the pill rebuild.
 
 One form on the site: "Register interest" on `/study`. It is a
 [Netlify form](https://docs.netlify.com/manage/forms/setup/), which means the
-markup is the configuration. Netlify finds it by parsing the deployed HTML for
-`data-netlify="true"`, so three things have to stay true or submissions stop
-arriving, silently and without an error anywhere the reader can see:
+markup is the configuration and there is no server-side code to read. That also
+means every way it can break is a way that breaks quietly: a form that has come
+unregistered still renders perfectly and still thanks the person who filled it
+in. Nothing on the page can tell you it is working. Only a submission can.
+
+### What has to stay true
 
 - The `<form>` keeps its `name` **and** the hidden `form-name` input, and the two
-  keep matching. The attribute is what registers the form; the hidden input is
-  what identifies it on POST.
+  keep matching. The attribute registers the form; the hidden input identifies it
+  on POST.
 - The markup stays static. Netlify parses files at deploy time, so a form built
-  by script at runtime is never detected.
+  by script at runtime is never seen.
+- The `action` resolves to a **real file** in the published tree. See below.
 - **Form detection stays enabled** in the Netlify UI, under Project configuration
   → Forms. This is the one part not in this repo, and it is off by default on
-  newer Netlify projects. Submissions land there and are emailed if a
-  notification is configured.
+  newer projects. Submissions land there, and are emailed if a notification is
+  configured.
 
-Detection happens **at deploy time**, and that ordering has already cost an hour
-once. Turning the setting on does not reach back into the build that is already
-live: a site deployed while it was off has no registered form, and switching it
-on afterwards changes nothing until the next deploy. The symptom is a form that
-looks completely correct in the served HTML and still 404s every POST. If that
-is what you are seeing, the fix is a fresh deploy, not a change to the markup:
+### Detection happens at deploy time, not when you enable it
 
+Turning the setting on does not reach back into the build that is already live.
+A site deployed while it was off has no registered form, and enabling it
+afterwards changes nothing until the next deploy. The symptom is a form that is
+correct in the served HTML and still 404s every POST, which reads like a markup
+fault and is not one. The fix is a fresh deploy.
+
+### The action must be a file, not a rewrite
+
+`action` is where a person is sent afterwards, not where the data goes. It is
+`/study-thanks`, and it deliberately has **no rule in `netlify.toml`** even
+though `/study` next to it has two. Netlify's form handler looks the success page
+up in the published file tree rather than through the redirect engine, so an
+action pointing at a rewrite does not fail: it quietly serves Netlify's own
+generic "Thank you!" page instead of yours. `/study/thanks` did exactly that.
+`study-thanks.html` is a real file and Netlify serves it at `/study-thanks`
+unaided. Do not give that URL the tidier `/study/...` shape; the tidiness is
+what breaks it.
+
+### Checking it actually works
+
+Submitting is the only real test, and the response tells you which of the two
+failures you have:
+
+```sh
+curl -s -o /dev/null -w '%{http_code}\n' -X POST https://alphaosk.com/study-thanks \
+  --data-urlencode 'form-name=study-interest' \
+  --data-urlencode 'email=test@example.com'
 ```
-curl -s -o /dev/null -w '%{http_code}
-' -X POST https://alphaosk.com/study   --data-urlencode 'form-name=study-interest' --data-urlencode 'email=test@example.com'
-```
 
-404 means the form is not registered with Netlify. A 3xx to the action URL means
-it is, and has just recorded a submission you should delete.
+| Response | Meaning |
+| --- | --- |
+| `404` | Not registered. Redeploy. |
+| `200`, Netlify's "Thank you!" page | Registered, but the `action` does not resolve. |
+| `200`, "Thanks. That is all we needed." | Working. Delete the submission you just made. |
 
-`bot-field` is a honeypot, declared by `data-netlify-honeypot`. It is hidden in
-CSS rather than with the `hidden` attribute, because a bot that skips hidden
-inputs would step around the trap; `.form__hp` moves it out of view while leaving
-it in the layout, and `aria-hidden` with `tabindex="-1"` keeps it away from
-screen readers and the tab order.
+Every one of these leaves a real row in the dashboard, so keep the count low and
+tidy up afterwards.
 
-The form's `action` is where a person is sent afterwards, not where the data
-goes. It is `/study-thanks`, and it has **no rule in `netlify.toml`**, which is
-deliberate and easy to undo by accident. The action has to resolve to a real
-file in the published tree: Netlify's form handler looks the success page up
-there rather than through the redirect engine, so an action pointing at a
-rewrite does not fail loudly, it just falls back to Netlify's own generic
-"Thank you!" page. That is what `/study/thanks` did, and why the thanks page is
-served at `/study-thanks`, which Netlify resolves from `study-thanks.html` on
-its own. Do not give it the tidy `/study/...` shape that `/study` has; the
-tidiness is what breaks it.
+### The honeypot
 
-Deliberately not collected: no name, no organisation, no anything beyond an
-address to write to and an optional free-text note. Registering interest in this
-particular study can imply something about the person doing it, which is also
-why it is a form rather than a `mailto:` link. A `mailto:` would have put that
-in their sent items and their provider's logs, and a real address on both ends
-of it.
+`bot-field`, declared by `data-netlify-honeypot`. It is hidden in CSS rather than
+with the `hidden` attribute, because a bot that skips hidden inputs would step
+around the trap; `.form__hp` moves it out of view while leaving it in the layout,
+and `aria-hidden` with `tabindex="-1"` keeps it away from screen readers and the
+tab order. Netlify strips both `data-netlify` attributes from the served HTML
+once it has registered the form, so their absence on the live page is normal and
+not a sign the honeypot has stopped working.
+
+### What it collects
+
+An email address and an optional free-text note. No name, no organisation,
+nothing else. Registering interest in this particular study can imply something
+about the person doing it, which is also why it is a form rather than a
+`mailto:` link: a `mailto:` would have put that in their sent items, in their
+provider's logs, and beside a real address on both ends.
 
 ## Deployment
 
@@ -339,7 +368,11 @@ Rebuilding it from nothing, in order:
 3. Set `alphaosk.com` as the **Primary domain** with *Redirect automatically to primary domain*
    turned on. The `www` redirect in `netlify.toml` is a second layer under that, not a
    replacement for it: the Netlify setting is what covers hosts the redirect rule does not name.
-4. Open the first deploy preview with the browser console showing and confirm nothing is blocked.
+4. **Project configuration, Forms**, and turn form detection on. A new project starts with it
+   off, and it only takes effect on the *next* deploy, so do this before step 5 rather than
+   after: a site rebuilt in this order has a study form that renders correctly and drops every
+   submission. See Forms above for how to tell that state apart from a markup fault.
+5. Open the first deploy preview with the browser console showing and confirm nothing is blocked.
 
 That last step is not optional. `netlify.toml` ships an **enforced** Content-Security-Policy
 rather than a report-only one, and a local server applies none of Netlify's headers, so a CSP
@@ -347,6 +380,10 @@ mistake cannot show up until the site is deployed. The three things the policy h
 allowing are the Google Fonts stylesheet and its font files, the inline no-flash theme script in
 the `<head>`, and `https://api.github.com` for the release-version lookup. Adding any external
 resource means adding its origin in the same commit as the tag that pulls it in.
+
+`form-action 'self'` predates the study form and now carries it. It is why the form posts to a
+path on this site rather than to a Netlify endpoint, and narrowing it to `'none'` would block
+submission in the browser before the request was ever made.
 
 ### When the site looks like it is not deploying
 
