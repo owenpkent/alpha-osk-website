@@ -13,7 +13,7 @@ because it is linked from outside the site and has to keep its own URL.
 index.html            The product site. Everything about the app is on this one page.
 study.html            The research study, served at /study. Carries the only form
                       on the site; see Forms below.
-study-thanks.html     Where that form lands after a submission, at /study/thanks.
+study-thanks.html     Where that form lands after a submission, at /study-thanks.
 404.html              Not-found page, styled from the same stylesheet.
 styles/alphaosk.css   All styling. Palette tokens at the top.
 scripts/alphaosk.js   Theme toggle, mobile menu, release-version lookup,
@@ -291,9 +291,15 @@ it in the layout, and `aria-hidden` with `tabindex="-1"` keeps it away from
 screen readers and the tab order.
 
 The form's `action` is where a person is sent afterwards, not where the data
-goes: `/study/thanks`, routed to `study-thanks.html` in `netlify.toml` on the
-same pattern as `/study` itself. Without an `action` Netlify shows its own
-generic success page.
+goes. It is `/study-thanks`, and it has **no rule in `netlify.toml`**, which is
+deliberate and easy to undo by accident. The action has to resolve to a real
+file in the published tree: Netlify's form handler looks the success page up
+there rather than through the redirect engine, so an action pointing at a
+rewrite does not fail loudly, it just falls back to Netlify's own generic
+"Thank you!" page. That is what `/study/thanks` did, and why the thanks page is
+served at `/study-thanks`, which Netlify resolves from `study-thanks.html` on
+its own. Do not give it the tidy `/study/...` shape that `/study` has; the
+tidiness is what breaks it.
 
 Deliberately not collected: no name, no organisation, no anything beyond an
 address to write to and an optional free-text note. Registering interest in this

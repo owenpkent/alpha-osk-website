@@ -81,19 +81,13 @@
   status = 301
   force = true
 
-# The form's success page, on the same pattern and for the same reason: the
-# action attribute in study.html is the URL people are sent to after a
-# submission, so it wants to be an address rather than a filename.
-[[redirects]]
-  from = "/study/thanks"
-  to = "/study-thanks.html"
-  status = 200
-
-[[redirects]]
-  from = "/study-thanks.html"
-  to = "/study/thanks"
-  status = 301
-  force = true
+# The form's success page is deliberately NOT routed here, and that is
+# load-bearing rather than an omission. A form's action has to resolve to a
+# real file in the published tree: Netlify's form handler looks the success
+# page up there, not through the redirect engine, so an action pointing at a
+# rewrite silently falls back to Netlify's own generic "Thank you!" page.
+# study-thanks.html is a real file, and Netlify serves it at /study-thanks
+# without any rule needing to say so.
 
 # Repo bookkeeping must not be served. Netlify publishes the repo root, so
 # without this README.md is fetchable on the live domain.
