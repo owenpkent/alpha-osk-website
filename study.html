@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Alpha-OSK Research Study | Testing whether prediction saves real clicks</title>
+  <meta name="description" content="A research study on Alpha-OSK's word prediction: how much of its offline keystroke savings hold up with a real person typing, not a replayed sentence. Share anonymous stats or join a short typing study. Protocol and consent form published first." />
+  <meta name="theme-color" content="#0e0e10" id="themeColor" />
+  <link rel="canonical" href="https://alphaosk.com/study" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="Alpha-OSK" />
+  <meta property="og:title" content="Alpha-OSK Research Study | Testing whether prediction saves real clicks" />
+  <meta property="og:description" content="How much of Alpha-OSK's offline prediction savings hold up with a real person typing. Share anonymous stats, or join a short typing study. Protocol and consent form published before enrolment opens." />
+  <meta property="og:url" content="https://alphaosk.com/study" />
+  <meta property="og:image" content="https://alphaosk.com/images/og-alphaosk.png" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="The Alpha-OSK on-screen keyboard in its dark theme, with a row of word-prediction pills above the keys." />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Alpha-OSK Research Study | Testing whether prediction saves real clicks" />
+  <meta name="twitter:description" content="How much of Alpha-OSK's offline prediction savings hold up with a real person typing. Share anonymous stats, or join a short typing study." />
+  <meta name="twitter:image" content="https://alphaosk.com/images/og-alphaosk.png" />
+
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png?v=20260903" />
+  <link rel="apple-touch-icon" href="/images/apple-touch-icon.png?v=20260903" />
+  <link rel="manifest" href="/site.webmanifest" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260907-3" />
+
+  <!-- Theme before first paint, so a light-theme visitor never sees a dark
+       flash. Identical to index.html's copy: see that file for why the class
+       and the attribute are set here rather than left to the stylesheet. -->
+  <script>
+    (function () {
+      document.documentElement.className += " js";
+      try {
+        var stored = localStorage.getItem("alphaosk-theme");
+        var prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+        var theme = stored || (prefersLight ? "light" : "dark");
+        document.documentElement.setAttribute("data-theme", theme);
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="brand" href="/">
+        <img src="/images/apple-touch-icon.png?v=20260903" alt="" width="32" height="32" />
+        Alpha-OSK
+      </a>
+
+      <button class="nav-toggle" type="button" id="navToggle"
+              aria-expanded="false" aria-controls="primaryNav" aria-label="Menu">
+        <svg class="icon-bars" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 7h16M4 12h16M4 17h16" />
+        </svg>
+        <svg class="icon-close" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M6 6 18 18M18 6 6 18" />
+        </svg>
+      </button>
+
+      <nav class="nav" id="primaryNav" aria-label="Primary">
+        <a class="btn btn--primary nav__cta" href="/#download">Download</a>
+        <a href="/#how">How it works</a>
+        <a href="/#features">Features</a>
+        <a href="/#privacy">Privacy</a>
+        <a href="/#community">Get involved</a>
+        <a href="/study">Research</a>
+        <a href="https://github.com/owenpkent/alpha-osk">Source</a>
+      </nav>
+
+      <div class="header-actions">
+        <button class="theme-toggle" type="button" id="themeToggle" aria-label="Switch to light theme">
+          <svg class="icon-sun" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="4.2" />
+            <path d="M12 2v2.4M12 19.6V22M4.2 4.2l1.7 1.7M18.1 18.1l1.7 1.7M2 12h2.4M19.6 12H22M4.2 19.8l1.7-1.7M18.1 5.9l1.7-1.7" />
+          </svg>
+          <svg class="icon-moon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z" />
+          </svg>
+        </button>
+        <a class="btn btn--primary header-cta" href="/#download">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+
+    <!-- ================= Hero ================= -->
+    <section class="hero">
+      <div class="wrap hero__inner">
+        <div class="badge-row">
+          <span class="badge"><span class="badge__dot"></span>Protocol published first</span>
+          <span class="badge">Opt-in, always</span>
+          <span class="badge">No account needed</span>
+        </div>
+
+        <span class="eyebrow">Research</span>
+        <h1>Help us find out if this actually works.</h1>
+
+        <p class="hero__lede">
+          Alpha-OSK's prediction engine avoids about half of all keystrokes when it is tested
+          offline, replaying old sentences back through the model. That number assumes a typist
+          who takes every suggestion the instant it appears, and never a moment later. Nobody
+          knows yet how much of that saving survives contact with an actual person, deciding in
+          real time whether a pill is worth the click. That gap between the lab number and a
+          lived one is what this study measures.
+        </p>
+
+        <div class="hero__cta">
+          <a class="btn btn--primary btn--lg" href="#participate">See how to take part</a>
+          <a class="btn btn--lg" href="https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_PROTOCOL.md">Read the protocol</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Why this matters ================= -->
+    <section class="section section--alt" id="why">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Why this matters</span>
+          <h2>Assistive keyboards mostly grade their own homework</h2>
+          <p>
+            That is not unusual for the field, and it is exactly why an outside check is worth
+            running.
+          </p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="10.5" cy="10.5" r="6.5" />
+                <path d="m20 20-4.3-4.3" />
+              </svg>
+            </div>
+            <h3>Evaluated by the people who built it</h3>
+            <p>
+              Most claims about assistive-keyboard prediction, including the ones on this site,
+              come from the team that wrote the software, measured against sentences nobody
+              actually typed. That is the normal way this kind of software gets evaluated, and it
+              is also why the number that gets repeated is rarely the number anyone else has
+              checked.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <circle cx="12" cy="8" r="3.4" />
+                <path d="M5 20c0-4.2 3.1-6.8 7-6.8s7 2.6 7 6.8" />
+              </svg>
+            </div>
+            <h3>One long-term user, and he wrote it</h3>
+            <p>
+              Alpha-OSK has exactly one person who has used it for real work over real months:
+              Owen, who also wrote the prediction engine it runs on. A study with outside
+              participants is the first chance to see whether what works for him works for
+              anyone else, typing under different conditions with a different pointer and a
+              different vocabulary.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3v10M8 7l4-4 4 4" />
+                <path d="M5 14v4a3 3 0 0 0 3 3h8a3 3 0 0 0 3-3v-4" />
+              </svg>
+            </div>
+            <h3>A result here changes what gets built next</h3>
+            <p>
+              For this keyboard, and for the other assistive tools that use the same approach,
+              because the protocol and the anonymised data are published for anyone to check, not
+              just the headline number.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M4 21V4M4 4h13l-2.2 3.5L17 11H4" />
+              </svg>
+            </div>
+            <h3>A disappointing result is still a result</h3>
+            <p>
+              If the saving turns out to be smaller with a real person than offline testing
+              predicts, that is worth knowing too. It says where the engine's effort should go
+              next, rather than where a lab test already said it succeeded.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Two ways to take part ================= -->
+    <section class="section" id="participate">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Take part</span>
+          <h2>Two ways to take part, at very different amounts of effort</h2>
+          <p>
+            Both are optional. Both can be turned off or stopped at any time. Neither needs an
+            account.
+          </p>
+        </div>
+
+        <div class="downloads">
+          <div class="dl dl--primary">
+            <div class="dl__os">Share anonymous stats</div>
+            <span class="badge" style="margin-bottom: 0.9rem;">The easy option</span>
+            <p class="dl__meta">
+              Ten whole numbers, sent once a week. Nothing about what you type is ever part of it.
+            </p>
+            <ul style="margin: 0 0 1.3rem; padding-left: 1.2rem; color: var(--ink-muted); font-size: 0.93rem;">
+              <li>A random ID</li>
+              <li>App version</li>
+              <li>Operating system</li>
+              <li>Keystrokes</li>
+              <li>Words</li>
+              <li>Predictions accepted</li>
+              <li>Keystrokes saved</li>
+              <li>Minutes of use</li>
+              <li>Sessions</li>
+              <li>Predictions offered</li>
+            </ul>
+            <p style="font-size: 0.93rem; color: var(--ink-muted);">
+              <strong style="color: var(--ink);">Never sent:</strong> the words you type, any
+              other content, your IP address, or key frequencies.
+            </p>
+            <p style="font-size: 0.93rem; color: var(--ink-muted);">
+              Off by default. Turn it on in Settings &rarr; Data &amp; Privacy &rarr; Privacy, or
+              accept the invitation the installer shows on first run. You can delete everything
+              you have contributed, at any time, with one button, and opting out discards the ID
+              itself, so a later opt-in can never be linked back to what came before it.
+            </p>
+            <a class="btn" href="/#privacy">Read the privacy section</a>
+          </div>
+
+          <div class="dl">
+            <div class="dl__os">Join the typing study</div>
+            <p class="dl__meta">
+              About 25 to 40 minutes, at home, on your own computer. No video call, no observer.
+            </p>
+            <p style="font-size: 0.93rem; color: var(--ink-muted);">
+              You copy short phrases while the keyboard measures typing speed and accuracy, once
+              with prediction on and once with it off, in a randomised order. You can stop at any
+              point, and if you ask, your partial data is discarded rather than kept.
+            </p>
+            <span class="dl__status" style="margin-bottom: 1.3rem;">Not open for enrolment yet</span>
+            <a class="btn" href="mailto:owenpkent@gmail.com?subject=Alpha-OSK%20study">
+              <span class="btn__stack">
+                <span>Register interest</span>
+                <span class="btn__sub">owenpkent@gmail.com</span>
+              </span>
+            </a>
+            <p style="font-size: 0.85rem; color: var(--ink-muted); margin: 0.75rem 0 0;">
+              We will write when it opens.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= What we measure ================= -->
+    <section class="section section--alt" id="measures">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">What we measure</span>
+          <h2>Four numbers, and one of them is the whole point</h2>
+          <p>
+            Every session produces the same four measures, with prediction on and with it off, so
+            each participant is compared against themselves.
+          </p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <h3>Typing speed</h3>
+            <p>
+              Words per minute: how fast the target text lands on screen, with prediction on and
+              with it off.
+            </p>
+          </article>
+
+          <article class="feature">
+            <h3>Error rate</h3>
+            <p>
+              The share of characters that end up wrong, counting what a backspace had to fix
+              along the way.
+            </p>
+          </article>
+
+          <article class="feature">
+            <h3>Clicks per character</h3>
+            <p>
+              How many clicks it actually took to produce each character of the target phrase:
+              the real cost of a keyboard you operate by pointing rather than pressing.
+            </p>
+          </article>
+
+          <article class="feature feature--headline">
+            <h3>Keystrokes saved by prediction</h3>
+            <span class="badge" style="margin-bottom: 0.6rem;">Headline question</span>
+            <p>
+              How many of those clicks the predictions actually removed, measured against a real
+              person rather than a replayed sentence. Offline testing puts this at about half.
+              Whether that holds up here is the reason the study exists.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= Your data ================= -->
+    <section class="section" id="privacy">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Privacy</span>
+          <h2>Your data, in plain terms</h2>
+          <p>
+            The same rule as the rest of the site: prediction runs on your machine, and the study
+            asks for no more than either option above already describes.
+          </p>
+        </div>
+
+        <div class="privacy">
+          <div class="privacy__item">
+            <h3>Everything stays on your machine</h3>
+            <p>
+              Unless you switch sharing on, nothing about your typing or your study session
+              leaves your computer.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>No account, no sign-up</h3>
+            <p>
+              There is nothing to register, for the keyboard or for either kind of participation.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>The ID identifies nothing</h3>
+            <p>
+              The anonymous ID is a random number with no link to your name, your email, or your
+              device.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>Study data carries no identity</h3>
+            <p>
+              No name, email, or address is attached to anything you type during a session.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>You can withdraw and delete</h3>
+            <p>
+              At any point, for either kind of participation, without needing to explain why.
+            </p>
+          </div>
+          <div class="privacy__item">
+            <h3>The protocol comes first</h3>
+            <p>
+              The full protocol and consent form are published before anyone enrols, not written
+              up afterwards to match what happened.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= For researchers ================= -->
+    <section class="section section--alt" id="researchers">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">For researchers</span>
+          <h2>Check the method, not just the claim</h2>
+          <p>
+            This section is for anyone deciding whether to trust the numbers this produces:
+            reviewers, clinicians, and other developers of assistive input tools.
+          </p>
+        </div>
+
+        <div class="callout">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <circle cx="12" cy="12" r="9" />
+            <path d="M12 8h.01M11 12h1v4h1" />
+          </svg>
+          <p>
+            <strong>This study is run by the project's author. It has no institutional
+            affiliation and no ethics board (IRB) review.</strong> The protocol and consent form
+            below are published in advance, in place of that oversight, and the data and the
+            analysis will be made public once the study runs, so the result can be checked rather
+            than taken on trust. Being straight about this is the point of this section.
+          </p>
+        </div>
+
+        <p style="margin-top: 2rem; margin-bottom: 0.75rem;">
+          <strong>Read the source documents:</strong>
+        </p>
+        <ul style="margin: 0; padding-left: 1.2rem; color: var(--ink-muted);">
+          <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_PROTOCOL.md">Study protocol &rarr;</a></li>
+          <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_CONSENT.md">Consent form &rarr;</a></li>
+          <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md">Technical white paper &rarr;</a></li>
+          <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md">Privacy document &rarr;</a></li>
+        </ul>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <div class="footer-grid">
+        <div class="footer-about">
+          <a class="brand" href="/">
+            <img src="/images/apple-touch-icon.png?v=20260903" alt="" width="32" height="32" />
+            Alpha-OSK
+          </a>
+          <p>
+            An on-screen keyboard for people who cannot comfortably use a physical one. Built and
+            maintained by Owen Kent, who uses it to write it.
+          </p>
+        </div>
+
+        <div class="footer-links">
+          <nav class="footer-col" aria-labelledby="foot-product">
+            <h2 id="foot-product">Product</h2>
+            <ul>
+              <li><a href="/#how">How it works</a></li>
+              <li><a href="/#features">Features</a></li>
+              <li><a href="/#privacy">Privacy</a></li>
+              <li><a href="/#faq">FAQ</a></li>
+              <li><a href="/#download">Download</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-labelledby="foot-project">
+            <h2 id="foot-project">Project</h2>
+            <ul>
+              <li><a href="https://github.com/owenpkent/alpha-osk">Source code</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk-releases/releases">Releases</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/discussions">Discussions</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/issues">Report a bug</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">Contributing</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md">Changelog</a></li>
+            </ul>
+          </nav>
+
+          <nav class="footer-col" aria-labelledby="foot-docs">
+            <h2 id="foot-docs">Documents</h2>
+            <ul>
+              <li><a href="/study">Research study</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md">Privacy</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md">White paper</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/LICENSE">MIT licence</a></li>
+              <li><a href="https://github.com/owenpkent/alpha-osk/blob/main/SECURITY.md">Security</a></li>
+            </ul>
+          </nav>
+        </div>
+      </div>
+
+      <div class="footer-bottom">
+        <p>&copy; <span id="year">2026</span> Owen Kent. Released under the MIT licence.</p>
+        <p>Alpha-OSK is part of a four-tool adaptive input platform alongside MacroVox, Octavium and Nimbus.</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="/scripts/alphaosk.js?v=20260905" defer></script>
+</body>
+</html>

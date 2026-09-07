@@ -1988,3 +1988,17 @@ summary,
      translation seats it on the same optical line as the text. */
   transform: translateY(0.05em);
 }
+
+/* ---------------------------------------------------------------------------
+   Study page
+   ---------------------------------------------------------------------------
+   One addition. study.html reuses .features, .privacy, .downloads/.dl,
+   .callout, .badge and .btn as they already stand; the only thing none of
+   them already said is "this is the one the study is actually asking about",
+   which the recommended Windows download card already answers for itself
+   with an accent border and ring. Repeating that here, under its own name,
+   is cheaper than teaching a fifth card style what "highlighted" means. */
+.feature--headline {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
