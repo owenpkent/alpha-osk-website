@@ -37,6 +37,7 @@ Key facts:
 ## Links
 
 - Site: https://alphaosk.com/
+- Research study: https://alphaosk.com/study
 - Source code: https://github.com/owenpkent/alpha-osk
 - Releases and downloads: https://github.com/owenpkent/alpha-osk-releases/releases
 - Discussions: https://github.com/owenpkent/alpha-osk/discussions
@@ -45,3 +46,5 @@ Key facts:
 - Changelog: https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md
 - Privacy document: https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md
 - Technical white paper: https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md
+- Study protocol: https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_PROTOCOL.md
+- Study consent form: https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_CONSENT.md

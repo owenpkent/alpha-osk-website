@@ -59,6 +59,28 @@
   [headers.values]
     Cache-Control = "public, max-age=0, must-revalidate"
 
+# Serve the study page at an extensionless /study, and make that the only
+# URL for it. Netlify will usually resolve /study to study.html on its own,
+# but this URL is baked into a shipped Windows installer page and into the
+# printed consent form, where it cannot be corrected after the fact, so it
+# is pinned here rather than left to a platform default. The .html path
+# redirects rather than serving a duplicate, so the two spellings cannot
+# split ranking signals or produce two canonical URLs for one page.
+#
+# The first rule is deliberately unforced: nothing exists at /study, so there
+# is no file for Netlify to prefer over it. The second has to be forced,
+# because study.html is a real file and would otherwise be served as itself.
+[[redirects]]
+  from = "/study"
+  to = "/study.html"
+  status = 200
+
+[[redirects]]
+  from = "/study.html"
+  to = "/study"
+  status = 301
+  force = true
+
 # Repo bookkeeping must not be served. Netlify publishes the repo root, so
 # without this README.md is fetchable on the live domain.
 #
