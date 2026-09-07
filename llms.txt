@@ -8,6 +8,14 @@ Alpha-OSK is a desktop application. The user clicks keys in a floating keyboard
 window and the keystrokes are delivered to whichever application currently has
 operating-system focus. The keyboard never takes focus itself.
 
+Unlike other on-screen keyboards, it uses both mouse buttons. Right-clicking a
+character key types its shifted variant, a modifier key locks it held, a
+prediction pill opens a menu to correct the word model, a function key opens an
+editor to bind a shortcut or a phrase to it, a snippet tile opens its actions,
+and the title bar opens a window menu. Every one of those actions also has a
+left-click route, for pointers driven by dwell-clicking, eye trackers or
+switches, which have no second button.
+
 Prediction merges an n-gram model of the user's own vocabulary with a spatial
 model of the keys surrounding the one actually clicked, so a mis-clicked key is
 still completed to the intended word. There is no large language model and no
@@ -31,5 +39,9 @@ Key facts:
 - Site: https://alphaosk.com/
 - Source code: https://github.com/owenpkent/alpha-osk
 - Releases and downloads: https://github.com/owenpkent/alpha-osk-releases/releases
+- Discussions: https://github.com/owenpkent/alpha-osk/discussions
+- Issue tracker: https://github.com/owenpkent/alpha-osk/issues
+- Contributing guide: https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md
+- Changelog: https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md
 - Privacy document: https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md
 - Technical white paper: https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md
