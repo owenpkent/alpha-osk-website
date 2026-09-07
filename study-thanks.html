@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <title>Thanks for registering interest | Alpha-OSK</title>
+  <!-- noindex for the same reason as 404.html: this page is only ever reached
+       by submitting the form, and a search result for it would be a dead end
+       that implies the reader had already signed up. Kept out of sitemap.xml
+       to match. -->
+  <meta name="robots" content="noindex" />
+  <meta name="theme-color" content="#0e0e10" id="themeColor" />
+  <link rel="icon" href="/favicon.ico" sizes="32x32" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32.png?v=20260903" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260907-4" />
+  <script>
+    (function () {
+      // Same as every other page: the gate has to close before first paint.
+      document.documentElement.className += " js";
+      try {
+        var stored = localStorage.getItem("alphaosk-theme");
+        var prefersLight = window.matchMedia && window.matchMedia("(prefers-color-scheme: light)").matches;
+        document.documentElement.setAttribute("data-theme", stored || (prefersLight ? "light" : "dark"));
+      } catch (e) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    })();
+  </script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="site-header">
+    <div class="wrap site-header__inner">
+      <a class="brand" href="/">
+        <img src="/images/apple-touch-icon.png?v=20260903" alt="" width="32" height="32" />
+        Alpha-OSK
+      </a>
+      <div class="header-actions">
+        <a class="btn btn--primary" href="/#download">Download</a>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" class="wrap error-page" tabindex="-1">
+    <span class="eyebrow">Research</span>
+    <h1>Thanks. That is all we needed.</h1>
+    <p class="hero__lede">
+      Your address is on the list, and we will write to you when enrolment opens. Nothing happens
+      until then, and registering interest does not commit you to taking part.
+    </p>
+    <p class="hero__lede">
+      If you change your mind before then, or at any point after it, say so and the address is
+      deleted. You do not have to give a reason.
+    </p>
+    <div class="hero__cta">
+      <a class="btn btn--primary btn--lg" href="/study">Back to the study</a>
+      <a class="btn btn--lg" href="https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_PROTOCOL.md">Read the protocol</a>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap footer-bottom" style="border-top: 0; padding-top: 0;">
+      <p>&copy; 2026 Owen Kent. Released under the MIT licence.</p>
+      <p><a href="https://github.com/owenpkent/alpha-osk/issues">Report a problem</a></p>
+    </div>
+  </footer>
+</body>
+</html>

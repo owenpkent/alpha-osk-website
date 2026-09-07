@@ -81,6 +81,20 @@
   status = 301
   force = true
 
+# The form's success page, on the same pattern and for the same reason: the
+# action attribute in study.html is the URL people are sent to after a
+# submission, so it wants to be an address rather than a filename.
+[[redirects]]
+  from = "/study/thanks"
+  to = "/study-thanks.html"
+  status = 200
+
+[[redirects]]
+  from = "/study-thanks.html"
+  to = "/study/thanks"
+  status = 301
+  force = true
+
 # Repo bookkeeping must not be served. Netlify publishes the repo root, so
 # without this README.md is fetchable on the live domain.
 #
