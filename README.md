@@ -3,13 +3,17 @@
 The marketing site for [Alpha-OSK](https://github.com/owenpkent/alpha-osk), an on-screen
 keyboard for Windows and Linux with on-device word prediction.
 
-One page, no build step, no dependencies. Open `index.html` in a browser and what you see is
-what deploys.
+No build step, no dependencies. Open `index.html` in a browser and what you see is what
+deploys. Nearly all of it is that one page; `/study` is the exception, and is separate
+because it is linked from outside the site and has to keep its own URL.
 
 ## Layout
 
 ```
-index.html            The whole site. Everything is on one page.
+index.html            The product site. Everything about the app is on this one page.
+study.html            The research study, served at /study. Carries the only form
+                      on the site; see Forms below.
+study-thanks.html     Where that form lands after a submission, at /study/thanks.
 404.html              Not-found page, styled from the same stylesheet.
 styles/alphaosk.css   All styling. Palette tokens at the top.
 scripts/alphaosk.js   Theme toggle, mobile menu, release-version lookup,
@@ -20,7 +24,8 @@ images/               Logo, favicons, OG card, and the app screenshots.
 netlify.toml          Publish config, security headers, cache rules, redirects.
 site.webmanifest      Icons and colours for browsers that ask for them.
 robots.txt            Allows everything, points at the sitemap.
-sitemap.xml           One URL. Update `lastmod` when the copy changes materially.
+sitemap.xml           The two indexable URLs. Update `lastmod` when the copy
+                      changes materially. study-thanks.html is deliberately absent.
 tools/                Generators for the demo data and the images. Publicly served.
 .gitattributes        Line-ending normalisation. See Conventions.
 .git-blame-ignore-revs  Formatting-only commits for blame to skip.
@@ -245,6 +250,42 @@ first; `accesd` puts `access` first; `prwdic` puts `prediction` second. A
 which matches the shipped engine's own measured profile, where a dropped click
 recovers far less often than a neighbour slip. Cost is 0.5 to 1.6 ms per
 keystroke including the pill rebuild.
+
+## Forms
+
+One form on the site: "Register interest" on `/study`. It is a
+[Netlify form](https://docs.netlify.com/manage/forms/setup/), which means the
+markup is the configuration. Netlify finds it by parsing the deployed HTML for
+`data-netlify="true"`, so three things have to stay true or submissions stop
+arriving, silently and without an error anywhere the reader can see:
+
+- The `<form>` keeps its `name` **and** the hidden `form-name` input, and the two
+  keep matching. The attribute is what registers the form; the hidden input is
+  what identifies it on POST.
+- The markup stays static. Netlify parses files at deploy time, so a form built
+  by script at runtime is never detected.
+- **Form detection stays enabled** in the Netlify UI, under Project configuration
+  → Forms. This is the one part not in this repo, and it is off by default on
+  newer Netlify projects. Submissions land there and are emailed if a
+  notification is configured.
+
+`bot-field` is a honeypot, declared by `data-netlify-honeypot`. It is hidden in
+CSS rather than with the `hidden` attribute, because a bot that skips hidden
+inputs would step around the trap; `.form__hp` moves it out of view while leaving
+it in the layout, and `aria-hidden` with `tabindex="-1"` keeps it away from
+screen readers and the tab order.
+
+The form's `action` is where a person is sent afterwards, not where the data
+goes: `/study/thanks`, routed to `study-thanks.html` in `netlify.toml` on the
+same pattern as `/study` itself. Without an `action` Netlify shows its own
+generic success page.
+
+Deliberately not collected: no name, no organisation, no anything beyond an
+address to write to and an optional free-text note. Registering interest in this
+particular study can imply something about the person doing it, which is also
+why it is a form rather than a `mailto:` link. A `mailto:` would have put that
+in their sent items and their provider's logs, and a real address on both ends
+of it.
 
 ## Deployment
 

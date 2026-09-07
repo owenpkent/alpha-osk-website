@@ -30,7 +30,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260907-3" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260907-4" />
 
   <!-- Theme before first paint, so a light-theme visitor never sees a dark
        flash. Identical to index.html's copy: see that file for why the class
@@ -259,15 +259,51 @@
               point, and if you ask, your partial data is discarded rather than kept.
             </p>
             <span class="dl__status" style="margin-bottom: 1.3rem;">Not open for enrolment yet</span>
-            <a class="btn" href="mailto:owenpkent@gmail.com?subject=Alpha-OSK%20study">
-              <span class="btn__stack">
-                <span>Register interest</span>
-                <span class="btn__sub">owenpkent@gmail.com</span>
-              </span>
-            </a>
-            <p style="font-size: 0.85rem; color: var(--ink-muted); margin: 0.75rem 0 0;">
-              We will write when it opens.
-            </p>
+
+            <!-- Netlify picks this up by parsing the built HTML, so the form has
+                 to be here as static markup: name + data-netlify are what get it
+                 detected, and the hidden form-name is what identifies it on POST.
+                 A form rather than a mailto link because registering interest in
+                 this particular study can imply something about the person
+                 sending it, and a mailto puts that in their sent items, in their
+                 provider's logs, and beside a real address on both ends. -->
+            <form class="form" name="study-interest" method="POST"
+                  data-netlify="true" data-netlify-honeypot="bot-field"
+                  action="/study/thanks">
+              <input type="hidden" name="form-name" value="study-interest" />
+
+              <!-- Spam trap. Hidden from people in CSS rather than with the
+                   hidden attribute, because a bot reads the markup and fills it
+                   in regardless; anything arriving with it set is discarded. -->
+              <p class="form__hp" aria-hidden="true">
+                <label>Do not fill this in
+                  <input name="bot-field" tabindex="-1" autocomplete="off" />
+                </label>
+              </p>
+
+              <div class="field">
+                <label for="study-email">Email address</label>
+                <input id="study-email" name="email" type="email" required
+                       autocomplete="email" placeholder="you@example.com"
+                       aria-describedby="study-email-hint" />
+                <span class="field__hint" id="study-email-hint">So we can write when enrolment opens. Nothing else.</span>
+              </div>
+
+              <div class="field">
+                <label for="study-notes">Anything we should know? <span class="field__opt">Optional</span></label>
+                <textarea id="study-notes" name="notes" rows="3"
+                          placeholder="How you use a keyboard, what you point with, or anything that would affect taking part."></textarea>
+              </div>
+
+              <button class="btn btn--primary" type="submit">Register interest</button>
+
+              <p class="form__note">
+                Your address is used to write to you about this study and nothing else. It is
+                not published, not shared, and not added to any mailing list. Ask at any point
+                and it is deleted, without needing to say why. Submissions are held by Netlify,
+                who host this site.
+              </p>
+            </form>
           </div>
         </div>
       </div>
