@@ -110,6 +110,7 @@
         <!-- Shown only under 600px, where the header has had to give up its own
              Download button to fit the brand and the two controls at 320px. -->
         <a class="btn btn--primary nav__cta" href="#download">Download</a>
+        <a href="#community">Get involved</a>
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
@@ -146,10 +147,9 @@
         <h1>The smartest keyboard you&rsquo;ll never touch.</h1>
 
         <p class="hero__lede">
-          Alpha-OSK is an on-screen keyboard that types into whatever app you are already using.
-          Click the keys with a mouse, a trackball, a head pointer, or anything else that moves a
-          cursor. As you go, it learns your words and offers the rest of them back, so a long
-          word costs three clicks instead of thirteen.
+          An on-screen keyboard that types into whatever app you are already using. Click the keys
+          with a mouse, a trackball, a head pointer, or anything else that moves a cursor. It
+          learns your words as you go, so a long word costs three clicks instead of thirteen.
         </p>
 
         <div class="hero__cta">
@@ -203,8 +203,96 @@
       </div>
     </section>
 
+    <!-- ================= Community ================= -->
+    <!-- Deliberately no version number anywhere in here. The site never states
+         one (see the README): alphaosk.js reads the latest tag from the
+         releases API at load, so naming a release in the copy would be the one
+         thing on the page that a release could make wrong. "Recently shipped"
+         and a link to the changelog stay true on their own. -->
+    <section class="section section--alt" id="community">
+      <div class="wrap">
+        <div class="section__head">
+          <span class="eyebrow">Community</span>
+          <h2>One person&rsquo;s daily driver, open to everybody else&rsquo;s day</h2>
+          <p>
+            This keyboard is written on itself, so it catches what makes its author&rsquo;s day
+            miserable and misses everything about yours. None of the three ways below need a line
+            of code.
+          </p>
+        </div>
+
+        <div class="features">
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M20.5 14a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2h12.5a2 2 0 0 1 2 2Z" />
+                <path d="M8.5 9h8M8.5 12.5h5" />
+              </svg>
+            </div>
+            <h3>Say what your day looks like</h3>
+            <p>
+              <a href="https://github.com/owenpkent/alpha-osk/discussions">Discussions</a> is for
+              layouts, workflows and half-formed ideas. No template, no triage. If some part of
+              using a computer is still harder than it should be, that is the useful thing to
+              post.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M12 3.2 21 19H3l9-15.8Z" />
+                <path d="M12 10v3.6M12 16.4h.01" />
+              </svg>
+            </div>
+            <h3>Report what broke</h3>
+            <p>
+              <a href="https://github.com/owenpkent/alpha-osk/issues">Open an issue</a> and attach
+              the diagnostic log: Settings, then Data &amp; Privacy, then Diagnostics has an
+              <strong>Open Log Folder</strong> button. Security issues go through
+              <a href="https://github.com/owenpkent/alpha-osk/blob/main/SECURITY.md">the disclosure
+              process</a> instead of a public issue.
+            </p>
+          </article>
+
+          <article class="feature">
+            <div class="feature__icon">
+              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                <path d="M9 17.5 3.5 12 9 6.5M15 6.5 20.5 12 15 17.5" />
+              </svg>
+            </div>
+            <h3>Read it, then change it</h3>
+            <p>
+              MIT licensed, with a <a
+              href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">contributing
+              guide</a> that gets you from clone to a passing suite. The prediction engine is
+              documented rather than hidden.
+            </p>
+          </article>
+        </div>
+
+        <div class="callout" style="margin-top: clamp(1.5rem, 3vw, 2.25rem);">
+          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M12 3a9 9 0 1 0 9 9" />
+            <path d="M21 3v6h-6" />
+          </svg>
+          <p>
+            <strong>Still moving:</strong> the
+            <a href="https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md">changelog</a>
+            has every release, including what each one broke on the way.
+          </p>
+        </div>
+
+        <p class="deep-links">
+          <span class="deep-links__label">Deep dive</span>
+          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/README.md">Index of every design document</a>
+          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/research/PHILOSOPHY.md">Why the project is built this way</a>
+        </p>
+      </div>
+    </section>
+
     <!-- ================= How it works ================= -->
-    <section class="section section--alt" id="how">
+    <section class="section" id="how">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">How it works</span>
@@ -219,17 +307,17 @@
           <div class="step">
             <h3>Click into any app</h3>
             <p>
-              The keyboard floats above your other windows but never takes focus from them.
-              Whatever you clicked last is where your keystrokes land: a browser, an editor, a
-              terminal, a game, even a remote desktop session.
+              It floats above your other windows but never takes focus from them. Whatever you
+              clicked last is where your keystrokes land: a browser, an editor, a terminal, a
+              game, a remote desktop.
             </p>
           </div>
           <div class="step">
             <h3>Click letters, get keystrokes</h3>
             <p>
-              Each key is delivered to the operating system exactly as a physical keypress would
-              be. Modifiers are sticky, so Ctrl+Alt+Del is three separate clicks rather than a
-              chord you have to hold, and <a href="#pointer">the right button does more still</a>.
+              Each key reaches the operating system exactly as a physical keypress would.
+              Modifiers are sticky, so Ctrl+Alt+Del is three clicks rather than a chord, and <a
+              href="#pointer">the right button does more still</a>.
             </p>
           </div>
           <div class="step">
@@ -249,15 +337,15 @@
          callout at the end is not decoration. A section selling a gesture has
          to say, in the same breath, what happens to the people who cannot make
          it, or it is selling an exclusion. -->
-    <section class="section" id="pointer">
+    <section class="section section--alt" id="pointer">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Right-click</span>
           <h2>Your mouse has two buttons. Most on-screen keyboards use one.</h2>
           <p>
             Every other on-screen keyboard treats your pointer as a single blunt finger. This one
-            puts a second full set of actions on the right button, so what normally costs a trip
-            through a settings dialog costs one click.
+            puts a second full set of actions on the right button, so what normally costs a
+            settings dialog costs one click.
           </p>
         </div>
 
@@ -273,7 +361,7 @@
             <p>
               The exclamation mark on the <code>1</code> key, a capital <code>A</code> on the
               <code>a</code> key, without disturbing the Shift you already had waiting. On by
-              default, and a setting if you would rather it were not.
+              default, and a setting if not.
             </p>
           </article>
 
@@ -301,9 +389,8 @@
             </div>
             <h3>Right-click a prediction to correct the model</h3>
             <p>
-              Show more of a word, show less of it, fix its spelling, or remove it for good. It
-              stops guessing wrong the moment you say so, rather than after you have typed around
-              it fifty times.
+              Show more of a word, less of it, fix its spelling, or remove it for good. It stops
+              guessing wrong the moment you say so.
             </p>
           </article>
 
@@ -316,9 +403,9 @@
             </div>
             <h3>Right-click a function key to program it</h3>
             <p>
-              Any of the twenty-four can fire a shortcut chord, type a phrase you keep needing, or
-              take a name that means something to you. F13 through F24 included, which almost no
-              keyboard on your desk can send at all.
+              Any of the twenty-four can fire a shortcut chord, type a phrase, or take a name that
+              means something to you. F13 through F24 included, which almost no keyboard on your
+              desk can send.
             </p>
           </article>
 
@@ -347,8 +434,7 @@
             <h3>Right-click the title bar to move the window</h3>
             <p>
               Move, tuck away or close, on a window that never steals focus. In move mode the
-              pointer carries the window, a left-click drops it, and a right-click puts it back
-              where it was.
+              pointer carries the window, a left-click drops it, a right-click puts it back.
             </p>
           </article>
         </div>
@@ -361,8 +447,8 @@
           <p>
             The second button is a shortcut, never the only door. If you drive the cursor by
             dwell-clicking, with an eye tracker or through a switch, a right-click may not be a
-            gesture you have at all. So the function-key editor has its own page in Settings, and
-            the snippet tiles have a manage mode that puts every one of those actions on a plain
+            gesture you have. So the function-key editor has its own page in Settings, and the
+            snippet tiles have a manage mode that puts every one of those actions on a plain
             left-click.
           </p>
         </div>
@@ -376,22 +462,22 @@
     </section>
 
     <!-- ================= Prediction demo ================= -->
-    <section class="section section--alt" id="prediction">
+    <section class="section" id="prediction">
       <div class="wrap">
         <div class="demo">
           <div class="demo__copy">
             <span class="eyebrow">Prediction</span>
             <h2>It finishes your words, and it forgives your aim</h2>
             <p>
-              Every click on this keyboard costs real effort, so the engine is built to remove
-              them. It merges a word-frequency model of your own vocabulary with a spatial model
-              of the keys around the one you actually hit.
+              Every click costs real effort, so the engine is built to remove them. It merges a
+              word-frequency model of your own vocabulary with a spatial model of the keys around
+              the one you actually hit.
             </p>
             <p>
-              That second half is what matters if your pointer is not precise. Type
-              <code>hwllo</code> and <code>hello</code> is still the first suggestion, because the
-              engine allows for a slipped click, a missed one, a doubled one, or two in the wrong
-              order. It also learns where inside each key you tend to land.
+              That second half matters if your pointer is not precise. Type <code>hwllo</code> and
+              <code>hello</code> is still the first suggestion, because the engine allows for a
+              slipped, missed, doubled or transposed click. It also learns where inside each key
+              you tend to land.
             </p>
             <p>
               It learns your numbers too: your phone number, your zip, your house number, your
@@ -417,9 +503,8 @@
                  until demo.js sets data-demo-ready, which covers scripts being
                  off, the file being blocked, and the file never arriving. -->
             <p class="kbdemo__fallback">
-              This demo runs a real prediction pass in your browser on every keypress,
-              so it needs JavaScript to do anything. The screenshots above show the same
-              keyboard, and the download below is unaffected.
+              This demo runs a real prediction pass on every keypress, so it needs JavaScript. The
+              screenshots above show the same keyboard, and the download below is unaffected.
             </p>
 
             <div class="kbdemo__screen" data-demo-screen tabindex="0" role="group"
@@ -447,16 +532,16 @@
           </div>
 
           <p class="kbdemo__hint">
-            Try typing <code>hwllo</code>, hitting W instead of the E you meant. The suggestions
-            still find <code>hello</code>. This runs the same approach the application does, on the
-            same wordlist, in your browser: nothing you type here is sent anywhere.
+            Try typing <code>hwllo</code>, hitting W instead of the E you meant. This runs the
+            same approach the application does, in your browser: nothing you type here is sent
+            anywhere.
           </p>
         </div>
       </div>
     </section>
 
     <!-- ================= Features ================= -->
-    <section class="section" id="features">
+    <section class="section section--alt" id="features">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Features</span>
@@ -477,9 +562,9 @@
             </div>
             <h3>Layouts that fit your screen</h3>
             <p>
-              QWERTY, Dvorak and Colemak, plus a Compact View that folds the whole board into a
-              dense 13&times;4 grid with symbols one tap away. Turn the function row, navigation
-              cluster and numpad on or off independently.
+              QWERTY, Dvorak and Colemak, plus a Compact View that folds the board into a dense
+              13&times;4 grid. Function row, navigation cluster and numpad each toggle
+              independently.
             </p>
           </article>
 
@@ -507,8 +592,7 @@
             <h3>Colour as a way to find a key</h3>
             <p>
               Six colour-by-function schemes, each derived from whichever of the nine themes you
-              are on and each held to a 4.5:1 contrast floor. A way to land on a key faster, never
-              a reason to lose one.
+              are on and each held to a 4.5:1 contrast floor.
             </p>
           </article>
 
@@ -552,9 +636,8 @@
             </div>
             <h3>A model you can see</h3>
             <p>
-              A dashboard shows what the keyboard has learned: your vocabulary, which words follow
-              which, and the keystrokes and hours prediction has saved you. Click any word to
-              drill into its context.
+              A dashboard shows what it has learned: your vocabulary, which words follow which,
+              and the keystrokes and hours prediction has saved you.
             </p>
           </article>
 
@@ -568,8 +651,7 @@
             <h3>Snippets for what you retype</h3>
             <p>
               Your address, your email, a canned reply: one tap puts it on the clipboard. The
-              keyboard can spot one as you type it and offer to save it, never while learning is
-              paused.
+              keyboard can spot one as you type and offer to save it.
             </p>
           </article>
 
@@ -596,9 +678,8 @@
             </div>
             <h3>Tuned for slow, imprecise input</h3>
             <p>
-              Repeat delay and interval are yours to set, targets are large, and a click held a
-              beat too long is never read as a different gesture. Nothing here needs a drag, a
-              hold or a double-click.
+              Repeat delay and interval are yours to set, targets are large, and nothing here
+              needs a drag, a hold or a double-click.
             </p>
           </article>
 
@@ -621,7 +702,7 @@
     </section>
 
     <!-- ================= Screenshots ================= -->
-    <section class="section section--alt" id="screenshots">
+    <section class="section" id="screenshots">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">A look around</span>
@@ -640,8 +721,7 @@
             <figcaption>
               <strong>Nine themes</strong>
               Dark, Light, Ocean, Forest, Amethyst, Vaporwave, Blackboard, Typewriter and
-              Spaceship. The theme carries through the prediction pills, the navigation panel and
-              the numpad, so the whole surface stays coherent.
+              Spaceship, each carried through the pills, the navigation panel and the numpad.
             </figcaption>
           </figure>
 
@@ -653,7 +733,7 @@
               <strong>Compact View</strong>
               A denser grid for small screens, with digits on their own panel and symbols behind
               the <code>?123</code> key. The editing keys are accent-tinted, because a uniform
-              grid gives you no size cue to find them by.
+              grid gives no size cue to find them by.
             </figcaption>
           </figure>
 
@@ -706,8 +786,8 @@
                  loading="lazy" width="340" height="480" />
             <figcaption>
               <strong>Snippets</strong>
-              Text you type constantly, one tap from the clipboard. It floats as its own window, so
-              you can drag it clear of whatever you are filling in.
+              Text you type constantly, one tap from the clipboard, in its own window you can drag
+              clear of whatever you are filling in.
             </figcaption>
           </figure>
         </div>
@@ -715,7 +795,7 @@
     </section>
 
     <!-- ================= Privacy ================= -->
-    <section class="section" id="privacy">
+    <section class="section section--alt" id="privacy">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Privacy</span>
@@ -738,9 +818,8 @@
           <div class="privacy__item">
             <h3>No LLM, no GPU</h3>
             <p>
-              The engine is an n-gram model merged with a spatial error model. It is a few
-              megabytes of JSON and some arithmetic, which is why it runs in milliseconds on any
-              machine.
+              An n-gram model merged with a spatial error model: a few megabytes of JSON and some
+              arithmetic, which is why it runs in milliseconds on any machine.
             </p>
           </div>
           <div class="privacy__item">
@@ -753,9 +832,9 @@
           <div class="privacy__item">
             <h3>Sensitive numbers are refused</h3>
             <p>
-              The number learner rejects long digit runs outright, so card numbers and Social
-              Security numbers are never stored. Everything it did learn is listed in the
-              dashboard, and removable one at a time.
+              The number learner rejects long digit runs outright, so card and Social Security
+              numbers are never stored. Whatever it did learn is listed in the dashboard,
+              removable one at a time.
             </p>
           </div>
           <div class="privacy__item">
@@ -768,9 +847,9 @@
           <div class="privacy__item privacy__item--caveat">
             <h3>Dictation is the exception</h3>
             <p>
-              If you switch on dictation and supply your own Deepgram key, audio goes to Deepgram
-              while the microphone is open, and at no other time. It is off by default, inert
-              without a key, never written to disk, and a password field cancels a run outright.
+              Audio goes to Deepgram while the microphone is open, and at no other time. Off by
+              default, inert without a key, never written to disk, and a password field cancels a
+              run outright.
             </p>
           </div>
         </div>
@@ -782,7 +861,7 @@
     </section>
 
     <!-- ================= Download ================= -->
-    <section class="section section--alt" id="download">
+    <section class="section" id="download">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Download</span>
@@ -852,11 +931,9 @@
             <path d="M12 8h.01M11 12h1v4h1" />
           </svg>
           <p>
-            <strong>Windows may show a blue &ldquo;Windows protected your PC&rdquo; screen on first
-            install.</strong> That is normal for newer applications and does not mean anything is
-            wrong. Click <strong>More info</strong>, check that the publisher reads
-            <strong>OK Studio Inc.</strong>, then click <strong>Run anyway</strong>. The prompt stops
-            appearing on its own as more people install.
+            Windows may show a blue &ldquo;Windows protected your PC&rdquo; screen on first
+            install. That is normal for newer applications. Click More info, check the publisher
+            reads OK Studio Inc., then Run anyway.
           </p>
         </div>
 
@@ -870,7 +947,7 @@
     </section>
 
     <!-- ================= FAQ ================= -->
-    <section class="section" id="faq">
+    <section class="section section--alt" id="faq">
       <div class="wrap">
         <div class="section__head">
           <span class="eyebrow">Questions</span>
@@ -882,11 +959,10 @@
             <summary>Who is this for?</summary>
             <div class="faq__body">
               <p>
-                Anyone who cannot comfortably use a physical keyboard but can move a cursor. That
-                includes people with muscular dystrophy, ALS, spinal cord injury, cerebral palsy,
-                arthritis and repetitive strain injury, and people using a head pointer, an eye
-                tracker, a trackball, a joystick or a switch-access setup. It is also useful on a
-                touchscreen or a kiosk where no keyboard is attached.
+                Anyone who cannot comfortably use a physical keyboard but can move a cursor:
+                muscular dystrophy, ALS, spinal cord injury, cerebral palsy, arthritis, RSI, or a
+                head pointer, eye tracker, joystick or switch-access setup. Also a touchscreen or
+                kiosk with no keyboard attached.
               </p>
             </div>
           </details>
@@ -896,9 +972,8 @@
             <div class="faq__body">
               <p>
                 It types into whatever application has focus, so anything that accepts keyboard
-                input accepts Alpha-OSK. It never takes focus itself, and it reads the pointer
-                state without capturing it, so dwell-click and switch-access utilities keep
-                working alongside it.
+                input accepts Alpha-OSK. It reads the pointer state without capturing it, so
+                dwell-click and switch-access utilities keep working alongside it.
               </p>
             </div>
           </details>
@@ -907,11 +982,11 @@
             <summary>My keystrokes are not appearing in VS Code, a game, or a remote desktop.</summary>
             <div class="faq__body">
               <p>
-                Open Settings &rarr; Smart Typing &rarr; Input and set Compatibility Mode to
-                &ldquo;Always On&rdquo;. Auto-detect is on by default and covers the common
-                editors and remote-desktop clients, but anything else may need the manual
-                override. Games read the keyboard by polling, so each key is held down briefly
-                rather than tapped; that path covers the Unreal Editor and packaged Unreal games.
+                Settings &rarr; Smart Typing &rarr; Input, and set Compatibility Mode to
+                &ldquo;Always On&rdquo;. Auto-detect covers the common editors and remote-desktop
+                clients; anything else needs the override. Games read the keyboard by polling, so
+                each key is held briefly rather than tapped, which covers the Unreal Editor and
+                packaged Unreal games.
               </p>
             </div>
           </details>
@@ -933,10 +1008,9 @@
               <p>
                 On Windows, <code>%APPDATA%\alpha-osk\</code>. On Linux,
                 <code>~/.config/alpha-osk/</code>. Settings &rarr; Data &amp; Privacy &rarr; Data
-                Backup writes all of it to a single zip file: your model, your lifetime stats, your
-                snippets and any imported dictionaries. Importing on a new machine restores
-                everything without a restart, and writes a rescue copy of what was there before, so
-                a mistaken import is one click to undo.
+                Backup writes all of it to one zip. Importing on a new machine restores everything
+                without a restart, and keeps a rescue copy, so a mistaken import is one click to
+                undo.
               </p>
             </div>
           </details>
@@ -962,9 +1036,9 @@
             <div class="faq__body">
               <p>
                 Yes. Settings &rarr; Your Language Model &rarr; Vocabulary Packs &rarr; Import
-                Custom Pack. A pack is a folder containing <code>dictionary.txt</code>, one word per
-                line, and optionally files of word pairs and triples. No packs ship built in,
-                because a three-hundred-word list is beaten by your own typing within a week.
+                Custom Pack. A pack is a folder with <code>dictionary.txt</code>, one word per
+                line, and optionally word pairs and triples. None ship built in: a
+                three-hundred-word list is beaten by your own typing within a week.
               </p>
             </div>
           </details>
@@ -980,94 +1054,6 @@
           </details>
 
         </div>
-      </div>
-    </section>
-
-    <!-- ================= Community ================= -->
-    <!-- Deliberately no version number anywhere in here. The site never states
-         one (see the README): alphaosk.js reads the latest tag from the
-         releases API at load, so naming a release in the copy would be the one
-         thing on the page that a release could make wrong. "Recently shipped"
-         and a link to the changelog stay true on their own. -->
-    <section class="section section--alt" id="community">
-      <div class="wrap">
-        <div class="section__head">
-          <span class="eyebrow">Community</span>
-          <h2>One person&rsquo;s daily driver, open to everybody else&rsquo;s day</h2>
-          <p>
-            This keyboard is written on itself, so it catches the things that make its author&rsquo;s
-            day miserable and misses everything about yours. None of the three ways to close that
-            gap need you to write a line of code.
-          </p>
-        </div>
-
-        <div class="features">
-          <article class="feature">
-            <div class="feature__icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M20.5 14a2 2 0 0 1-2 2H8l-4 3.5V6a2 2 0 0 1 2-2h12.5a2 2 0 0 1 2 2Z" />
-                <path d="M8.5 9h8M8.5 12.5h5" />
-              </svg>
-            </div>
-            <h3>Say what your day looks like</h3>
-            <p>
-              <a href="https://github.com/owenpkent/alpha-osk/discussions">Discussions</a> is for
-              layouts, workflows and half-formed ideas. No template, no triage. If some part of
-              using a computer is still harder than it should be, that is the useful thing to
-              post, even without a fix attached.
-            </p>
-          </article>
-
-          <article class="feature">
-            <div class="feature__icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M12 3.2 21 19H3l9-15.8Z" />
-                <path d="M12 10v3.6M12 16.4h.01" />
-              </svg>
-            </div>
-            <h3>Report what broke</h3>
-            <p>
-              <a href="https://github.com/owenpkent/alpha-osk/issues">Open an issue</a> and attach
-              the diagnostic log: Settings, then Data &amp; Privacy, then Diagnostics has an
-              <strong>Open Log Folder</strong> button. Security issues go through
-              <a href="https://github.com/owenpkent/alpha-osk/blob/main/SECURITY.md">the disclosure
-              process</a> instead of a public issue.
-            </p>
-          </article>
-
-          <article class="feature">
-            <div class="feature__icon">
-              <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                <path d="M9 17.5 3.5 12 9 6.5M15 6.5 20.5 12 15 17.5" />
-              </svg>
-            </div>
-            <h3>Read it, then change it</h3>
-            <p>
-              MIT licensed, with a
-              <a href="https://github.com/owenpkent/alpha-osk/blob/main/CONTRIBUTING.md">contributing
-              guide</a> that gets you from clone to a passing suite. The prediction engine is
-              documented rather than hidden, so a pull request can start from how it works.
-            </p>
-          </article>
-        </div>
-
-        <div class="callout" style="margin-top: clamp(1.5rem, 3vw, 2.25rem);">
-          <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-            <path d="M12 3a9 9 0 1 0 9 9" />
-            <path d="M21 3v6h-6" />
-          </svg>
-          <p>
-            <strong>Still moving:</strong> the
-            <a href="https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md">changelog</a>
-            has every release, including what each one broke on the way.
-          </p>
-        </div>
-
-        <p class="deep-links">
-          <span class="deep-links__label">Deep dive</span>
-          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/README.md">Index of every design document</a>
-          <a href="https://github.com/owenpkent/alpha-osk/blob/main/docs/research/PHILOSOPHY.md">Why the project is built this way</a>
-        </p>
       </div>
     </section>
 
