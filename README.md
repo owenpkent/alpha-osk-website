@@ -372,6 +372,33 @@ about the person doing it, which is also why it is a form rather than a
 `mailto:` link: a `mailto:` would have put that in their sent items, in their
 provider's logs, and beside a real address on both ends.
 
+### The address is off this site but not off the path
+
+Taking the `mailto:` out removed a personal address from this repo. It did not
+remove it from the route a participant walks, and it is worth being accurate
+about how far the change actually got.
+
+`docs/research/STUDY_CONSENT.md` in the app repo still carries the maintainer's
+personal address, under "Questions, or to withdraw", and `/study` links straight
+to it. Anyone who reads the consent form before deciding, which is the one thing
+that page asks them to do, has the address one click from the form built to
+avoid handing it out. It is deliberately not spelled out here: writing it into
+the file that records it should not be on this site would put it back on this
+site.
+
+That is a known gap rather than an oversight, because it does not have a
+find-and-replace fix. The address there is the only withdrawal route in the
+consent form, and a consent form with no way to withdraw is worse than one with
+an email in it. Whatever replaces it has to accept a random participant code
+from somebody already enrolled: a second form on this site, or a role address
+that is not a person's own. Deleting the line is not one of the options.
+
+Two more sit in files this site links from its footer, and both are conventional
+and probably right where they are: `SECURITY.md` (disclosure fallback behind
+GitHub private advisories) and `CODE_OF_CONDUCT.md` (the Contributor Covenant
+requires a contact). The Windows installer opens `alphaosk.com/study` and carries
+no address, so that route is clean.
+
 ## Deployment
 
 Netlify, publishing the repo root on every push to `main`. There is no build step:
