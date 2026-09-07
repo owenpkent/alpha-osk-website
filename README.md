@@ -47,7 +47,7 @@ most likely to go stale, in rough order:
 
 - the platform table in the Download section (macOS is listed as not yet released)
 - the privacy panel, in particular the note that the telemetry endpoint is not deployed
-- the "1,900+ tests" figure in the stat strip
+- the "2,250+ tests" figure in the stat strip
 - the feature list, whenever a feature ships
 
 The version number is **not** in this repo. `scripts/alphaosk.js` reads the latest tag from the
