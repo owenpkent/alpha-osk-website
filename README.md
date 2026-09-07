@@ -71,12 +71,25 @@ scrollbar on the page.
 of them in a row read as one long band with a seam through it. Inserting a
 section therefore flips the parity of every section after it.
 
-Add sections **in pairs** where you can: two insertions leave the tail of the
-page untouched and only the sections between them have to flip. The
-right-click section after `#how` and the community section before the closing
-call to action went in together for exactly this reason. If you add an odd
+Add and remove sections **in pairs** where you can: two changes leave the tail
+of the page untouched and only the sections between them have to flip. Merging
+the prediction demo into `#how` and the screenshots into `#features` was a pair
+for exactly this reason, so the footer's join never moved. If you change an odd
 number, walk the rest of the page and flip each one, and check the join at the
 footer, which expects to follow a plain `.section`.
+
+That join is not a style preference. `.site-footer` and `.section--alt` both
+paint `--bg-alt` and both draw a 1px border, so an alt section landing on the
+footer merges the two into one tall band with a doubled seam through it.
+
+**`#community` and `#faq` are both plain, and that is deliberate.** Removing
+the closing CTA band left an odd number of sections, and with eight of them
+after the hero there is no arrangement that both alternates strictly and ends
+plain: one repeat has to go somewhere. It is parked here because `.faq` carries
+its own border and `--surface` background, so the FAQ still reads as a distinct
+card against the plain section behind it. Two plain sections in a row cost
+nothing; two `--alt` ones would show a seam. If you add a section, prefer
+restoring the alternation over preserving this pair.
 
 ## The hero aura
 
@@ -132,9 +145,14 @@ site and a claim in that repo disagree, **the repo is right and this site is sta
 most likely to go stale, in rough order:
 
 - the platform table in the Download section (macOS is listed as not yet released)
-- the privacy panel, in particular the note that the telemetry endpoint is not deployed
+- the privacy prose, in particular the FAQ's note that the telemetry endpoint is not deployed
 - the "2,250+ tests" figure in the stat strip
-- the feature list, whenever a feature ships
+- the screenshots in `#features`, whenever the UI they show changes
+
+`#features` is screenshots and nothing else, on purpose: a shipped feature does not
+automatically earn a paragraph there. Before adding one, check whether a screenshot already
+shows it and whether the FAQ is the better home, because the section grew to ten prose cards
+beside seven captioned screenshots once already and half of it was saying things twice.
 
 The version number is **not** in this repo. `scripts/alphaosk.js` reads the latest tag from the
 GitHub releases API at page load, so a release never requires a site edit. If that request fails
@@ -156,11 +174,16 @@ The favicons and the Open Graph card are generated from the app's own logo by
 
 ## The live demo
 
-The keyboard in the Prediction section is real: `scripts/demo.js` runs a
+The keyboard at the foot of the `#how` section is real: `scripts/demo.js` runs a
 prediction pass on every keypress, over the application's own wordlist, in the
 visitor's browser. Nothing typed into it is sent anywhere and nothing is
 persisted, so there is no privacy claim on the rest of the page that it
 undermines.
+
+It keeps its own `#prediction` anchor even though it no longer has a section to
+itself, because that anchor is linked to from outside the site. The same goes
+for `#pointer` on the right-click section, which nothing on the page links to
+any more.
 
 **Neither of the demo's two files is in `index.html`, on purpose.** They are 108
 KB between them, all of it for one panel two thirds of the way down the page, and

@@ -925,49 +925,9 @@ summary,
   color: var(--ink-muted);
 }
 
-/* ---------- Steps ---------- */
-
-.steps {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(16.5rem, 100%), 1fr));
-  gap: clamp(1.25rem, 2.5vw, 2rem);
-  counter-reset: step;
-}
-
-.step {
-  position: relative;
-  padding: 1.75rem 1.6rem;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-}
-
-.step::before {
-  counter-increment: step;
-  content: counter(step);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 2.5rem;
-  height: 2.5rem;
-  margin-bottom: 1rem;
-  border-radius: 10px;
-  background: var(--accent-wash);
-  border: 1px solid var(--accent);
-  color: var(--accent);
-  font-weight: 800;
-  font-size: 1.05rem;
-  font-variant-numeric: tabular-nums;
-}
-
-.step p {
-  margin-bottom: 0;
-  color: var(--ink-muted);
-}
-
 /* ---------- Live prediction demo ---------- */
 
-/* The section stacks: the explanation, then the thing you can actually touch.
+/* The block stacks: the explanation, then the thing you can actually touch.
    The previous scripted panel sat in a second column beside the prose, which
    left it half width. That is the wrong trade for a panel whose whole argument
    is that its targets are big enough to hit, so the keyboard gets the full
@@ -1388,50 +1348,6 @@ summary,
   margin-bottom: 0.2rem;
 }
 
-/* ---------- Privacy panel ---------- */
-
-.privacy {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(min(17rem, 100%), 1fr));
-  gap: 1px;
-  background: var(--border);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-.privacy__item {
-  background: var(--surface);
-  padding: 1.6rem 1.5rem;
-}
-
-.privacy__item h3 {
-  display: flex;
-  align-items: baseline;
-  gap: 0.55rem;
-  font-size: 1.02rem;
-  margin-bottom: 0.45rem;
-}
-
-/* A mark plus a word: never colour alone. */
-.privacy__item h3::before {
-  content: "\2713";
-  color: var(--good);
-  font-weight: 800;
-  flex: none;
-}
-
-.privacy__item--caveat h3::before {
-  content: "\0021";
-  color: var(--warn);
-}
-
-.privacy__item p {
-  margin-bottom: 0;
-  color: var(--ink-muted);
-  font-size: 0.95rem;
-}
-
 /* ---------- Download ---------- */
 
 .downloads {
@@ -1590,29 +1506,6 @@ summary,
 
 .faq__body p:last-child {
   margin-bottom: 0;
-}
-
-/* ---------- CTA band ---------- */
-
-.cta-band {
-  text-align: center;
-  background: linear-gradient(180deg, var(--surface) 0%, var(--bg-alt) 100%);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius-lg);
-  padding: clamp(2.5rem, 5vw, 4rem) var(--gutter);
-}
-
-.cta-band h2 {
-  margin-bottom: 0.4em;
-}
-
-.cta-band p {
-  margin-inline: auto;
-  color: var(--ink-muted);
-}
-
-.cta-band .hero__cta {
-  margin-top: 1.75rem;
 }
 
 /* ---------- Footer ---------- */
@@ -1801,15 +1694,14 @@ summary,
    more than usual for this site: high contrast mode is exactly what a good part
    of the audience for an on-screen keyboard is running. */
 @media (forced-colors: active) {
-  /* Cards are separated by a background change, which is gone. Give them
-     edges. Only these two: forced colours recolour borders but do not remove
-     them, so every other card in this stylesheet already declares one and
-     already keeps a visible edge here. Naming them anyway was worse than
+  /* .stat cards are separated by a background change, which is gone. Give
+     them edges. Only this one: forced colours recolour borders but do not
+     remove them, so every other card in this stylesheet already declares one
+     and already keeps a visible edge here. Naming them anyway was worse than
      doing nothing, because the border shorthand resets all four sides: it
      flattened .callout's 4px accent rail to 1px and thinned .btn from 1.5px,
      in the one mode where the user has asked for maximum contrast. */
-  .stat,
-  .privacy__item {
+  .stat {
     border: 1px solid;
   }
 
@@ -1899,7 +1791,6 @@ summary,
 @media print {
   .site-header,
   .hero__cta,
-  .cta-band,
   .theme-toggle {
     display: none;
   }
