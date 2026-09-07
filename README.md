@@ -276,8 +276,27 @@ in. Nothing on the page can tell you it is working. Only a submission can.
 - The `action` resolves to a **real file** in the published tree. See below.
 - **Form detection stays enabled** in the Netlify UI, under Project configuration
   → Forms. This is the one part not in this repo, and it is off by default on
-  newer projects. Submissions land there, and are emailed if a notification is
-  configured.
+  newer projects.
+
+### Nothing emails you until you say so
+
+Detection and notification are two separate settings, and getting the first one
+right buys you nothing on the second. A working form quietly accumulates
+submissions in the dashboard and sends nothing at all: no email, no warning that
+no email is going out, and no hint on the page that anybody has filled it in.
+For a form whose whole job is to tell you somebody wants to take part, that is
+indistinguishable from nobody having applied.
+
+Turn it on at **Project configuration → Notifications → Form submission
+notifications → Add notification → Email notification**, then pick the
+`study-interest` form and the address to send to. There is no `netlify.toml`
+equivalent; notifications live in the dashboard or the API and nothing in this
+repo can set them.
+
+Two habits worth keeping, since neither failure announces itself: read
+**Forms → study-interest** directly rather than trusting an empty inbox, and
+re-check the notification after anything that recreates the project, because it
+does not come back with it.
 
 ### Detection happens at deploy time, not when you enable it
 
@@ -371,7 +390,9 @@ Rebuilding it from nothing, in order:
 4. **Project configuration, Forms**, and turn form detection on. A new project starts with it
    off, and it only takes effect on the *next* deploy, so do this before step 5 rather than
    after: a site rebuilt in this order has a study form that renders correctly and drops every
-   submission. See Forms above for how to tell that state apart from a markup fault.
+   submission. See Forms above for how to tell that state apart from a markup fault. Add the
+   **email notification** in the same visit, under Notifications; it does not come back with
+   the project, and without it a working form is silent.
 5. Open the first deploy preview with the browser console showing and confirm nothing is blocked.
 
 That last step is not optional. `netlify.toml` ships an **enforced** Content-Security-Policy
