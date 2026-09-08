@@ -16,9 +16,10 @@ study.html            The research study, served at /study. Carries the only for
 study-thanks.html     Where that form lands after a submission, at /study-thanks.
 404.html              Not-found page, styled from the same stylesheet.
 styles/alphaosk.css   All styling. Palette tokens at the top.
-scripts/alphaosk.js   Theme toggle, mobile menu, release-version lookup,
-                      the hero's usage-figure lookup, and the on-demand loader
-                      for the two files below.
+scripts/alphaosk.js   Theme toggle, mobile menu, release lookup (version
+                      labels and direct download links), the hero's
+                      usage-figure lookup, and the on-demand loader for the
+                      two files below.
 scripts/demo.js       The live prediction demo's engine and keyboard.
 scripts/demo-data.js  GENERATED. The demo's dictionary. Do not edit by hand.
 images/               Logo, favicons, OG card, and the app screenshots.
@@ -199,10 +200,48 @@ automatically earn a paragraph there. Before adding one, check whether a screens
 shows it and whether the FAQ is the better home, because the section grew to ten prose cards
 beside seven captioned screenshots once already and half of it was saying things twice.
 
-The version number is **not** in this repo. `scripts/alphaosk.js` reads the latest tag from the
-GitHub releases API at page load, so a release never requires a site edit. If that request fails
-the buttons fall back to the static text in the markup, which is why none of them say a version
-number on their own.
+The version number is **not** in this repo. `scripts/alphaosk.js` reads the latest release from
+the GitHub releases API at page load, so a release never requires a site edit. If that request
+fails the buttons fall back to the static text in the markup, which is why none of them say a
+version number on their own.
+
+That same response is what makes a Download button download. Every one of them carries a
+`data-download` attribute and ships with an href that is a page rather than a file; when the
+response lands, the button is repointed at an asset's own URL and starts downloading on click.
+The attribute names an extension rather than a filename because the version is part of every
+asset name, so there is no stable name to hard-code.
+
+| Button | `data-download` | Ships pointing at | Becomes |
+| --- | --- | --- | --- |
+| Header, mobile menu, hero | `auto` | `#download` | the file for the visitor's own platform |
+| Windows card | `exe` | the releases page | `Alpha-OSK-Setup-X.Y.Z.exe` |
+| Linux card | `AppImage` | the releases page | the AppImage |
+
+`auto` resolves through `platformExtension()`, which rules out Android and ChromeOS first because
+both say Linux in a user agent string and neither runs a desktop AppImage, and lets macOS fall
+through to null because the build is not released. A null platform, and a platform whose file the
+release does not carry, are both ordinary results rather than errors: the button keeps the href it
+was served with, which is a page that says what does exist. That is also the whole no-script story.
+
+The three `auto` buttons also move to `#download` on click. A cross-origin file served as an
+attachment downloads without the page navigating, so without that they look like they do nothing
+at all, and `#download` is the section worth landing on anyway because the note about Windows
+holding the installer at first run is in it.
+
+**No release has ever carried an AppImage**, only `Alpha-OSK-Setup-X.Y.Z.exe` with its lockfile
+and SBOM, though `build/linux/build.py` in the app repo builds one and CI never packages it. So a
+Linux visitor reaches the Download section from every button, and the Linux card would once have
+offered them a releases page with no AppImage on it, which is the one fallback that leads nowhere.
+
+It carries `data-download-fallback` for that: a URL, a label and a sub-label, applied by
+`applyFallback` when and only when the release does not contain the file, which turns the button
+into *Build it from source* pointing at `docs/build/LINUX.md`. Every string is an attribute in the
+markup next to the copy it replaces; the function states nothing itself.
+
+None of this is a decision the site has taken about Linux, and there is nothing to undo when that
+changes. The card reads the release: **attach an AppImage to one and the button goes back to being
+a download**, sub-label and file size and all, with no edit here. Only the no-script path still
+shows the releases page, because nothing has told it what the release contains.
 
 ## Screenshots
 
@@ -249,6 +288,17 @@ when the panel comes within a screen of the viewport, in order and with the same
 the markup would load both twice, and `demo.js` runs a full keyboard build on
 each pass. If the panel ever shows its fallback paragraph and nothing else, check
 that loader before anything in `demo.js`.
+
+**The panel reserves its built height before it is built.** `initDemo` puts
+`data-demo-reserved` on it as soon as scripts run, and the stylesheet turns that into
+`min-height: 26rem`, which is the built panel rounded up: 415px wide, 397px at 360px, so one
+value holds every width and the keyboard appearing inside it moves nothing. Without it the panel
+went from about 84px to about 415px at the moment it loaded, and since it sits above five of the
+page's six anchors, every jump to one of them from higher up the page landed correctly and was
+then shoved a third of a screen out of place, because the jump is what scrolls the panel into
+view and starts the load. The attribute is set from script rather than the stylesheet so that a
+visitor with no scripts, whose panel is never going to grow, still gets a panel the size of the
+message actually in it.
 
 **It is a reimplementation, not the Python engine compiled to the web,** and the
 page says so in as many words. Pyodide or a WASM build would be tens of

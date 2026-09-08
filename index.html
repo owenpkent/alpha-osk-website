@@ -30,7 +30,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260907-4" />
+  <link rel="stylesheet" href="/styles/alphaosk.css?v=20260908" />
 
   <!-- Theme before first paint, so a light-theme visitor never sees a dark
        flash. Dark is the default because the app is dark by default. -->
@@ -109,7 +109,7 @@
       <nav class="nav" id="primaryNav" aria-label="Primary">
         <!-- Shown only under 600px, where the header has had to give up its own
              Download button to fit the brand and the two controls at 320px. -->
-        <a class="btn btn--primary nav__cta" href="#download">Download</a>
+        <a class="btn btn--primary nav__cta" data-download="auto" href="#download">Download</a>
         <a href="#how">How it works</a>
         <a href="#features">Features</a>
         <a href="#privacy">Privacy</a>
@@ -128,7 +128,7 @@
             <path d="M20.5 14.3A8.6 8.6 0 0 1 9.7 3.5a8.6 8.6 0 1 0 10.8 10.8Z" />
           </svg>
         </button>
-        <a class="btn btn--primary header-cta" href="#download">Download</a>
+        <a class="btn btn--primary header-cta" data-download="auto" href="#download">Download</a>
       </div>
     </div>
   </header>
@@ -195,7 +195,7 @@
         </p>
 
         <div class="hero__cta">
-          <a class="btn btn--primary btn--lg" href="#download">
+          <a class="btn btn--primary btn--lg" data-download="auto" href="#download">
             <svg class="btn__icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
               <path d="M12 3v11.2l3.6-3.6 1.4 1.4-6 6-6-6 1.4-1.4L10 14.2V3h2Zm-8 15h16v3H4v-3Z" />
             </svg>
@@ -204,7 +204,7 @@
               <span class="btn__sub" data-version-label>Windows and Linux</span>
             </span>
           </a>
-          <a class="btn btn--lg" href="#how">Try it in the browser</a>
+          <a class="btn btn--lg" href="#prediction">Try it in the browser</a>
           <a class="btn btn--lg" href="https://github.com/owenpkent/alpha-osk">View the source</a>
         </div>
 
@@ -615,7 +615,8 @@
             <p class="dl__meta">
               Windows 10 and 11, 64-bit. EV-signed installer with automatic updates built in.
             </p>
-            <a class="btn btn--primary" href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
+            <a class="btn btn--primary" data-download="exe"
+               href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
               <span class="btn__stack">
                 <span>Download installer</span>
                 <span class="btn__sub" data-version-label>Latest release</span>
@@ -634,9 +635,13 @@
               AppImage, x86-64. Unsigned by design: <code>chmod +x</code> and run. Needs
               <code>xdotool</code> on X11 or <code>ydotool</code> on Wayland.
             </p>
-            <a class="btn" href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
+            <a class="btn" data-download="AppImage"
+               data-download-fallback="https://github.com/owenpkent/alpha-osk/blob/main/docs/build/LINUX.md"
+               data-download-fallback-label="Build it from source"
+               data-download-fallback-sub="Not yet in a release"
+               href="https://github.com/owenpkent/alpha-osk-releases/releases/latest">
               <span class="btn__stack">
-                <span>Download AppImage</span>
+                <span data-download-label>Download AppImage</span>
                 <span class="btn__sub" data-version-label>Latest release</span>
               </span>
             </a>
@@ -687,7 +692,7 @@
     <section class="section" id="community">
       <div class="wrap">
         <div class="section__head">
-          <span class="eyebrow">Deep dive</span>
+          <span class="eyebrow">Get involved</span>
           <h2>Written on itself, open to everybody else&rsquo;s day</h2>
           <p>
             This keyboard catches what makes its author&rsquo;s day miserable and misses everything
@@ -859,6 +864,6 @@
        #prediction, and on a phone that was the largest thing the page
        downloaded whether or not the visitor ever scrolled to it. alphaosk.js
        fetches both when the panel comes within a screen of the viewport. -->
-  <script src="/scripts/alphaosk.js?v=20260905" defer></script>
+  <script src="/scripts/alphaosk.js?v=20260908" defer></script>
 </body>
 </html>

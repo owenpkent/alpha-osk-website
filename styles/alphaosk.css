@@ -1066,6 +1066,15 @@ summary,
   box-shadow: var(--shadow-lg);
 }
 
+/* Set by alphaosk.js the moment it runs, and never removed. 26rem is the built
+   panel rounded up: it measures 415px wide and 397px at 360px, so this holds
+   every width at one height and the keyboard appearing inside it changes no
+   layout at all. Reserved rather than animated away because the alternative is
+   every anchor below this panel landing a third of a screen off. */
+.kbdemo[data-demo-reserved] {
+  min-height: 26rem;
+}
+
 /* The panel holds its dark surfaces in both site themes, so the page's accent
    is the wrong focus colour inside it. In light theme --accent is #0b62d0,
    which is about 2:1 against the #3a3a3a keys and pills and fails 1.4.11 on
