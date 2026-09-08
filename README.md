@@ -17,7 +17,8 @@ study-thanks.html     Where that form lands after a submission, at /study-thanks
 404.html              Not-found page, styled from the same stylesheet.
 styles/alphaosk.css   All styling. Palette tokens at the top.
 scripts/alphaosk.js   Theme toggle, mobile menu, release-version lookup,
-                      and the on-demand loader for the two files below.
+                      the hero's usage-figure lookup, and the on-demand loader
+                      for the two files below.
 scripts/demo.js       The live prediction demo's engine and keyboard.
 scripts/demo-data.js  GENERATED. The demo's dictionary. Do not edit by hand.
 images/               Logo, favicons, OG card, and the app screenshots.
@@ -120,10 +121,21 @@ so they carry three rules rather than one:
   drag `--ink-faint` under AA. Both were swept across 25 combinations of the
   two animation phases, in both themes, at 1280px and 390px, sampling the
   composited pixels behind each block of hero text rather than the token
-  colour: the worst frame anywhere is `.hero__lede` at 6.11:1 against a 4.5
-  requirement. Raise either alpha and that has to be re-measured, because axe
-  will not do it for you: it returns "incomplete" rather than a verdict
-  whenever the background it would sample is a gradient.
+  colour: the worst frame in that sweep was `.hero__lede` at 6.11:1 against a
+  4.5 requirement.
+
+  The home page no longer has a `.hero__lede`, and the two blocks that replaced
+  it were measured the same way: `.usage__label` at worst 6.31:1, `.hero__source`
+  at 6.42:1, and the link inside `.hero__source` at **4.86:1**, which is the
+  tightest text on the page and the number to watch. That was five aura phases
+  in both themes at 1280px and 390px, sampling the composited backdrop with the
+  hero's glyphs made transparent, so it is a narrower sweep than the original
+  25 and worth redoing in full if the alphas move. `.hero__lede` still exists
+  on `/study`, `/study-thanks` and `404.html`, so its figure still stands there.
+
+  Raise either alpha and all of that has to be re-measured, because axe will not
+  do it for you: it returns "incomplete" rather than a verdict whenever the
+  background it would sample is a gradient.
 
 `initAura` in `scripts/alphaosk.js` pauses the pair once the hero scrolls out
 of view, which is a battery question rather than a correctness one. Nothing
@@ -157,7 +169,13 @@ in that repo disagree, **the repo is right and this site is stale**. The claims 
 go stale, in rough order:
 
 - the platform table in the Download section (macOS is listed as not yet released)
-- the privacy prose, in particular the FAQ's note that the telemetry endpoint is not deployed
+- the hero's two usage figures. They are fetched from the published aggregate at runtime, but
+  the numbers in the markup are the fallback shown with scripts off or the fetch blocked, and
+  nothing refreshes those but a person. Source of truth is the last row of
+  `telemetry-aggregate.csv` on the app repo's orphan `telemetry-data` branch
+- the privacy prose. It said for a long time that the telemetry endpoint was not deployed;
+  it now is, and the app repo's own `README.md` and `CLAUDE.md` still say otherwise, so
+  check `src/telemetry.py` rather than the prose around it
 - the "2,250+ tests" figure in the stat strip
 - the screenshots in `#features`, whenever the UI they show changes
 
@@ -440,9 +458,10 @@ Rebuilding it from nothing, in order:
 
 That last step is not optional. `netlify.toml` ships an **enforced** Content-Security-Policy
 rather than a report-only one, and a local server applies none of Netlify's headers, so a CSP
-mistake cannot show up until the site is deployed. The three things the policy has to keep
+mistake cannot show up until the site is deployed. The four things the policy has to keep
 allowing are the Google Fonts stylesheet and its font files, the inline no-flash theme script in
-the `<head>`, and `https://api.github.com` for the release-version lookup. Adding any external
+the `<head>`, `https://api.github.com` for the release-version lookup, and
+`https://raw.githubusercontent.com` for the hero's usage figures. Adding any external
 resource means adding its origin in the same commit as the tag that pulls it in.
 
 `form-action 'self'` predates the study form and now carries it. It is why the form posts to a

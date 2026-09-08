@@ -930,6 +930,57 @@ summary,
   max-width: 40rem;
 }
 
+/* ---------- Hero usage figures ---------- */
+
+.hero__usage {
+  display: flex;
+  flex-wrap: wrap;
+  /* The hero column centres this block, but that only centres the box. Once
+     the two figures wrap onto separate lines the narrower one would sit at the
+     left edge of the wider one, which reads as a misalignment against a hero
+     that is centred everywhere else. */
+  justify-content: center;
+  gap: 1.25rem 2.75rem;
+  margin: 1.85rem 0 0;
+}
+
+/* The value reads above its label, but a <dl> requires the term first and the
+   term IS the label, so the visual order is reversed here rather than the
+   markup being bent to suit it. */
+.usage {
+  display: flex;
+  flex-direction: column-reverse;
+}
+
+.usage__value {
+  margin: 0;
+  font-size: clamp(2.3rem, 1.5rem + 3.2vw, 3.4rem);
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--ink);
+  /* Tabular figures because these numbers are replaced after a fetch. Without
+     them a correction from 101,533 to 98,204 shifts the label under it. */
+  font-variant-numeric: tabular-nums;
+}
+
+.usage__label {
+  margin-top: 0.4rem;
+  font-size: 0.82rem;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  /* --ink-muted rather than --ink-faint for the reason given on .hero__note:
+     this sits on the same accent bloom, where --ink-faint falls under AA. */
+  color: var(--ink-muted);
+}
+
+.hero__source {
+  margin-top: 1.3rem;
+  font-size: 0.85rem;
+  color: var(--ink-muted);
+  max-width: 44rem;
+}
+
 .hero__shot {
   margin-top: clamp(2.5rem, 5vw, 4rem);
   border-radius: var(--radius-lg);

@@ -114,6 +114,67 @@
       });
   }
 
+  /* ---------- Published usage figures ---------- */
+
+  /* The two numbers in the hero. They are the application's own opt-in
+     counters, summed across installs and appended to a dated CSV once a day,
+     which is what makes them quotable at all: anyone can open the file and
+     check the row. Nothing here measures the visitor.
+
+     The markup already carries the last known row, so this is a correction
+     rather than a fill, and every failure path below is a silent return that
+     leaves those static figures standing. */
+
+  function initUsage() {
+    var savedEl = document.querySelector("[data-usage-saved]");
+    var pctEl = document.querySelector("[data-usage-pct]");
+    var asOfEl = document.querySelector("[data-usage-asof]");
+    if (!savedEl || !pctEl) return;
+
+    fetch("https://raw.githubusercontent.com/owenpkent/alpha-osk/telemetry-data/docs/research/data/telemetry-aggregate.csv")
+      .then(function (response) {
+        if (!response.ok) throw new Error("usage lookup failed: " + response.status);
+        return response.text();
+      })
+      .then(function (csv) {
+        var rows = csv.trim().split(/\r?\n/);
+        // Header plus at least one row. The workflow only ever appends, so the
+        // last line is the newest.
+        if (rows.length < 2) return;
+
+        var cells = rows[rows.length - 1].split(",").map(function (cell) {
+          return cell.trim().replace(/^"|"$/g, "");
+        });
+
+        // date,users,keystrokes,words,predictions,keystrokes_saved,minutes,...
+        var pressed = Number(cells[2]);
+        var saved = Number(cells[5]);
+        var total = pressed + saved;
+
+        // A day nobody has reported yet is a row of zeros, and dividing by it
+        // would put "NaN%" in the headline. The static copy is better.
+        if (!isFinite(pressed) || !isFinite(saved) || total <= 0) return;
+
+        savedEl.textContent = saved.toLocaleString();
+        // Matches the application's own Effort Saved tile: the share of the
+        // keystrokes the words would have cost that were never pressed.
+        pctEl.textContent = Math.round((saved / total) * 100) + "%";
+
+        if (asOfEl && /^\d{4}-\d{2}-\d{2}$/.test(cells[0])) {
+          var parts = cells[0].split("-");
+          // Built in UTC and read back in UTC. Left to the local timezone, a
+          // visitor behind it renders the row as the previous day.
+          var when = new Date(Date.UTC(+parts[0], +parts[1] - 1, +parts[2]));
+          asOfEl.textContent = "as of " + when.toLocaleDateString(undefined, {
+            day: "numeric", month: "long", year: "numeric", timeZone: "UTC"
+          });
+        }
+      })
+      .catch(function () {
+        /* Offline, blocked, or the data branch moved. The static figures stand. */
+      });
+  }
+
   /* ---------- Navigation ---------- */
 
   /* Below 860px the header links collapse behind a menu button. Everything
@@ -287,5 +348,6 @@
   initAura();
   initDemo();
   initVersion();
+  initUsage();
   initYear();
 })();
