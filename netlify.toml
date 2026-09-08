@@ -26,9 +26,11 @@
     #     to an external file.
     #   - 'unsafe-inline' in style-src is for the handful of style attributes in
     #     the markup.
-    #   - api.github.com in connect-src is the release-version lookup in
-    #     scripts/alphaosk.js. Remove that and the version labels fall back to
-    #     their static text; nothing else breaks.
+    #   - api.github.com in connect-src is the release lookup in
+    #     scripts/alphaosk.js, which supplies both the version labels and the
+    #     per-file download URLs. Remove that and the labels fall back to their
+    #     static text and the buttons to the releases page; nothing breaks, the
+    #     download just costs a second page again.
     #   - raw.githubusercontent.com in connect-src is the published usage
     #     aggregate behind the two hero figures, also in scripts/alphaosk.js.
     #     Remove it and the hero falls back to the numbers baked into the
