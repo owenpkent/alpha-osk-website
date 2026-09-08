@@ -29,9 +29,13 @@
     #   - api.github.com in connect-src is the release-version lookup in
     #     scripts/alphaosk.js. Remove that and the version labels fall back to
     #     their static text; nothing else breaks.
+    #   - raw.githubusercontent.com in connect-src is the published usage
+    #     aggregate behind the two hero figures, also in scripts/alphaosk.js.
+    #     Remove it and the hero falls back to the numbers baked into the
+    #     markup, which is a stale headline rather than a broken one.
     # If a third-party script is ever added, add its origin here in the same
     # commit as the tag, not afterwards.
-    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self' https://api.github.com https://raw.githubusercontent.com; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'; manifest-src 'self'"
 
 # Images keep stable filenames and get their contents replaced in place, so a
 # long immutable entry would pin returning visitors to superseded screenshots.

@@ -28,9 +28,18 @@ Key facts:
   (AppImage, requires xdotool on X11 or ydotool on Wayland). macOS is in
   progress and not released.
 - Privacy: learning is entirely on-device. Password fields pause learning
-  automatically. The one feature that transmits anything is optional voice
-  dictation, which is off by default and requires the user's own Deepgram API
-  key; audio is sent only while the microphone is open.
+  automatically. Two features transmit anything at all, both off by default and
+  both opt-in: voice dictation, which requires the user's own Deepgram API key
+  and sends audio only while the microphone is open; and anonymous usage stats,
+  which send nine integer counters a week, never content, word frequencies, key
+  frequencies, IP or hostname.
+- Measured savings: the opt-in counters are summed across installs and appended
+  to a public dated CSV once a day, and the current row is what the figures on
+  the home page are read from. Separately, a replayed benchmark on a corpus of
+  AAC-like communications puts the prediction engine at 49 to 50% keystroke
+  savings; the white paper describes that as an upper bound under an idealised
+  user rather than an estimate of real-world benefit, and notes there is no user
+  study.
 - Author: Owen Kent, a wheelchair user with muscular dystrophy who uses the
   keyboard daily to develop it.
 
@@ -46,5 +55,6 @@ Key facts:
 - Changelog: https://github.com/owenpkent/alpha-osk/blob/main/CHANGELOG.md
 - Privacy document: https://github.com/owenpkent/alpha-osk/blob/main/docs/PRIVACY.md
 - Technical white paper: https://github.com/owenpkent/alpha-osk/blob/main/docs/WHITEPAPER.md
+- Published usage aggregate (CSV): https://github.com/owenpkent/alpha-osk/blob/telemetry-data/docs/research/data/telemetry-aggregate.csv
 - Study protocol: https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_PROTOCOL.md
 - Study consent form: https://github.com/owenpkent/alpha-osk/blob/main/docs/research/STUDY_CONSENT.md

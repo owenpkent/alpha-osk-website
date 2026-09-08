@@ -153,16 +153,45 @@
          or a platform will read twice once the fetch lands. -->
     <section class="hero">
       <div class="wrap hero__inner">
-        <div class="badge-row">
-          <span class="badge"><span class="badge__dot"></span>Free and open source</span>
-          <span class="badge">Nothing leaves your machine</span>
-        </div>
-
         <h1>The smartest keyboard you&rsquo;ll never touch.</h1>
 
-        <p class="hero__lede">
-          An on-screen keyboard that learns your words as you go, so a long word costs three
-          clicks instead of thirteen.
+        <!-- ================= Usage figures =================
+             These are measured, not estimated, which is the only reason
+             they are allowed this high on the page. They come from the opt-in counters
+             the application itself publishes, summed and appended to a dated
+             CSV once a day by the alpha-osk repo's telemetry-aggregate
+             workflow. Anyone can open the row and check the arithmetic.
+
+             The labels are the application's own dashboard tiles, word for
+             word, so the site and the app cannot drift apart on what they
+             name. "Effort saved" is therefore the only place the denominator
+             is NOT spelled out, and this comment is where it lives: the figure
+             is saved / (pressed + saved), the keystrokes the words WOULD have
+             cost, not the length of the finished text. It is a share of effort
+             avoided rather than of document produced. Label it any other way
+             and the number stops being the one the CSV supports.
+
+             The values are baked into the markup rather than left empty
+             because the fetch is best-effort: with scripts off, blocked, or
+             offline, the headline still reads as a headline instead of as a
+             gap. They are the newest row at the time of writing and go stale
+             slowly; initUsage corrects them whenever it lands. -->
+        <dl class="hero__usage">
+          <div class="usage">
+            <dt class="usage__label">Keystrokes saved</dt>
+            <dd class="usage__value" data-usage-saved>101,533</dd>
+          </div>
+          <div class="usage">
+            <dt class="usage__label">Effort saved</dt>
+            <dd class="usage__value" data-usage-pct>54%</dd>
+          </div>
+        </dl>
+
+        <p class="hero__source">
+          From the opt-in usage counters, republished daily
+          <span data-usage-asof>as of September 8, 2026</span>.
+          <a href="https://github.com/owenpkent/alpha-osk/blob/telemetry-data/docs/research/data/telemetry-aggregate.csv">The
+          series is public</a>.
         </p>
 
         <div class="hero__cta">
@@ -748,10 +777,12 @@
                 and it is optional.
               </p>
               <p>
-                There is an opt-in statistics client in the build, but its endpoint is not
-                deployed, so it does nothing today. Were it ever switched on, opting in would send
-                nine integer counters a week: never content, never word frequencies, never your IP
-                or hostname.
+                There is an opt-in statistics client in the build. It is off until you switch it
+                on, and opting in sends nine integer counters a week: never content, never word
+                frequencies, never your IP or hostname. Those counters are summed across installs
+                and <a href="https://github.com/owenpkent/alpha-osk/blob/telemetry-data/docs/research/data/telemetry-aggregate.csv">republished
+                as a dated CSV</a>, which is where the two figures at the top of the home page come
+                from.
               </p>
             </div>
           </details>
