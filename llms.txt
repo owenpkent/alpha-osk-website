@@ -1,8 +1,8 @@
 # Alpha-OSK
 
-> A free, open-source on-screen keyboard for Windows and Linux, with word
-> prediction that learns on the user's own machine. Built for people who cannot
-> comfortably use a physical keyboard but can move a cursor.
+> A free, open-source assistive on-screen keyboard for Windows and Linux, with
+> word prediction that learns on the user's own machine. Built for people who
+> cannot comfortably use a physical keyboard but can move a cursor.
 
 Alpha-OSK is a desktop application. The user clicks keys in a floating keyboard
 window and the keystrokes are delivered to whichever application currently has
