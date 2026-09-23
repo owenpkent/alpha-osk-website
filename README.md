@@ -127,12 +127,18 @@ so they carry three rules rather than one:
 
   The home page no longer has a `.hero__lede`, and the two blocks that replaced
   it were measured the same way: `.usage__label` at worst 6.31:1, `.hero__source`
-  at 6.42:1, and the link inside `.hero__source` at **4.86:1**, which is the
-  tightest text on the page and the number to watch. That was five aura phases
-  in both themes at 1280px and 390px, sampling the composited backdrop with the
-  hero's glyphs made transparent, so it is a narrower sweep than the original
-  25 and worth redoing in full if the alphas move. `.hero__lede` still exists
-  on `/study`, `/study-thanks` and `404.html`, so its figure still stands there.
+  at 6.42:1, and the link inside `.hero__source` at 4.86:1. That was five aura
+  phases in both themes at 1280px and 390px, sampling the composited backdrop
+  with the hero's glyphs made transparent, so it is a narrower sweep than the
+  original 25 and worth redoing in full if the alphas move. `.hero__lede` still
+  exists on `/study`, `/study-thanks` and `404.html`, so its figure still stands
+  there.
+
+  The `.eyebrow` added above the home headline for the web filters (see "Web
+  filters" below) went through the full 25-phase sweep, same themes and widths:
+  worst frame **4.72:1**, light theme at 390px, where it sits on the densest
+  part of the blue field. That makes it the tightest text on the page and the
+  number to watch. `/study`'s hero eyebrow, measured the same way, is at 4.63:1.
 
   Raise either alpha and all of that has to be re-measured, because axe will not
   do it for you: it returns "incomplete" rather than a verdict whenever the
@@ -471,22 +477,26 @@ no address, so that route is clean.
 
 School and workplace networks run the site through a category filter (GoGuardian, Securly,
 Lightspeed, Fortinet, Cisco Umbrella and the like) before the page is allowed to load. A domain
-the filter has not categorised yet is often blocked outright, and a new one sits in a "newly
-registered" bucket for anything from 10 to 32 days depending on the vendor. When it is finally
-categorised, the classifier works mostly from the `<title>`, the meta description and the first
-visible text, and a page that opens on "types into any app" and "learns your vocabulary" can be
-filed next to keyloggers rather than assistive technology.
+the filter has not categorised yet is often blocked outright, and a newly registered one can sit
+in an "uncategorised" or "newly registered" bucket for days or weeks; how long varies by vendor
+and changes without notice, so check with the vendor rather than trusting a number here. When it
+is categorised, the classifier leans heavily on the `<title>`, the meta description and the text
+at the top of the page, and a page that opens on "types into any app" and "learns your
+vocabulary" can be filed next to keyloggers rather than assistive technology.
 
-So those three places say "assistive" before they say anything else: the title, the meta
-description (and its Open Graph and Twitter copies), and the `.eyebrow` above the hero
-headline. Keep it that way when rewriting them. The "Keystrokes saved" tile is deliberately left
-alone, because its label is the app's own dashboard tile, word for word.
+So those places say "assistive" before they say anything else: the title, the meta description
+(and its Open Graph and Twitter copies), and the `.eyebrow` above the hero headline, which is the
+first text in `<main>` (only the header's brand and nav links come before it). The JSON-LD
+description, `site.webmanifest` and `llms.txt` say it too, so nothing a crawler reads describes
+the site differently. Keep it that way when rewriting any of them. The "Keystrokes saved" tile
+is deliberately left alone, because its label is the app's own dashboard tile, word for word.
 
 Copy only helps once a filter re-crawls. Getting unblocked sooner is done off the site, by
-looking the domain up and requesting a category change with each vendor (Securly's public
-lookup tool, FortiGuard's web filter lookup, Palo Alto's Test A Site, Cisco Talos's reputation
-center). GoGuardian and Lightspeed take requests only from a school's own admin, so for those the
-route is the school's IT department.
+looking the domain up and requesting a category change with each vendor that takes public
+requests (Securly, FortiGuard, Palo Alto's Test A Site and Cisco Talos have had lookup forms;
+confirm each is still open before relying on it). Vendors that do not take public requests route
+changes through the school's own admin, so for a blocked student the practical route is the
+school's IT department.
 
 ## Deployment
 

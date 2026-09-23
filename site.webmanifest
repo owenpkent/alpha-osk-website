@@ -1,7 +1,7 @@
 {
   "name": "Alpha-OSK",
   "short_name": "Alpha-OSK",
-  "description": "An on-screen keyboard for Windows and Linux with on-device word prediction.",
+  "description": "An assistive on-screen keyboard for Windows and Linux with on-device word prediction.",
   "start_url": "/",
   "display": "browser",
   "background_color": "#0e0e10",
