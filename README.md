@@ -467,6 +467,27 @@ GitHub private advisories) and `CODE_OF_CONDUCT.md` (the Contributor Covenant
 requires a contact). The Windows installer opens `alphaosk.com/study` and carries
 no address, so that route is clean.
 
+## Web filters
+
+School and workplace networks run the site through a category filter (GoGuardian, Securly,
+Lightspeed, Fortinet, Cisco Umbrella and the like) before the page is allowed to load. A domain
+the filter has not categorised yet is often blocked outright, and a new one sits in a "newly
+registered" bucket for anything from 10 to 32 days depending on the vendor. When it is finally
+categorised, the classifier works mostly from the `<title>`, the meta description and the first
+visible text, and a page that opens on "types into any app" and "learns your vocabulary" can be
+filed next to keyloggers rather than assistive technology.
+
+So those three places say "assistive" before they say anything else: the title, the meta
+description (and its Open Graph and Twitter copies), and the `.eyebrow` above the hero
+headline. Keep it that way when rewriting them. The "Keystrokes saved" tile is deliberately left
+alone, because its label is the app's own dashboard tile, word for word.
+
+Copy only helps once a filter re-crawls. Getting unblocked sooner is done off the site, by
+looking the domain up and requesting a category change with each vendor (Securly's public
+lookup tool, FortiGuard's web filter lookup, Palo Alto's Test A Site, Cisco Talos's reputation
+center). GoGuardian and Lightspeed take requests only from a school's own admin, so for those the
+route is the school's IT department.
+
 ## Deployment
 
 Netlify, publishing the repo root on every push to `main`. There is no build step:
