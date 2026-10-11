@@ -30,7 +30,9 @@ Key facts:
 - Privacy: learning is entirely on-device. Password fields pause learning
   automatically. Two features transmit anything at all, both off by default and
   both opt-in: voice dictation, which requires the user's own Deepgram API key
-  and sends audio only while the microphone is open; and anonymous usage stats,
+  and sends audio only while the microphone is open, plus optional AI cleanup and
+  Write with AI, which need the user's own Anthropic key and send only the
+  transcribed text, never the audio; and anonymous usage stats,
   which send nine integer counters a week, never content, word frequencies, key
   frequencies, IP or hostname.
 - Measured savings: the opt-in counters are summed across installs and appended

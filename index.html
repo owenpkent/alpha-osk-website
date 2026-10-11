@@ -588,8 +588,11 @@
           </svg>
           <p>
             <strong>Dictation is the one exception.</strong> Audio goes to Deepgram while the
-            microphone is open, and at no other time. Off by default, inert without your own key,
-            never written to disk, and a password field cancels a run outright.
+            microphone is open, and at no other time. The optional AI cleanup and Write with AI
+            send only the transcribed text, never the audio, to Anthropic. All of it is off by
+            default, inert without your own keys, and a password field cancels a run outright.
+            The last 20 recordings are kept in a history on your own computer, which you can
+            switch off and which is never sent anywhere.
           </p>
         </div>
 
@@ -785,8 +788,10 @@
               <p>
                 Your typing, no, and the keyboard itself is free. Your voice, only if you switch on
                 dictation and supply your own Deepgram API key, and only while the microphone is
-                open. That usage is the only money involved anywhere, you pay Deepgram directly,
-                and it is optional.
+                open. If you also switch on AI cleanup or Write with AI and add your own Anthropic
+                key, the transcribed text (not the audio) goes to Anthropic. That usage is the only
+                money involved anywhere, you pay Deepgram and Anthropic directly, and it is
+                optional.
               </p>
               <p>
                 There is an opt-in statistics client in the build. It is off until you switch it
