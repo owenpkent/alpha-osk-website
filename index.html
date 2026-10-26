@@ -588,8 +588,10 @@
           </svg>
           <p>
             <strong>Dictation is the one exception.</strong> Audio goes to Deepgram while the
-            microphone is open, and at no other time. Off by default, inert without your own key,
-            never written to disk, and a password field cancels a run outright.
+            microphone is open, and at no other time. The optional AI cleanup and Write with AI send
+            the transcribed text (never the audio) to Anthropic. All of it is off by default and
+            inert without your own keys, past runs are kept only on your computer (History, which
+            you can turn off), and a password field cancels a run outright.
           </p>
         </div>
 
@@ -785,12 +787,14 @@
               <p>
                 Your typing, no, and the keyboard itself is free. Your voice, only if you switch on
                 dictation and supply your own Deepgram API key, and only while the microphone is
-                open. That usage is the only money involved anywhere, you pay Deepgram directly,
-                and it is optional.
+                open. The optional AI cleanup and Write with AI send the transcribed text to
+                Anthropic, with your own Anthropic key. Those services are the only money involved
+                anywhere, you pay Deepgram and Anthropic directly, and they are optional.
               </p>
               <p>
                 There is an opt-in statistics client in the build. It is off until you switch it
-                on, and opting in sends nine integer counters a week: never content, never word
+                on, and opting in sends ten fields a week (seven lifetime counters, the app version,
+                your OS and a random ID): never content, never word
                 frequencies, never your IP or hostname. Those counters are summed across installs
                 and <a href="https://github.com/owenpkent/alpha-osk/blob/telemetry-data/docs/research/data/telemetry-aggregate.csv">republished
                 as a dated CSV</a>, which is where the two figures at the top of the home page come
